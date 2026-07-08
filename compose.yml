@@ -11,7 +11,7 @@ services:
         - linux/arm64
         - linux/amd64
       args:
-        UBUNTU_VERSION: '24.04'
+        UBUNTU_VERSION: '26.04'
         USER_NAME: agent
         USER_UID: '1001'
         USER_GID: '1001'

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG UBUNTU_VERSION=24.04
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-${UBUNTU_VERSION} AS base
+ARG UBUNTU_VERSION=26.04
+FROM public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION} AS base
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
@@ -35,7 +35,14 @@ RUN \
       --mount=type=cache,target=/root/.cache/npm \
       npm config set prefix /usr/local \
       && npm upgrade -g \
-      && npm install -g bats pnpm
+      && npm install -g @playwright/cli@latest bats pnpm
+
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
+
+RUN \
+      mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
+      && playwright-cli install-browser chromium --with-deps \
+      && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
 
 RUN \
       --mount=type=cache,target=/root/.cache \
@@ -117,6 +124,9 @@ HEALTHCHECK NONE
 
 FROM base AS cli
 
+ARG USER_NAME='agent'
+ARG USER_UID='1001'
+ARG USER_GID='1001'
 ARG ZSH_THEME='nicoulaj'
 ARG CLAUDE_CODE_VERSION='latest'
 ARG CODEX_CLI_VERSION='latest'
@@ -126,6 +136,9 @@ ARG GIT_USER_EMAIL='agent@localhost'
 
 USER "${USER_NAME}"
 
+WORKDIR "/home/${USER_NAME}"
+
+ENV HOME="/home/${USER_NAME}"
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
@@ -160,6 +173,13 @@ RUN \
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/copilot.install.sh
+
+# hadolint ignore=DL3059
+RUN \
+      mkdir -p "${HOME}/.claude/skills" "${HOME}/.playwright" \
+      && cp -r /usr/local/lib/node_modules/@playwright/cli/skills/playwright-cli "${HOME}/.claude/skills/" \
+      && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
+        > "${HOME}/.playwright/cli.config.json"
 
 # hadolint ignore=SC2016
 RUN \

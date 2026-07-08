@@ -13,6 +13,7 @@ The container comes pre-installed with:
 - OpenAI Codex CLI
 - Cursor CLI
 - OpenCode
+- Playwright CLI
 
 ## Working with the Repository
 
