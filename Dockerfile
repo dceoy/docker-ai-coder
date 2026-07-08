@@ -2,6 +2,7 @@
 ARG UBUNTU_VERSION=26.04
 FROM public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION} AS base
 
+ARG NODE_MAJOR=24
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
 ARG USER_GID='1001'
@@ -21,23 +22,51 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
-        gh git gnupg jq lsb-release npm python3-pip ripgrep rsync \
-        software-properties-common tree unzip vim wget zsh
+        gh git gnupg jq libatomic1 lsb-release python3-pip ripgrep rsync \
+        software-properties-common tree unzip vim wget xz-utils zsh
+
+RUN \
+      curl -LsSf https://astral.sh/uv/install.sh \
+        | env UV_UNMANAGED_INSTALL=/usr/local/bin sh
+
+RUN \
+      node_arch="$([[ "$(uname -m)" == 'x86_64' ]] && echo 'x64' || echo 'arm64')" \
+      && node_base_url="https://nodejs.org/dist/latest-v${NODE_MAJOR}.x" \
+      && curl -fsSL -o /tmp/SHASUMS256.txt "${node_base_url}/SHASUMS256.txt" \
+      && node_tarball="$(awk \
+        -v arch="${node_arch}" \
+        -v major="${NODE_MAJOR}" \
+        '$2 ~ "^node-v" major "\\." && $2 ~ "-linux-" arch "\\.tar\\.xz$" {print $2; exit}' \
+        /tmp/SHASUMS256.txt)" \
+      && [[ -n "${node_tarball}" ]] \
+      && curl -fsSL -o "/tmp/${node_tarball}" "${node_base_url}/${node_tarball}" \
+      && (cd /tmp && grep " ${node_tarball}$" SHASUMS256.txt | sha256sum -c -) \
+      && tar -xJf "/tmp/${node_tarball}" -C /usr/local --strip-components=1 --no-same-owner \
+      && rm -f /tmp/SHASUMS256.txt "/tmp/${node_tarball}"
+
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PNPM_GLOBAL_DIR=/usr/local/share/pnpm/global
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN \
+      mkdir -p "${PNPM_HOME}" \
+      && curl -fsSL https://get.pnpm.io/install.sh \
+        | ENV=/tmp/pnpmrc SHELL=/bin/bash bash - \
+      && rm -f /tmp/pnpmrc
 
 # hadolint ignore=DL3013
 RUN \
       --mount=type=cache,target=/root/.cache/pip \
       python3 -m pip install --no-cache-dir --prefix=/usr/local \
-        checkov pipx uv zizmor yamllint
+        checkov pipx zizmor yamllint
 
-# hadolint ignore=DL3016
 RUN \
-      --mount=type=cache,target=/root/.cache/npm \
-      npm config set prefix /usr/local \
-      && npm upgrade -g \
-      && npm install -g @playwright/cli@latest bats pnpm
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
+      --mount=type=cache,target=/root/.local/share/pnpm/store \
+      pnpm config set global-bin-dir "${PNPM_HOME}" \
+      && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
+      && pnpm config set store-dir /root/.local/share/pnpm/store \
+      && pnpm add --global @playwright/cli@latest bats
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
@@ -177,7 +206,7 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       mkdir -p "${HOME}/.claude/skills" "${HOME}/.playwright" \
-      && cp -r /usr/local/lib/node_modules/@playwright/cli/skills/playwright-cli "${HOME}/.claude/skills/" \
+      && cp -r "$(find "${PNPM_GLOBAL_DIR}" -path '*/node_modules/@playwright/cli/skills/playwright-cli' -type d -print -quit)" "${HOME}/.claude/skills/" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
