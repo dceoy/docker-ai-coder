@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG UBUNTU_VERSION=24.04
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-${UBUNTU_VERSION} AS base
+ARG UBUNTU_VERSION=26.04
+FROM public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION} AS base
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
