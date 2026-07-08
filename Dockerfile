@@ -191,8 +191,8 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      mkdir -p "${HOME}/.claude/skills" "${HOME}/.playwright" \
-      && cp -r "$(find "${PNPM_GLOBAL_DIR}" -path '*/node_modules/@playwright/cli/skills/playwright-cli' -type d -print -quit)" "${HOME}/.claude/skills/" \
+      mkdir -p "${HOME}/.playwright" \
+      && gh skill install playwright-cli \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
