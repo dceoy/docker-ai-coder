@@ -18,6 +18,20 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
+      && apt-get -yqq install --no-install-recommends --no-install-suggests \
+        ca-certificates curl \
+      && install -d -m 0755 /etc/apt/keyrings \
+      && curl -fsSL -o /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list
+
+# hadolint ignore=DL3008
+RUN \
+      --mount=type=cache,target=/var/cache/apt,sharing=locked \
+      --mount=type=cache,target=/var/lib/apt,sharing=locked \
+      apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
@@ -29,7 +43,7 @@ ENV UV_TOOL_DIR=/usr/local/share/uv/tools
 ENV PNPM_HOME=/usr/local/share/pnpm
 ENV PNPM_GLOBAL_DIR=/usr/local/share/pnpm/global
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
-ENV PATH="${PNPM_HOME}:${PATH}"
+ENV PATH="${PNPM_HOME}/bin:${PATH}"
 
 RUN \
       curl -fsSL https://astral.sh/uv/install.sh \
@@ -48,10 +62,9 @@ RUN \
       && rm -f /tmp/pnpmrc
 
 RUN \
-      --mount=type=cache,target=/root/.local/share/pnpm/store \
-      pnpm config set global-bin-dir "${PNPM_HOME}" \
+      pnpm config set global-bin-dir "${PNPM_HOME}/bin" \
       && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
-      && pnpm config set store-dir /root/.local/share/pnpm/store \
+      && pnpm config set store-dir /usr/local/share/pnpm/store \
       && pnpm add --global @playwright/cli bats
 
 RUN \
@@ -192,7 +205,7 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       mkdir -p "${HOME}/.playwright" \
-      && gh skill install playwright-cli \
+      && gh skill install microsoft/playwright-cli playwright-cli \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
