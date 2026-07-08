@@ -21,23 +21,38 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
-        gh git gnupg jq lsb-release npm python3-pip ripgrep rsync \
+        gh git gnupg jq lsb-release nodejs python3 ripgrep rsync \
         software-properties-common tree unzip vim wget zsh
 
-# hadolint ignore=DL3013
-RUN \
-      --mount=type=cache,target=/root/.cache/pip \
-      python3 -m pip install --no-cache-dir --prefix=/usr/local \
-        checkov pipx uv zizmor yamllint
-
-# hadolint ignore=DL3016
-RUN \
-      --mount=type=cache,target=/root/.cache/npm \
-      npm config set prefix /usr/local \
-      && npm upgrade -g \
-      && npm install -g @playwright/cli@latest bats pnpm
-
+ENV UV_TOOL_BIN_DIR=/usr/local/bin
+ENV UV_TOOL_DIR=/usr/local/share/uv/tools
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PNPM_GLOBAL_DIR=/usr/local/share/pnpm/global
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
+ENV PATH="${PNPM_HOME}:${PATH}"
+
+RUN \
+      curl -fsSL https://astral.sh/uv/install.sh \
+        | env UV_UNMANAGED_INSTALL=/usr/local/bin sh
+
+RUN \
+      --mount=type=cache,target=/root/.cache/uv \
+      uv tool install checkov \
+      && uv tool install zizmor \
+      && uv tool install yamllint
+
+RUN \
+      mkdir -p "${PNPM_HOME}" \
+      && curl -fsSL https://get.pnpm.io/install.sh \
+        | ENV=/tmp/pnpmrc SHELL=/bin/bash bash - \
+      && rm -f /tmp/pnpmrc
+
+RUN \
+      --mount=type=cache,target=/root/.local/share/pnpm/store \
+      pnpm config set global-bin-dir "${PNPM_HOME}" \
+      && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
+      && pnpm config set store-dir /root/.local/share/pnpm/store \
+      && pnpm add --global @playwright/cli bats
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
@@ -176,8 +191,8 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      mkdir -p "${HOME}/.claude/skills" "${HOME}/.playwright" \
-      && cp -r /usr/local/lib/node_modules/@playwright/cli/skills/playwright-cli "${HOME}/.claude/skills/" \
+      mkdir -p "${HOME}/.playwright" \
+      && gh skill install playwright-cli \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
