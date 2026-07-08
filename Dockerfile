@@ -32,7 +32,7 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
 ENV PATH="${PNPM_HOME}:${PATH}"
 
 RUN \
-      curl -LsSf https://astral.sh/uv/install.sh \
+      curl -fsSL https://astral.sh/uv/install.sh \
         | env UV_UNMANAGED_INSTALL=/usr/local/bin sh
 
 RUN \
@@ -52,7 +52,7 @@ RUN \
       pnpm config set global-bin-dir "${PNPM_HOME}" \
       && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
       && pnpm config set store-dir /root/.local/share/pnpm/store \
-      && pnpm add --global @playwright/cli@latest bats
+      && pnpm add --global @playwright/cli bats
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
