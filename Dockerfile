@@ -159,8 +159,8 @@ ARG ZSH_THEME='nicoulaj'
 ARG CLAUDE_CODE_VERSION='latest'
 ARG CODEX_CLI_VERSION='latest'
 ARG OPENCODE_VERSION='latest'
-ARG GIT_USER_NAME='agent'
-ARG GIT_USER_EMAIL='agent@localhost'
+ARG GIT_USER_NAME='claude'
+ARG GIT_USER_EMAIL='noreply@anthropic.com'
 
 USER "${USER_NAME}"
 
@@ -244,7 +244,8 @@ RUN \
       && claude plugin install --scope=user commit-commands@claude-plugins-official \
       && claude plugin install --scope=user pr-review-toolkit@claude-plugins-official \
       && claude plugin install --scope=user security-guidance@claude-plugins-official \
-      && claude plugin marketplace add --scope=user anthropics/skills \
+      && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
+      && claude plugin install --scope=user data@knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
