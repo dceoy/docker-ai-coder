@@ -230,8 +230,8 @@ RUN \
       && git config --global gui.encoding utf-8 \
       && git config --global fetch.prune true \
       && git config --global push.default matching \
-      && git config --global user.name "${USER_NAME}" \
-      && git config --global user.email "${USER_NAME}@localhost"
+      && git config --global user.name "${GIT_USER_NAME}" \
+      && git config --global user.email "${GIT_USER_EMAIL}"
 
 RUN \
       rsync -a "${HOME}/" /opt/agent/
@@ -245,7 +245,6 @@ RUN \
       && claude plugin install --scope=user pr-review-toolkit@claude-plugins-official \
       && claude plugin install --scope=user security-guidance@claude-plugins-official \
       && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
-      && claude plugin install --scope=user data@knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
