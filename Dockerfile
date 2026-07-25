@@ -176,7 +176,7 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/codex.install.sh --release "${CODEX_CLI_VERSION}"
+      CODEX_NON_INTERACTIVE=1 /usr/local/bin/codex.install.sh --release "${CODEX_CLI_VERSION}"
 
 # hadolint ignore=DL3059
 RUN \
