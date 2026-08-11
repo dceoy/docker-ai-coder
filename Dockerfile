@@ -35,7 +35,7 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
-        gh git gnupg jq lsb-release nodejs python3 ripgrep rsync shfmt \
+        gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
         software-properties-common tree unzip vim wget zsh
 
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
