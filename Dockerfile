@@ -108,6 +108,10 @@ RUN \
       && rm -f /tmp/trivy.tar.gz
 
 RUN \
+      curl -fsSL https://herdr.dev/install.sh \
+        | env HERDR_INSTALL_DIR=/usr/local/bin sh
+
+RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
         https://raw.githubusercontent.com/dceoy/print-github-tags/master/print-github-tags \
       && chmod +x /usr/local/bin/print-github-tags
