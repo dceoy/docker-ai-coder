@@ -81,6 +81,7 @@ RUN \
       && /tmp/aws/install \
       && rm -rf /tmp/awscliv2.zip /tmp/aws
 
+# hadolint ignore=SC3014
 RUN \
       curl -fsSL https://checkpoint-api.hashicorp.com/v1/check/terraform \
         | jq -r '.current_version' \
@@ -90,6 +91,7 @@ RUN \
       && chmod +x /usr/local/bin/terraform \
       && rm -f /tmp/terraform.zip
 
+# hadolint ignore=SC3014
 RUN \
       curl -fsSL https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest \
         | jq -r '.tag_name' \
@@ -97,6 +99,7 @@ RUN \
           "https://github.com/gruntwork-io/terragrunt/releases/download/{}/terragrunt_linux_$([[ "$(uname -m)" == 'x86_64' ]] && echo 'amd64' || echo 'arm64')" \
       && chmod +x /usr/local/bin/terragrunt
 
+# hadolint ignore=SC3014
 RUN \
       curl -fsSL https://api.github.com/repos/aquasecurity/trivy/releases/latest \
         | jq -r '.tag_name' \
