@@ -1,8 +1,8 @@
 {
   "name": "devcontainer",
   "dockerComposeFile": "../compose.yml",
-  "service": "devcontainer",
-  "runServices": ["devcontainer"],
+  "service": "herdr",
+  "runServices": ["herdr"],
   "workspaceFolder": "/workspace",
   "containerUser": "root",
   "remoteUser": "agent",
