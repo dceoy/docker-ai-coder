@@ -38,5 +38,17 @@ services:
       - command: git config --global --add safe.directory /workspace
         user: agent
     user: agent
+    entrypoint:
+      - /usr/bin/zsh
+    command:
+      - -c
+      - sleep infinity
+  herdr:
+    extends:
+      service: devcontainer
+    container_name: herdr-ai-coder
+    entrypoint:
+      - herdr
+    command: []
 volumes:
   home-data:
