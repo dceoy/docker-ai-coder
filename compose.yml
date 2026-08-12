@@ -1,7 +1,7 @@
 ---
 services:
   herdr:
-    image: ghcr.io/dceoy/docker-ai-coder:latest
+    image: ghcr.io/dceoy/ai-coder:latest
     build:
       context: .
       dockerfile: Dockerfile
