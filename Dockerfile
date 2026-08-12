@@ -66,7 +66,7 @@ RUN \
       && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
       && pnpm config set store-dir /usr/local/share/pnpm/store \
       && pnpm runtime set node 24 -g \
-      && pnpm add --global @playwright/cli @steipete/oracle bats
+      && pnpm add --global @playwright/cli @steipete/oracle agent-browser bats
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
