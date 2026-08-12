@@ -38,5 +38,11 @@ services:
       - command: git config --global --add safe.directory /workspace
         user: agent
     user: agent
+    entrypoint:
+      - tini
+      - --
+    command:
+      - herdr
+      - server
 volumes:
   home-data:

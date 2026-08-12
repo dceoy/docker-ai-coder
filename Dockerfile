@@ -36,7 +36,7 @@ RUN \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
         gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
-        software-properties-common tree unzip vim wget zsh
+        software-properties-common tini tree unzip vim wget zsh
 
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
@@ -66,7 +66,7 @@ RUN \
       && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
       && pnpm config set store-dir /usr/local/share/pnpm/store \
       && pnpm runtime set node 24 -g \
-      && pnpm add --global @playwright/cli @steipete/oracle bats
+      && pnpm add --global @playwright/cli @steipete/oracle agent-browser bats
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
@@ -216,6 +216,7 @@ RUN \
 RUN \
       mkdir -p "${HOME}/.playwright" \
       && gh skill install microsoft/playwright-cli playwright-cli \
+      && gh skill install vercel-labs/agent-browser agent-browser \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
@@ -258,4 +259,5 @@ RUN \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
-ENTRYPOINT ["herdr"]
+ENTRYPOINT ["tini", "--"]
+CMD ["herdr", "server"]
