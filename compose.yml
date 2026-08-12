@@ -41,6 +41,8 @@ services:
   devcontainer:
     extends:
       service: herdr
+    profiles:
+      - devcontainer
     entrypoint:
       - /usr/bin/zsh
     command:
