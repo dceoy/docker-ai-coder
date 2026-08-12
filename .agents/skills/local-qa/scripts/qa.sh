@@ -10,6 +10,17 @@ export PNPM_CONFIG_MINIMUM_RELEASE_AGE=$((COOLDOWN_DAYS * 24 * 60))
 
 # Markdown and JSON
 npx -y prettier --write './**/*.{md,json}'
+if [[ -f .markdownlint-cli2.jsonc ]]; then
+  git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t npx -y markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
+else
+  printf '{"config":{"MD013":false}}' > .markdownlint-cli2.jsonc
+  set +e
+  git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t npx -y markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
+  markdownlint_exit_code="${?}"
+  set -e
+  rm -f .markdownlint-cli2.jsonc
+  [[ "${markdownlint_exit_code}" -eq 0 ]] || exit "${markdownlint_exit_code}"
+fi
 
 # YAML
 git ls-files -z -- '*.yml' \
@@ -22,6 +33,6 @@ git ls-files -z -- '*.sh' '*.bash' '*.bats' \
   | xargs -0 -t shellcheck
 
 # GitHub Actions
-zizmor --fix=safe .github/workflows
+uvx zizmor --fix=safe .github/workflows
 git ls-files -z -- '.github/workflows/*.yml' | xargs -0 -t actionlint
-checkov --framework=all --output=github_failed_only --directory=.
+uvx checkov --framework=all --output=github_failed_only --directory=.
