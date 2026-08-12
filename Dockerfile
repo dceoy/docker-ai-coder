@@ -217,6 +217,7 @@ RUN \
       mkdir -p "${HOME}/.playwright" \
       && gh skill install microsoft/playwright-cli playwright-cli \
       && gh skill install vercel-labs/agent-browser agent-browser \
+      && gh skill install herdrdev/herdr herdr --scope user --force \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
