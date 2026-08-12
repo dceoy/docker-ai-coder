@@ -36,7 +36,7 @@ RUN \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
         gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
-        software-properties-common tree unzip vim wget zsh
+        software-properties-common tini tree unzip vim wget zsh
 
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
@@ -258,4 +258,5 @@ RUN \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
-ENTRYPOINT ["herdr"]
+ENTRYPOINT ["tini", "--"]
+CMD ["herdr", "server"]
