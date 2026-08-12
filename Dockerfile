@@ -170,6 +170,7 @@ ARG OPENCODE_VERSION='latest'
 ARG GIT_USER_NAME='claude'
 ARG GIT_USER_EMAIL='noreply@anthropic.com'
 
+# hadolint ignore=DL3066
 USER "${USER_NAME}"
 
 WORKDIR "/home/${USER_NAME}"
