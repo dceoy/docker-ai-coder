@@ -170,11 +170,13 @@ ARG OPENCODE_VERSION='latest'
 ARG GIT_USER_NAME='claude'
 ARG GIT_USER_EMAIL='noreply@anthropic.com'
 
+# hadolint ignore=DL3066
 USER "${USER_NAME}"
 
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
+ENV SHELL=/usr/bin/zsh
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
@@ -256,5 +258,4 @@ RUN \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
-ENTRYPOINT ["claude"]
-CMD ["--permission-mode=auto"]
+ENTRYPOINT ["herdr"]

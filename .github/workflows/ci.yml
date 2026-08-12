@@ -48,7 +48,7 @@ jobs:
     with:
       registry: ghcr.io
       registry-user: ${{ github.repository_owner }}
-      image-name: ${{ github.repository }}
+      image-name: ${{ github.repository_owner }}/ai-coder
       context: .
       file: ./Dockerfile
       platforms: linux/amd64,linux/arm64
