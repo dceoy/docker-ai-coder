@@ -6,8 +6,8 @@ Container configurations for AI coding agents
 
 ## Docker image
 
-Pull the image from [GitHub Container Registry](https://github.com/dceoy/docker-ai-coder/pkgs/container/docker-ai-coder).
+Pull the image from [GitHub Container Registry](https://github.com/dceoy/docker-ai-coder/pkgs/container/ai-coder).
 
 ```sh
-$ docker image pull ghcr.io/dceoy/docker-ai-coder:latest
+$ docker image pull ghcr.io/dceoy/ai-coder:latest
 ```
