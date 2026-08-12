@@ -256,5 +256,4 @@ RUN \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
-ENTRYPOINT ["claude"]
-CMD ["--permission-mode=auto"]
+ENTRYPOINT ["herdr"]
