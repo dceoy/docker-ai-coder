@@ -38,10 +38,5 @@ services:
       - command: git config --global --add safe.directory /workspace
         user: agent
     user: agent
-    entrypoint:
-      - /usr/bin/zsh
-    command:
-      - -c
-      - sleep infinity
 volumes:
   home-data:
