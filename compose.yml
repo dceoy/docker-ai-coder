@@ -1,6 +1,7 @@
 ---
 services:
   herdr:
+    container_name: ai-coder
     image: ghcr.io/dceoy/ai-coder:latest
     build:
       context: .
@@ -40,7 +41,6 @@ services:
   devcontainer:
     extends:
       service: herdr
-    container_name: ai-coder
     entrypoint:
       - /usr/bin/zsh
     command:
