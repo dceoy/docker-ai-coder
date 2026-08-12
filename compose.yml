@@ -1,8 +1,7 @@
 ---
 services:
-  devcontainer:
-    container_name: devcontainer-ai-coder
-    image: ghcr.io/dceoy/devcontainer-ai-coder:latest
+  herdr:
+    image: ghcr.io/dceoy/docker-ai-coder:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -38,17 +37,14 @@ services:
       - command: git config --global --add safe.directory /workspace
         user: agent
     user: agent
+  devcontainer:
+    extends:
+      service: herdr
+    container_name: ai-coder
     entrypoint:
       - /usr/bin/zsh
     command:
       - -c
       - sleep infinity
-  herdr:
-    extends:
-      service: devcontainer
-    container_name: herdr-ai-coder
-    entrypoint:
-      - herdr
-    command: []
 volumes:
   home-data:
