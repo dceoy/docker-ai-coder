@@ -260,6 +260,7 @@ RUN \
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
       && claude plugin marketplace add --scope=user anthropics/claude-plugins-official \
+      && claude plugin install --scope=user claude-security@claude-plugins-official \
       && claude plugin install --scope=user code-review@claude-plugins-official \
       && claude plugin install --scope=user code-simplifier@claude-plugins-official \
       && claude plugin install --scope=user commit-commands@claude-plugins-official \
