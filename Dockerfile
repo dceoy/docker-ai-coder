@@ -223,7 +223,7 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      for agent in claude-code codex antigravity-cli cursor opencode github-copilot; do \
+      for agent in claude-code codex universal; do \
         gh skill install cloudflare/security-audit-skill SKILL.md \
           --agent "${agent}" --scope user --force; \
         gh skill install getsentry/skills skills/security-review \
