@@ -221,6 +221,15 @@ RUN \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
+# hadolint ignore=DL3059
+RUN \
+      for agent in claude-code codex antigravity-cli cursor opencode github-copilot; do \
+        gh skill install cloudflare/security-audit-skill SKILL.md \
+          --agent "${agent}" --scope user --force; \
+        gh skill install getsentry/skills skills/security-review \
+          --agent "${agent}" --scope user --force; \
+      done
+
 # hadolint ignore=SC2016
 RUN \
       /usr/local/bin/install.ohmyz.sh --unattended \
