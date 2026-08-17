@@ -214,21 +214,26 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      mkdir -p "${HOME}/.playwright" \
-      && gh skill install microsoft/playwright-cli playwright-cli \
-      && gh skill install vercel-labs/agent-browser agent-browser \
-      && gh skill install herdrdev/herdr herdr --scope user --force \
+      for a in claude-code codex universal; do \
+        gh skill install microsoft/playwright-cli playwright-cli \
+          --agent "${a}" --scope user --force; \
+        sleep 1; \
+        gh skill install vercel-labs/agent-browser agent-browser \
+          --agent "${a}" --scope user --force; \
+        sleep 1; \
+        gh skill install herdrdev/herdr herdr \
+          --agent "${a}" --scope user --force; \
+        sleep 1; \
+        gh skill install cloudflare/security-audit-skill security-audit \
+          --agent "${a}" --scope user --force; \
+        sleep 1; \
+        gh skill install getsentry/skills security-review \
+          --agent "${a}" --scope user --force; \
+        sleep 1; \
+      done \
+      && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
-
-# hadolint ignore=DL3059
-RUN \
-      for agent in claude-code codex universal; do \
-        gh skill install cloudflare/security-audit-skill SKILL.md \
-          --agent "${agent}" --scope user --force; \
-        gh skill install getsentry/skills skills/security-review \
-          --agent "${agent}" --scope user --force; \
-      done
 
 # hadolint ignore=SC2016
 RUN \
@@ -261,10 +266,6 @@ RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
       && claude plugin marketplace add --scope=user anthropics/claude-plugins-official \
       && claude plugin install --scope=user claude-security@claude-plugins-official \
-      && claude plugin install --scope=user code-review@claude-plugins-official \
-      && claude plugin install --scope=user code-simplifier@claude-plugins-official \
-      && claude plugin install --scope=user commit-commands@claude-plugins-official \
-      && claude plugin install --scope=user pr-review-toolkit@claude-plugins-official \
       && claude plugin install --scope=user security-guidance@claude-plugins-official \
       && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
