@@ -230,8 +230,8 @@ RUN \
         gh skill install getsentry/skills security-review \
           --agent "${a}" --scope user --force; \
         sleep 1; \
-      done \
-      && mkdir -p "${HOME}/.playwright" \
+      done; \
+      mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
