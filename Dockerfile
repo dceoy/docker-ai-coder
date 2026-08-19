@@ -38,6 +38,11 @@ RUN \
         gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
         software-properties-common tini tree unzip vim wget zsh
 
+RUN \
+      curl -fsSL -o /usr/local/bin/hadolint \
+        "https://github.com/hadolint/hadolint/releases/latest/download/hadolint-linux-$([[ "$(uname -m)" == 'x86_64' ]] && echo 'x86_64' || echo 'arm64')" \
+      && chmod +x /usr/local/bin/hadolint
+
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
 ENV PNPM_HOME=/usr/local/share/pnpm
@@ -212,7 +217,7 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/copilot.install.sh
 
-# hadolint ignore=DL3059
+# hadolint ignore=DL3059,SC3011
 RUN \
       inject_github_metadata() { \
         local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
