@@ -215,6 +215,7 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       for a in claude-code codex universal; do \
+        sleep 1; \
         gh skill install microsoft/playwright-cli playwright-cli \
           --agent "${a}" --scope user --force; \
         sleep 1; \
@@ -223,13 +224,6 @@ RUN \
         sleep 1; \
         gh skill install herdrdev/herdr herdr \
           --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install cloudflare/security-audit-skill security-audit \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install getsentry/skills security-review \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
       done; \
       mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
