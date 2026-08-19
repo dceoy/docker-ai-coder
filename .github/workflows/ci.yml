@@ -21,6 +21,7 @@ on:
           - build
         description: Choose the workflow to run
         default: lint-and-scan
+permissions: {}
 jobs:
   docker-lint-and-scan:
     if: >
@@ -57,6 +58,23 @@ jobs:
       scan-after-build: true
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  docker-build-validation:
+    if: github.event_name == 'pull_request'
+    needs:
+      - docker-lint-and-scan
+    permissions:
+      contents: read
+    uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@main  # zizmor: ignore[unpinned-uses]
+    with:
+      context: .
+      file: ./Dockerfile
+      platforms: linux/amd64
+      push: false
+      scan-before-build: false
+      scan-after-build: true
+      image-artifact-name: docker-image-pr
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'

@@ -39,9 +39,26 @@ RUN \
         software-properties-common tini tree unzip vim wget zsh
 
 RUN \
-      curl -fsSL -o /usr/local/bin/hadolint \
-        "https://github.com/hadolint/hadolint/releases/latest/download/hadolint-linux-$([[ "$(uname -m)" == 'x86_64' ]] && echo 'x86_64' || echo 'arm64')" \
-      && chmod +x /usr/local/bin/hadolint
+      case "$(uname -m)" in \
+        x86_64) \
+          hadolint_arch='x86_64'; \
+          hadolint_sha256='c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507'; \
+          ;; \
+        aarch64) \
+          hadolint_arch='arm64'; \
+          hadolint_sha256='f6198ef8090f404dbb771abfee086eb8c48ac177f30da7fd3510aca35b344b5d'; \
+          ;; \
+        *) \
+          echo 'Unsupported architecture for Hadolint' >&2; \
+          exit 1; \
+          ;; \
+      esac \
+      && curl -fsSL -o /tmp/hadolint \
+        "https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-${hadolint_arch}" \
+      && printf '%s  %s\n' "${hadolint_sha256}" /tmp/hadolint \
+        | sha256sum --check --status - \
+      && install -m 0755 /tmp/hadolint /usr/local/bin/hadolint \
+      && rm -f /tmp/hadolint
 
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
@@ -217,7 +234,7 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/copilot.install.sh
 
-# hadolint ignore=DL3059,SC3011
+# hadolint ignore=DL3059,DL4006,SC3011
 RUN \
       inject_github_metadata() { \
         local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
@@ -236,16 +253,6 @@ RUN \
         mv "${tmp}" "${file}"; \
       }; \
       mkdir -p /tmp/skills \
-      && git clone --depth=1 https://github.com/microsoft/playwright-cli.git \
-        /tmp/skills/playwright-cli \
-      && git clone --depth=1 https://github.com/vercel-labs/agent-browser.git \
-        /tmp/skills/agent-browser \
-      && git clone --depth=1 https://github.com/herdrdev/herdr.git \
-        /tmp/skills/herdr \
-      && git clone --depth=1 https://github.com/cloudflare/security-audit-skill.git \
-        /tmp/skills/security-audit-skill \
-      && git clone --depth=1 https://github.com/getsentry/skills.git \
-        /tmp/skills/sentry-skills \
       && for spec in \
         "/tmp/skills/playwright-cli:microsoft/playwright-cli:playwright-cli:skills/playwright-cli" \
         "/tmp/skills/agent-browser:vercel-labs/agent-browser:agent-browser:skills/agent-browser" \
@@ -253,7 +260,16 @@ RUN \
         "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
         "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
           IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
-          ref="$(git -C "${repo_dir}" symbolic-ref --short HEAD)"; \
+          release_ref="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" \
+            | jq -r '.tag_name' || true)"; \
+          if [ -n "${release_ref}" ]; then \
+            git clone --depth=1 --branch "${release_ref}" \
+              "https://github.com/${repo}.git" "${repo_dir}"; \
+            github_ref="refs/tags/${release_ref}"; \
+          else \
+            git clone --depth=1 "https://github.com/${repo}.git" "${repo_dir}"; \
+            github_ref="refs/heads/$(git -C "${repo_dir}" symbolic-ref --short HEAD)"; \
+          fi; \
           tree_sha="$(git -C "${repo_dir}" rev-parse "HEAD:${skill_path}")"; \
           for agent in claude-code codex universal; do \
             gh skill install "${repo_dir}" "${skill}" \
@@ -268,9 +284,14 @@ RUN \
             esac; \
             inject_github_metadata "${target_dir}/${skill}/SKILL.md" \
               "https://github.com/${repo}" \
-              "refs/heads/${ref}" \
+              "${github_ref}" \
               "${tree_sha}" \
               "${skill_path}"; \
+            test -f "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-path: ${skill_path}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-ref: ${github_ref}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-repo: https://github.com/${repo}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-tree-sha: ${tree_sha}" "${target_dir}/${skill}/SKILL.md"; \
           done; \
         done \
       && rm -rf /tmp/skills \
