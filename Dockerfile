@@ -214,18 +214,35 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      for a in claude-code codex universal; do \
-        sleep 1; \
-        gh skill install microsoft/playwright-cli playwright-cli \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install vercel-labs/agent-browser agent-browser \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install herdrdev/herdr herdr \
-          --agent "${a}" --scope user --force; \
-      done; \
-      mkdir -p "${HOME}/.playwright" \
+      mkdir -p /tmp/skills \
+      && git clone --depth=1 https://github.com/microsoft/playwright-cli.git \
+        /tmp/skills/playwright-cli \
+      && git clone --depth=1 https://github.com/vercel-labs/agent-browser.git \
+        /tmp/skills/agent-browser \
+      && git clone --depth=1 https://github.com/herdrdev/herdr.git \
+        /tmp/skills/herdr \
+      && git clone --depth=1 https://github.com/cloudflare/security-audit-skill.git \
+        /tmp/skills/security-audit-skill \
+      && git clone --depth=1 https://github.com/getsentry/skills.git \
+        /tmp/skills/sentry-skills \
+      && for spec in \
+        "/tmp/skills/playwright-cli:playwright-cli" \
+        "/tmp/skills/agent-browser:agent-browser" \
+        "/tmp/skills/herdr:herdr" \
+        "/tmp/skills/security-audit-skill:security-audit" \
+        "/tmp/skills/sentry-skills:security-review"; do \
+          repo="${spec%%:*}"; \
+          skill="${spec#*:}"; \
+          for agent in claude-code codex universal; do \
+            gh skill install "${repo}" "${skill}" \
+              --from-local \
+              --agent "${agent}" \
+              --scope user \
+              --force; \
+          done; \
+        done \
+      && rm -rf /tmp/skills \
+      && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
