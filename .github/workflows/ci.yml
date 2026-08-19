@@ -82,7 +82,7 @@ jobs:
       scan-after-build: true
       image-artifact-name: ${{ matrix.image-artifact-name }}
     secrets:
-      BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+      BUILD_SECRETS: ${{ github.event.pull_request.head.repo.full_name == github.repository && format('GH_TOKEN={0}', secrets.GITHUB_TOKEN) || '' }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
