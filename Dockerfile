@@ -236,6 +236,7 @@ RUN \
 
 # hadolint ignore=DL3059,DL4006,SC3011
 RUN \
+      --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN \
       inject_github_metadata() { \
         local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
         grep -q '^[[:space:]]*local-path:' "${file}"; \
@@ -252,6 +253,13 @@ RUN \
           }' "${file}" > "${tmp}"; \
         mv "${tmp}" "${file}"; \
       }; \
+      github_api() { \
+        if [ -n "${GH_TOKEN:-}" ]; then \
+          curl -sSL -H "Authorization: Bearer ${GH_TOKEN}" "${@}"; \
+        else \
+          curl -sSL "${@}"; \
+        fi; \
+      }; \
       mkdir -p /tmp/skills \
       && for spec in \
         "/tmp/skills/playwright-cli:microsoft/playwright-cli:playwright-cli:skills/playwright-cli" \
@@ -260,7 +268,7 @@ RUN \
         "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
         "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
           IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
-          release_status="$(curl -sSL -o /tmp/release.json \
+          release_status="$(github_api -o /tmp/release.json \
             -w '%{http_code}' \
             "https://api.github.com/repos/${repo}/releases/latest")"; \
           case "${release_status}" in \

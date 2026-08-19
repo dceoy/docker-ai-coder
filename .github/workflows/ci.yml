@@ -57,6 +57,7 @@ jobs:
       scan-before-build: false
       scan-after-build: true
     secrets:
+      BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   docker-build-validation:
     if: github.event_name == 'pull_request'
@@ -81,6 +82,7 @@ jobs:
       scan-after-build: true
       image-artifact-name: ${{ matrix.image-artifact-name }}
     secrets:
+      BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
