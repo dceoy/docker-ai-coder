@@ -64,15 +64,22 @@ jobs:
       - docker-lint-and-scan
     permissions:
       contents: read
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            image-artifact-name: docker-image-pr-amd64
+          - platform: linux/arm64
+            image-artifact-name: docker-image-pr-arm64
     uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@main  # zizmor: ignore[unpinned-uses]
     with:
       context: .
       file: ./Dockerfile
-      platforms: linux/amd64
+      platforms: ${{ matrix.platform }}
       push: false
       scan-before-build: false
       scan-after-build: true
-      image-artifact-name: docker-image-pr
+      image-artifact-name: ${{ matrix.image-artifact-name }}
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:

@@ -260,8 +260,17 @@ RUN \
         "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
         "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
           IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
-          release_ref="$(curl -fsSL "https://api.github.com/repos/${repo}/releases/latest" \
-            | jq -r '.tag_name' || true)"; \
+          release_status="$(curl -sSL -o /tmp/release.json \
+            -w '%{http_code}' \
+            "https://api.github.com/repos/${repo}/releases/latest")"; \
+          case "${release_status}" in \
+            200) release_ref="$(jq -er '.tag_name' /tmp/release.json)" ;; \
+            404) release_ref='' ;; \
+            *) \
+              echo "Unable to resolve latest release for ${repo} (HTTP ${release_status})" >&2; \
+              exit 1; \
+              ;; \
+          esac; \
           if [ -n "${release_ref}" ]; then \
             git clone --depth=1 --branch "${release_ref}" \
               "https://github.com/${repo}.git" "${repo_dir}"; \
@@ -294,6 +303,7 @@ RUN \
             grep -Fqx "    github-tree-sha: ${tree_sha}" "${target_dir}/${skill}/SKILL.md"; \
           done; \
         done \
+      && rm -f /tmp/release.json \
       && rm -rf /tmp/skills \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
