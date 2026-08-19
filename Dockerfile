@@ -214,6 +214,22 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
+      inject_github_metadata() { \
+        local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
+        grep -q '^[[:space:]]*local-path:' "${file}"; \
+        awk -v repo="${repo}" -v ref="${ref}" -v sha="${sha}" -v path="${path}" \
+          '{ \
+            if ($0 ~ /^[[:space:]]*local-path:/) { \
+              print "    github-path: " path; \
+              print "    github-ref: " ref; \
+              print "    github-repo: " repo; \
+              print "    github-tree-sha: " sha; \
+              next; \
+            } \
+            print; \
+          }' "${file}" > "${tmp}"; \
+        mv "${tmp}" "${file}"; \
+      }; \
       mkdir -p /tmp/skills \
       && git clone --depth=1 https://github.com/microsoft/playwright-cli.git \
         /tmp/skills/playwright-cli \
@@ -226,19 +242,30 @@ RUN \
       && git clone --depth=1 https://github.com/getsentry/skills.git \
         /tmp/skills/sentry-skills \
       && for spec in \
-        "/tmp/skills/playwright-cli:playwright-cli" \
-        "/tmp/skills/agent-browser:agent-browser" \
-        "/tmp/skills/herdr:herdr" \
-        "/tmp/skills/security-audit-skill:security-audit" \
-        "/tmp/skills/sentry-skills:security-review"; do \
-          repo="${spec%%:*}"; \
-          skill="${spec#*:}"; \
+        "/tmp/skills/playwright-cli:microsoft/playwright-cli:playwright-cli:skills/playwright-cli" \
+        "/tmp/skills/agent-browser:vercel-labs/agent-browser:agent-browser:skills/agent-browser" \
+        "/tmp/skills/herdr:herdrdev/herdr:herdr:skills/herdr" \
+        "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
+        "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
+          IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
+          ref="$(git -C "${repo_dir}" symbolic-ref --short HEAD)"; \
+          tree_sha="$(git -C "${repo_dir}" rev-parse "HEAD:${skill_path}")"; \
           for agent in claude-code codex universal; do \
-            gh skill install "${repo}" "${skill}" \
+            gh skill install "${repo_dir}" "${skill}" \
               --from-local \
               --agent "${agent}" \
               --scope user \
               --force; \
+            case "${agent}" in \
+              claude-code) target_dir="${HOME}/.claude/skills" ;; \
+              codex) target_dir="${HOME}/.codex/skills" ;; \
+              universal) target_dir="${HOME}/.agents/skills" ;; \
+            esac; \
+            inject_github_metadata "${target_dir}/${skill}/SKILL.md" \
+              "https://github.com/${repo}" \
+              "refs/heads/${ref}" \
+              "${tree_sha}" \
+              "${skill_path}"; \
           done; \
         done \
       && rm -rf /tmp/skills \
