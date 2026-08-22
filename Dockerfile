@@ -38,6 +38,28 @@ RUN \
         gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
         software-properties-common tini tree unzip vim wget zsh
 
+RUN \
+      case "$(uname -m)" in \
+        x86_64) \
+          hadolint_arch='x86_64'; \
+          hadolint_sha256='c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507'; \
+          ;; \
+        aarch64) \
+          hadolint_arch='arm64'; \
+          hadolint_sha256='f6198ef8090f404dbb771abfee086eb8c48ac177f30da7fd3510aca35b344b5d'; \
+          ;; \
+        *) \
+          echo 'Unsupported architecture for Hadolint' >&2; \
+          exit 1; \
+          ;; \
+      esac \
+      && curl -fsSL -o /tmp/hadolint \
+        "https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-${hadolint_arch}" \
+      && printf '%s  %s\n' "${hadolint_sha256}" /tmp/hadolint \
+        | sha256sum --check --status - \
+      && install -m 0755 /tmp/hadolint /usr/local/bin/hadolint \
+      && rm -f /tmp/hadolint
+
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
 ENV PNPM_HOME=/usr/local/share/pnpm
@@ -216,20 +238,86 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/copilot.install.sh
 
-# hadolint ignore=DL3059
+# hadolint ignore=DL3059,DL4006,SC3011
 RUN \
-      for a in claude-code codex universal; do \
-        sleep 1; \
-        gh skill install microsoft/playwright-cli playwright-cli \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install vercel-labs/agent-browser agent-browser \
-          --agent "${a}" --scope user --force; \
-        sleep 1; \
-        gh skill install herdrdev/herdr herdr \
-          --agent "${a}" --scope user --force; \
-      done; \
-      mkdir -p "${HOME}/.playwright" \
+      --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN \
+      inject_github_metadata() { \
+        local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
+        grep -q '^[[:space:]]*local-path:' "${file}"; \
+        awk -v repo="${repo}" -v ref="${ref}" -v sha="${sha}" -v path="${path}" \
+          '{ \
+            if ($0 ~ /^[[:space:]]*local-path:/) { \
+              print "    github-path: " path; \
+              print "    github-ref: " ref; \
+              print "    github-repo: " repo; \
+              print "    github-tree-sha: " sha; \
+              next; \
+            } \
+            print; \
+          }' "${file}" > "${tmp}"; \
+        mv "${tmp}" "${file}"; \
+      }; \
+      github_api() { \
+        if [ -n "${GH_TOKEN:-}" ]; then \
+          curl -sSL -H "Authorization: Bearer ${GH_TOKEN}" "${@}"; \
+        else \
+          curl -sSL "${@}"; \
+        fi; \
+      }; \
+      mkdir -p /tmp/skills \
+      && for spec in \
+        "/tmp/skills/playwright-cli:microsoft/playwright-cli:playwright-cli:skills/playwright-cli" \
+        "/tmp/skills/agent-browser:vercel-labs/agent-browser:agent-browser:skills/agent-browser" \
+        "/tmp/skills/herdr:herdrdev/herdr:herdr:skills/herdr" \
+        "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
+        "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
+          IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
+          release_status="$(github_api -o /tmp/release.json \
+            -w '%{http_code}' \
+            "https://api.github.com/repos/${repo}/releases/latest")"; \
+          case "${release_status}" in \
+            200) release_ref="$(jq -er '.tag_name' /tmp/release.json)" ;; \
+            404) release_ref='' ;; \
+            *) \
+              echo "Unable to resolve latest release for ${repo} (HTTP ${release_status})" >&2; \
+              exit 1; \
+              ;; \
+          esac; \
+          if [ -n "${release_ref}" ]; then \
+            git clone --depth=1 --branch "${release_ref}" \
+              "https://github.com/${repo}.git" "${repo_dir}"; \
+            github_ref="refs/tags/${release_ref}"; \
+          else \
+            git clone --depth=1 "https://github.com/${repo}.git" "${repo_dir}"; \
+            github_ref="refs/heads/$(git -C "${repo_dir}" symbolic-ref --short HEAD)"; \
+          fi; \
+          tree_sha="$(git -C "${repo_dir}" rev-parse "HEAD:${skill_path}")"; \
+          for agent in claude-code codex universal; do \
+            gh skill install "${repo_dir}" "${skill}" \
+              --from-local \
+              --agent "${agent}" \
+              --scope user \
+              --force; \
+            case "${agent}" in \
+              claude-code) target_dir="${HOME}/.claude/skills" ;; \
+              codex) target_dir="${HOME}/.codex/skills" ;; \
+              universal) target_dir="${HOME}/.agents/skills" ;; \
+            esac; \
+            inject_github_metadata "${target_dir}/${skill}/SKILL.md" \
+              "https://github.com/${repo}" \
+              "${github_ref}" \
+              "${tree_sha}" \
+              "${skill_path}"; \
+            test -f "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-path: ${skill_path}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-ref: ${github_ref}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-repo: https://github.com/${repo}" "${target_dir}/${skill}/SKILL.md"; \
+            grep -Fqx "    github-tree-sha: ${tree_sha}" "${target_dir}/${skill}/SKILL.md"; \
+          done; \
+        done \
+      && rm -f /tmp/release.json \
+      && rm -rf /tmp/skills \
+      && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
