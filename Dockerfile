@@ -60,6 +60,9 @@ RUN \
       && install -m 0755 /tmp/hadolint /usr/local/bin/hadolint \
       && rm -f /tmp/hadolint
 
+ENV UV_EXCLUDE_NEWER="7 days"
+ENV NPM_CONFIG_MIN_RELEASE_AGE="7 days"
+ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=10080
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 ENV UV_TOOL_DIR=/usr/local/share/uv/tools
 ENV PNPM_HOME=/usr/local/share/pnpm
