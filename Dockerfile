@@ -50,6 +50,10 @@ RUN \
         | env UV_UNMANAGED_INSTALL=/usr/local/bin sh
 
 RUN \
+      curl -fsSL https://mise.run \
+        | env MISE_INSTALL_PATH=/usr/local/bin/mise sh
+
+RUN \
       --mount=type=cache,target=/root/.cache/uv \
       uv tool install checkov \
       && uv tool install zizmor \
