@@ -238,85 +238,18 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/copilot.install.sh
 
-# hadolint ignore=DL3059,DL4006,SC3011
+# hadolint ignore=DL3059
 RUN \
-      --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN \
-      inject_github_metadata() { \
-        local file="${1}" repo="${2}" ref="${3}" sha="${4}" path="${5}" tmp="${1}.tmp"; \
-        grep -q '^[[:space:]]*local-path:' "${file}"; \
-        awk -v repo="${repo}" -v ref="${ref}" -v sha="${sha}" -v path="${path}" \
-          '{ \
-            if ($0 ~ /^[[:space:]]*local-path:/) { \
-              print "    github-path: " path; \
-              print "    github-ref: " ref; \
-              print "    github-repo: " repo; \
-              print "    github-tree-sha: " sha; \
-              next; \
-            } \
-            print; \
-          }' "${file}" > "${tmp}"; \
-        mv "${tmp}" "${file}"; \
-      }; \
-      github_api() { \
-        if [ -n "${GH_TOKEN:-}" ]; then \
-          curl -sSL -H "Authorization: Bearer ${GH_TOKEN}" "${@}"; \
-        else \
-          curl -sSL "${@}"; \
-        fi; \
-      }; \
-      mkdir -p /tmp/skills \
-      && for spec in \
-        "/tmp/skills/playwright-cli:microsoft/playwright-cli:playwright-cli:skills/playwright-cli" \
-        "/tmp/skills/agent-browser:vercel-labs/agent-browser:agent-browser:skills/agent-browser" \
-        "/tmp/skills/herdr:herdrdev/herdr:herdr:skills/herdr" \
-        "/tmp/skills/security-audit-skill:cloudflare/security-audit-skill:security-audit:skills/security-audit" \
-        "/tmp/skills/sentry-skills:getsentry/skills:security-review:skills/security-review"; do \
-          IFS=: read -r repo_dir repo skill skill_path <<< "${spec}"; \
-          release_status="$(github_api -o /tmp/release.json \
-            -w '%{http_code}' \
-            "https://api.github.com/repos/${repo}/releases/latest")"; \
-          case "${release_status}" in \
-            200) release_ref="$(jq -er '.tag_name' /tmp/release.json)" ;; \
-            404) release_ref='' ;; \
-            *) \
-              echo "Unable to resolve latest release for ${repo} (HTTP ${release_status})" >&2; \
-              exit 1; \
-              ;; \
-          esac; \
-          if [ -n "${release_ref}" ]; then \
-            git clone --depth=1 --branch "${release_ref}" \
-              "https://github.com/${repo}.git" "${repo_dir}"; \
-            github_ref="refs/tags/${release_ref}"; \
-          else \
-            git clone --depth=1 "https://github.com/${repo}.git" "${repo_dir}"; \
-            github_ref="refs/heads/$(git -C "${repo_dir}" symbolic-ref --short HEAD)"; \
-          fi; \
-          tree_sha="$(git -C "${repo_dir}" rev-parse "HEAD:${skill_path}")"; \
-          for agent in claude-code codex universal; do \
-            gh skill install "${repo_dir}" "${skill}" \
-              --from-local \
-              --agent "${agent}" \
-              --scope user \
-              --force; \
-            case "${agent}" in \
-              claude-code) target_dir="${HOME}/.claude/skills" ;; \
-              codex) target_dir="${HOME}/.codex/skills" ;; \
-              universal) target_dir="${HOME}/.agents/skills" ;; \
-            esac; \
-            inject_github_metadata "${target_dir}/${skill}/SKILL.md" \
-              "https://github.com/${repo}" \
-              "${github_ref}" \
-              "${tree_sha}" \
-              "${skill_path}"; \
-            test -f "${target_dir}/${skill}/SKILL.md"; \
-            grep -Fqx "    github-path: ${skill_path}" "${target_dir}/${skill}/SKILL.md"; \
-            grep -Fqx "    github-ref: ${github_ref}" "${target_dir}/${skill}/SKILL.md"; \
-            grep -Fqx "    github-repo: https://github.com/${repo}" "${target_dir}/${skill}/SKILL.md"; \
-            grep -Fqx "    github-tree-sha: ${tree_sha}" "${target_dir}/${skill}/SKILL.md"; \
-          done; \
-        done \
-      && rm -f /tmp/release.json \
-      && rm -rf /tmp/skills \
+      npx --yes skills@latest add microsoft/playwright-cli \
+        --skill playwright-cli --global --agent claude-code --agent codex --agent universal --yes \
+      && npx --yes skills@latest add vercel-labs/agent-browser \
+        --skill agent-browser --global --agent claude-code --agent codex --agent universal --yes \
+      && npx --yes skills@latest add herdrdev/herdr \
+        --skill herdr --global --agent claude-code --agent codex --agent universal --yes \
+      && npx --yes skills@latest add cloudflare/security-audit-skill \
+        --skill security-audit --global --agent claude-code --agent codex --agent universal --yes \
+      && npx --yes skills@latest add getsentry/skills \
+        --skill security-review --global --agent claude-code --agent codex --agent universal --yes \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
