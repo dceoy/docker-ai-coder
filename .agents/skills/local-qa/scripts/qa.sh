@@ -6,7 +6,7 @@ cd "$(git rev-parse --show-toplevel)"
 COOLDOWN_DAYS=7
 export UV_EXCLUDE_NEWER="${COOLDOWN_DAYS} days"
 export NPM_CONFIG_MIN_RELEASE_AGE="${COOLDOWN_DAYS}"
-export NPM_CONFIG_MINIMUM_RELEASE_AGE=$((COOLDOWN_DAYS * 24 * 60))
+export PNPM_CONFIG_MINIMUM_RELEASE_AGE=$((COOLDOWN_DAYS * 24 * 60))
 
 # Markdown and JSON
 npx -y prettier --write './**/*.{md,json}'
