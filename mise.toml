@@ -1,0 +1,29 @@
+min_version = "2026.7.12"
+
+[settings]
+lockfile = true
+minimum_release_age = "7d"
+
+[tools]
+actionlint = "latest"
+aws-cli = "latest"
+gh = "latest"
+hadolint = "latest"
+herdr = "latest"
+jq = "latest"
+node = "24"
+ripgrep = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+terraform = "latest"
+terragrunt = "latest"
+trivy = "latest"
+uv = "latest"
+"npm:@openai/codex-security" = "latest"
+"npm:@playwright/cli" = "latest"
+"npm:@steipete/oracle" = "latest"
+"npm:agent-browser" = "latest"
+"npm:bats" = "latest"
+"pipx:checkov" = "latest"
+"pipx:yamllint" = "latest"
+"pipx:zizmor" = "latest"
