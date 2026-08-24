@@ -38,7 +38,7 @@ services:
       GH_TOKEN: ${GH_TOKEN:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     entrypoint:
-      - tini
+      - /usr/bin/tini
       - --
     command:
       - herdr
