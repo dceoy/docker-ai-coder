@@ -1,7 +1,7 @@
 ---
 services:
   herdr:
-    container_name: ai-coder
+    container_name: herdr
     image: ghcr.io/dceoy/ai-coder:latest
     build:
       context: .
@@ -22,22 +22,21 @@ services:
         - type=gha
       cache_to:
         - type=gha,mode=max
-    environment:
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     tty: true
     stdin_open: true
     volumes:
       - .:/workspace
       - home-data:/home/agent
-      - ${HOME}/.ssh:/home/agent/.ssh:ro
+    user: agent
     working_dir: /workspace
     post_start:
       - command: bash -c '[[ -d /home/agent/.claude ]] || rsync -au /opt/agent/ /home/agent/'
         user: root
       - command: git config --global --add safe.directory /workspace
         user: agent
-    user: agent
+    environment:
+      GH_TOKEN: ${GHUB_TOKEN:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     entrypoint:
       - tini
       - --
