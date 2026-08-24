@@ -27,18 +27,14 @@ jobs:
     if: >
       github.event_name == 'push'
       || github.event_name == 'pull_request'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'lint-and-scan')
+      || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
   docker-build-and-push:
     if: >
       github.event_name == 'push'
-      || (
-        github.event_name == 'workflow_dispatch'
-        && inputs.workflow == 'build'
-        && (! (failure() || cancelled()))
-      )
+      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'build')
     needs:
       - docker-lint-and-scan
     permissions:
