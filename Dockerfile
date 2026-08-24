@@ -26,6 +26,10 @@ RUN \
 
 RUN \
       add-apt-repository -y ppa:jdxcode/mise \
+      && curl -fsSL https://downloads.claude.ai/keys/claude-code.asc \
+        -o /usr/share/keyrings/claude-code.asc \
+      && echo 'deb [signed-by=/usr/share/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/latest latest main' \
+        > /etc/apt/sources.list.d/claude-code.list \
       && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
@@ -41,7 +45,7 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
+      && apt-get -yqq install --no-install-recommends --no-install-suggests claude-code mise terraform trivy
 
 ENV MISE_DATA_DIR=/usr/local/share/mise
 ENV MISE_CACHE_DIR=/var/cache/mise
