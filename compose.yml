@@ -35,7 +35,7 @@ services:
       - command: git config --global --add safe.directory /workspace
         user: agent
     environment:
-      GH_TOKEN: ${GHUB_TOKEN:-}
+      GH_TOKEN: ${GH_TOKEN:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     entrypoint:
       - tini
