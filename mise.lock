@@ -4,14 +4,6 @@ lockfile_version = 1
 version = "1.7.12"
 specifiers = ["latest"]
 
-[[tools.aws-cli]]
-version = "2.36.23"
-specifiers = ["latest"]
-
-[[tools.gh]]
-version = "2.97.0"
-specifiers = ["latest"]
-
 [[tools.hadolint]]
 version = "2.15.1"
 specifiers = ["latest"]
@@ -20,24 +12,8 @@ specifiers = ["latest"]
 version = "0.8.0"
 specifiers = ["latest"]
 
-[[tools.jq]]
-version = "1.8.2"
-specifiers = ["latest"]
-
 [[tools.node]]
 version = "26.7.0"
-specifiers = ["latest"]
-
-[[tools.ripgrep]]
-version = "15.2.0"
-specifiers = ["latest"]
-
-[[tools.shellcheck]]
-version = "0.11.0"
-specifiers = ["latest"]
-
-[[tools.shfmt]]
-version = "3.13.1"
 specifiers = ["latest"]
 
 [[tools.terraform]]
@@ -72,16 +48,8 @@ specifiers = ["latest"]
 version = "0.34.0"
 specifiers = ["latest"]
 
-[[tools."npm:bats"]]
-version = "1.13.0"
-specifiers = ["latest"]
-
 [[tools."pipx:checkov"]]
 version = "3.3.9"
-specifiers = ["latest"]
-
-[[tools."pipx:yamllint"]]
-version = "1.38.0"
 specifiers = ["latest"]
 
 [[tools."pipx:zizmor"]]
