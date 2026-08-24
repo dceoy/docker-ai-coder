@@ -4,6 +4,10 @@ lockfile_version = 1
 version = "1.7.12"
 specifiers = ["latest"]
 
+[[tools.aws-cli]]
+version = "2.36.23"
+specifiers = ["latest"]
+
 [[tools.gh]]
 version = "2.97.0"
 specifiers = ["latest"]
