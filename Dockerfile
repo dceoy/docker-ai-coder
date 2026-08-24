@@ -18,130 +18,32 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        ca-certificates curl \
-      && install -d -m 0755 /etc/apt/keyrings \
-      && curl -fsSL -o /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-      && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-        > /etc/apt/sources.list.d/github-cli.list
-
-# hadolint ignore=DL3008
-RUN \
-      --mount=type=cache,target=/var/cache/apt,sharing=locked \
-      --mount=type=cache,target=/var/lib/apt,sharing=locked \
-      apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-transport-https apt-utils build-essential ca-certificates curl \
-        gh git gnupg jq lsb-release nodejs npm python3 ripgrep rsync shfmt \
-        software-properties-common tini tree unzip vim wget zsh
+        apt-file apt-utils build-essential ca-certificates curl git python3 rsync \
+        tini tree unzip vim wget zsh
 
-RUN \
-      case "$(uname -m)" in \
-        x86_64) \
-          hadolint_arch='x86_64'; \
-          hadolint_sha256='c7187db94eeeeca956519a6af171adc31453941a1e777961f6e680f697c8c507'; \
-          ;; \
-        aarch64) \
-          hadolint_arch='arm64'; \
-          hadolint_sha256='f6198ef8090f404dbb771abfee086eb8c48ac177f30da7fd3510aca35b344b5d'; \
-          ;; \
-        *) \
-          echo 'Unsupported architecture for Hadolint' >&2; \
-          exit 1; \
-          ;; \
-      esac \
-      && curl -fsSL -o /tmp/hadolint \
-        "https://github.com/hadolint/hadolint/releases/download/v2.15.1/hadolint-linux-${hadolint_arch}" \
-      && printf '%s  %s\n' "${hadolint_sha256}" /tmp/hadolint \
-        | sha256sum --check --status - \
-      && install -m 0755 /tmp/hadolint /usr/local/bin/hadolint \
-      && rm -f /tmp/hadolint
-
-ENV UV_EXCLUDE_NEWER="7 days"
+ENV MISE_DATA_DIR=/usr/local/share/mise
+ENV MISE_CACHE_DIR=/var/cache/mise
+ENV MISE_GLOBAL_CONFIG_FILE=/etc/mise/mise.toml
 ENV NPM_CONFIG_MIN_RELEASE_AGE=7
-ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=10080
-ENV UV_TOOL_BIN_DIR=/usr/local/bin
-ENV UV_TOOL_DIR=/usr/local/share/uv/tools
-ENV PNPM_HOME=/usr/local/share/pnpm
-ENV PNPM_GLOBAL_DIR=/usr/local/share/pnpm/global
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
-ENV PATH="${PNPM_HOME}/bin:${PATH}"
-
-RUN \
-      curl -fsSL https://astral.sh/uv/install.sh \
-        | env UV_UNMANAGED_INSTALL=/usr/local/bin sh
+ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
 
 RUN \
       curl -fsSL https://mise.run \
         | env MISE_INSTALL_PATH=/usr/local/bin/mise sh
 
-RUN \
-      --mount=type=cache,target=/root/.cache/uv \
-      uv tool install checkov \
-      && uv tool install zizmor \
-      && uv tool install yamllint
+COPY mise.toml mise.lock /etc/mise/
 
 RUN \
-      mkdir -p "${PNPM_HOME}" \
-      && curl -fsSL https://get.pnpm.io/install.sh \
-        | ENV=/tmp/pnpmrc SHELL=/bin/bash bash - \
-      && rm -f /tmp/pnpmrc
-
-RUN \
-      pnpm config set global-bin-dir "${PNPM_HOME}/bin" \
-      && pnpm config set global-dir "${PNPM_GLOBAL_DIR}" \
-      && pnpm config set store-dir /usr/local/share/pnpm/store \
-      && pnpm runtime set node 24 -g \
-      && pnpm add --global @openai/codex-security @playwright/cli @steipete/oracle agent-browser bats
+      --mount=type=cache,target=/var/cache/mise,sharing=locked \
+      mise install
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
       && playwright-cli install-browser chromium --with-deps \
       && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
-
-RUN \
-      --mount=type=cache,target=/root/.cache \
-      curl -fsSL -o /tmp/awscliv2.zip \
-        "https://awscli.amazonaws.com/awscli-exe-linux-$([ "$(uname -m)" = 'x86_64' ] && echo 'x86_64' || echo 'aarch64').zip" \
-      && unzip /tmp/awscliv2.zip -d /tmp \
-      && /tmp/aws/install \
-      && rm -rf /tmp/awscliv2.zip /tmp/aws
-
-# hadolint ignore=SC3014
-RUN \
-      curl -fsSL https://checkpoint-api.hashicorp.com/v1/check/terraform \
-        | jq -r '.current_version' \
-        | xargs -t -I{} curl -fsSL -o /tmp/terraform.zip \
-          "https://releases.hashicorp.com/terraform/{}/terraform_{}_linux_$([[ "$(uname -m)" == 'x86_64' ]] && echo 'amd64' || echo 'arm64').zip" \
-      && unzip /tmp/terraform.zip -d /usr/local/bin \
-      && chmod +x /usr/local/bin/terraform \
-      && rm -f /tmp/terraform.zip
-
-# hadolint ignore=SC3014
-RUN \
-      curl -fsSL https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest \
-        | jq -r '.tag_name' \
-        | xargs -t -I{} curl -fsSL -o /usr/local/bin/terragrunt \
-          "https://github.com/gruntwork-io/terragrunt/releases/download/{}/terragrunt_linux_$([[ "$(uname -m)" == 'x86_64' ]] && echo 'amd64' || echo 'arm64')" \
-      && chmod +x /usr/local/bin/terragrunt
-
-# hadolint ignore=SC3014
-RUN \
-      curl -fsSL https://api.github.com/repos/aquasecurity/trivy/releases/latest \
-        | jq -r '.tag_name' \
-        | tr -d v \
-        | xargs -t -I{} curl -fsSL -o /tmp/trivy.tar.gz \
-          "https://github.com/aquasecurity/trivy/releases/download/v{}/trivy_{}_Linux-$([[ "$(uname -m)" == 'x86_64' ]] && echo '64bit' || echo 'ARM64').tar.gz" \
-      && tar -xzf /tmp/trivy.tar.gz -C /usr/local/bin trivy \
-      && chmod +x /usr/local/bin/trivy \
-      && rm -f /tmp/trivy.tar.gz
-
-RUN \
-      curl -fsSL https://herdr.dev/install.sh \
-        | env HERDR_INSTALL_DIR=/usr/local/bin sh
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -293,5 +195,5 @@ RUN \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
 
-ENTRYPOINT ["tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["herdr", "server"]
