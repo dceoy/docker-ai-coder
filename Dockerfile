@@ -20,8 +20,26 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils awscli bats build-essential ca-certificates curl gh git jq python3 \
-        ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
+        apt-file apt-utils awscli bats build-essential ca-certificates curl gh git gnupg jq nodejs npm \
+        python3 ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
+
+RUN \
+      curl -fsSL https://apt.releases.hashicorp.com/gpg \
+        | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+      && . /etc/os-release \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${UBUNTU_CODENAME} main" \
+        > /etc/apt/sources.list.d/hashicorp.list \
+      && curl -fsSL https://get.trivy.dev/deb/public.key \
+        | gpg --dearmor -o /usr/share/keyrings/trivy.gpg \
+      && echo 'deb [signed-by=/usr/share/keyrings/trivy.gpg] https://get.trivy.dev/deb generic main' \
+        > /etc/apt/sources.list.d/trivy.list
+
+# hadolint ignore=DL3008
+RUN \
+      --mount=type=cache,target=/var/cache/apt,sharing=locked \
+      --mount=type=cache,target=/var/lib/apt,sharing=locked \
+      apt-get -yqq update \
+      && apt-get -yqq install --no-install-recommends --no-install-suggests terraform trivy
 
 ENV MISE_DATA_DIR=/usr/local/share/mise
 ENV MISE_CACHE_DIR=/var/cache/mise
