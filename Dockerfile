@@ -21,10 +21,12 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils awscli bats build-essential ca-certificates curl gh git gnupg jq nodejs npm \
-        python3 ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
+        python3 ripgrep rsync shellcheck shfmt software-properties-common tini tree unzip vim wget \
+        yamllint zsh
 
 RUN \
-      curl -fsSL https://apt.releases.hashicorp.com/gpg \
+      add-apt-repository -y ppa:jdxcode/mise \
+      && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
       && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${UBUNTU_CODENAME} main" \
@@ -39,7 +41,7 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests terraform trivy
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
 ENV MISE_DATA_DIR=/usr/local/share/mise
 ENV MISE_CACHE_DIR=/var/cache/mise
@@ -47,10 +49,6 @@ ENV MISE_GLOBAL_CONFIG_FILE=/etc/mise/mise.toml
 ENV NPM_CONFIG_MIN_RELEASE_AGE=7
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
 ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
-
-RUN \
-      curl -fsSL https://mise.run \
-        | env MISE_INSTALL_PATH=/usr/local/bin/mise sh
 
 COPY mise.toml mise.lock /etc/mise/
 
@@ -73,28 +71,8 @@ RUN \
       && chmod +x /usr/local/bin/install.ohmyz.sh
 
 RUN \
-      curl -fsSL -o /usr/local/bin/claude.ai.install.sh https://claude.ai/install.sh \
-      && chmod +x /usr/local/bin/claude.ai.install.sh
-
-RUN \
-      curl -fsSL -o /usr/local/bin/codex.install.sh https://chatgpt.com/codex/install.sh \
-      && chmod +x /usr/local/bin/codex.install.sh
-
-RUN \
-      curl -fsSL -o /usr/local/bin/antigravity.install.sh https://antigravity.google/cli/install.sh \
-      && chmod +x /usr/local/bin/antigravity.install.sh
-
-RUN \
       curl -fsSL -o /usr/local/bin/cursor.install.sh https://cursor.com/install \
       && chmod +x /usr/local/bin/cursor.install.sh
-
-RUN \
-      curl -fsSL -o /usr/local/bin/opencode.install.sh https://opencode.ai/install \
-      && chmod +x /usr/local/bin/opencode.install.sh
-
-RUN \
-      curl -fsSL -o /usr/local/bin/copilot.install.sh https://gh.io/copilot-install \
-      && chmod +x /usr/local/bin/copilot.install.sh
 
 RUN \
       mkdir -p /opt/agent \
@@ -113,9 +91,6 @@ ARG USER_NAME='agent'
 ARG USER_UID='1001'
 ARG USER_GID='1001'
 ARG ZSH_THEME='nicoulaj'
-ARG CLAUDE_CODE_VERSION='latest'
-ARG CODEX_CLI_VERSION='latest'
-ARG OPENCODE_VERSION='latest'
 ARG GIT_USER_NAME='claude'
 ARG GIT_USER_EMAIL='noreply@anthropic.com'
 
@@ -130,36 +105,7 @@ ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/claude.ai.install.sh "${CLAUDE_CODE_VERSION}"
-
-# hadolint ignore=DL3059
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      CODEX_NON_INTERACTIVE=1 /usr/local/bin/codex.install.sh --release "${CODEX_CLI_VERSION}"
-
-# hadolint ignore=DL3059
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/antigravity.install.sh
-
-# hadolint ignore=DL3059
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/cursor.install.sh
-
-# hadolint ignore=DL3059,DL4006,SC2015
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      [[ "${OPENCODE_VERSION}" != "latest" ]] \
-      && /usr/local/bin/opencode.install.sh --version "${OPENCODE_VERSION}" \
-      || curl -fsSL https://api.github.com/repos/anomalyco/opencode/releases/latest \
-        | jq -r '.tag_name' \
-        | xargs -t /usr/local/bin/opencode.install.sh --version
-
-# hadolint ignore=DL3059
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/copilot.install.sh
 
 # hadolint ignore=DL3059
 RUN \
