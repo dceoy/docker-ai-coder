@@ -10,15 +10,7 @@ Run the local QA script `scripts/qa.sh` in this skill.
 
 ## Procedure
 
-- Execute the script exactly as shown above when this skill is triggered.
+- Run `mise install` from the repository root before the QA script when the configured tools are missing.
+- Execute the script after the mise-managed toolchain is available.
 - Capture and summarize key output (success/failure, major warnings, and any files modified).
-- If the script fails due to missing tooling, install the missing tool(s) and rerun the script once.
-- Prefer the platform package manager for missing tools used by this repo:
-  - macOS (Homebrew): `brew install shellcheck actionlint yamllint checkov zizmor`
-  - macOS `npx` fallback: `brew install node`
-  - Linux (Debian/Ubuntu) base packages: `sudo apt-get update && sudo apt-get install -y shellcheck yamllint nodejs npm pipx golang rustc cargo`
-  - Linux `checkov`: `pipx install checkov`
-  - Linux `actionlint`: `go install github.com/rhysd/actionlint/cmd/actionlint@latest`
-  - Linux `zizmor`: `cargo install zizmor`
-  - Linux `PATH` must include `~/.local/bin`, `~/go/bin`, and `~/.cargo/bin` before rerunning.
-- If installation fails or a package manager is unavailable, report exactly what failed and why.
+- If `mise install` fails or mise is unavailable, report exactly what failed and why instead of installing the same tools through another package manager.
