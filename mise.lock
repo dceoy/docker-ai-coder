@@ -20,6 +20,26 @@ specifiers = ["latest"]
 version = "0.12.5"
 specifiers = ["latest"]
 
+[[tools."github:anomalyco/opencode"]]
+version = "1.18.14"
+specifiers = ["latest"]
+
+[[tools."github:google-antigravity/antigravity-cli"]]
+version = "1.1.13"
+specifiers = ["latest"]
+
+[[tools."npm:@anthropic-ai/claude-code"]]
+version = "2.1.231"
+specifiers = ["latest"]
+
+[[tools."npm:@github/copilot"]]
+version = "1.0.80"
+specifiers = ["latest"]
+
+[[tools."npm:@openai/codex"]]
+version = "0.147.0"
+specifiers = ["latest"]
+
 [[tools."npm:@openai/codex-security"]]
 version = "0.1.8"
 specifiers = ["latest"]
