@@ -20,8 +20,8 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils build-essential ca-certificates curl git python3 rsync \
-        tini tree unzip vim wget zsh
+        apt-file apt-utils awscli bats build-essential ca-certificates curl gh git jq python3 \
+        ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
 
 ENV MISE_DATA_DIR=/usr/local/share/mise
 ENV MISE_CACHE_DIR=/var/cache/mise
