@@ -24,6 +24,10 @@ specifiers = ["latest"]
 version = "1.18.14"
 specifiers = ["latest"]
 
+[[tools."github:anthropics/claude-code"]]
+version = "2.1.233"
+specifiers = ["latest"]
+
 [[tools."github:google-antigravity/antigravity-cli"]]
 version = "1.1.13"
 specifiers = ["latest"]
