@@ -8,6 +8,8 @@ ARG USER_GID='1001'
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+ENV NPM_CONFIG_MIN_RELEASE_AGE=1
+
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
       && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
@@ -41,25 +43,8 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
-
-ENV MISE_DATA_DIR=/usr/local/share/mise
-ENV MISE_CACHE_DIR=/var/cache/mise
-ENV MISE_GLOBAL_CONFIG_FILE=/etc/mise/mise.toml
-ENV NPM_CONFIG_MIN_RELEASE_AGE=7
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
-ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
-
-COPY mise.toml mise.lock /etc/mise/
-
-RUN \
-      --mount=type=cache,target=/var/cache/mise,sharing=locked \
-      mise install
-
-RUN \
-      mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
-      && playwright-cli install-browser chromium --with-deps \
-      && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy \
+      && npx --yes playwright install-deps chromium
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -101,7 +86,21 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+
+RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
+      mkdir -p "${HOME}/.config/mise" \
+      && cp /tmp/mise.toml "${HOME}/.config/mise/config.toml" \
+      && cp /tmp/mise.lock "${HOME}/.config/mise/mise.lock"
+
+RUN \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      mise install
+
+RUN \
+      playwright-cli install-browser chromium
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
