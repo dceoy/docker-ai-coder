@@ -23,11 +23,13 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils awscli bats build-essential ca-certificates curl gh git gnupg jq nodejs npm \
-        python3 ripgrep rsync shellcheck shfmt software-properties-common tini tree unzip vim wget \
-        yamllint zsh
+        python3 ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
 
 RUN \
-      add-apt-repository -y ppa:jdxcode/mise \
+      install -dm 755 /etc/apt/keyrings \
+      && curl -fsSLo /etc/apt/keyrings/mise-archive-keyring.pub https://mise.jdx.dev/gpg-key.pub \
+      && echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.pub arch=$(dpkg --print-architecture)] https://mise.jdx.dev/deb stable main" \
+        > /etc/apt/sources.list.d/mise.list \
       && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
