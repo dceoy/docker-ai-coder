@@ -41,9 +41,9 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
-
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy \
+      && NPM_CONFIG_MIN_RELEASE_AGE=86400 \
+        npx --yes playwright@1.63.0-alpha-2026-08-05 install-deps chromium
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -99,14 +99,8 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install
 
-USER root
-
 RUN \
-      mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
-      && playwright-cli install-browser chromium --with-deps \
-      && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
-
-USER "${USER_NAME}"
+      playwright-cli install-browser chromium
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
