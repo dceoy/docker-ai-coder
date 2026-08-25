@@ -43,18 +43,30 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
+RUN \
+      groupadd --gid "${USER_GID}" "${USER_NAME}" \
+      && useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USER_NAME}"
+
 ENV MISE_DATA_DIR=/usr/local/share/mise
 ENV MISE_CACHE_DIR=/var/cache/mise
 ENV MISE_GLOBAL_CONFIG_FILE=/etc/mise/mise.toml
-ENV NPM_CONFIG_MIN_RELEASE_AGE=7
+ENV NPM_CONFIG_MIN_RELEASE_AGE=1
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
 ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
 
 COPY mise.toml mise.lock /etc/mise/
 
 RUN \
-      --mount=type=cache,target=/var/cache/mise,sharing=locked \
-      mise install
+      mkdir -p "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}" \
+      && chown -R "${USER_UID}:${USER_GID}" "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}"
+
+USER "${USER_NAME}"
+
+RUN \
+      --mount=type=cache,target=/var/cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      HOME="/home/${USER_NAME}" mise install
+
+USER root
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
@@ -77,10 +89,6 @@ RUN \
 RUN \
       mkdir -p /opt/agent \
       && chown "${USER_UID}:${USER_GID}" /opt/agent
-
-RUN \
-      groupadd --gid "${USER_GID}" "${USER_NAME}" \
-      && useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USER_NAME}"
 
 HEALTHCHECK NONE
 
