@@ -22,12 +22,11 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils awscli bats build-essential ca-certificates curl gh git gnupg jq nodejs npm \
-        python3 ripgrep rsync shellcheck shfmt software-properties-common tini tree unzip vim wget \
-        yamllint zsh
+        apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
+        python3 ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
 
 RUN \
-      add-apt-repository -y ppa:jdxcode/mise \
+      extrepo enable mise \
       && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
