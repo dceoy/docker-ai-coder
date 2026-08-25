@@ -54,19 +54,15 @@ ENV NPM_CONFIG_MIN_RELEASE_AGE=1
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
 ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
 
-COPY mise.toml mise.lock /etc/mise/
+RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
+      mkdir -p /etc/mise \
+      && cp /tmp/mise.toml /tmp/mise.lock /etc/mise/
 
 RUN \
       mkdir -p "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}" \
       && chown -R "${USER_UID}:${USER_GID}" "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}"
-
-USER "${USER_NAME}"
-
-RUN \
-      --mount=type=cache,target=/var/cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      HOME="/home/${USER_NAME}" mise install
-
-USER root
 
 RUN \
       mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
@@ -110,6 +106,10 @@ WORKDIR "/home/${USER_NAME}"
 ENV HOME="/home/${USER_NAME}"
 ENV SHELL=/usr/bin/zsh
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+
+RUN \
+      --mount=type=cache,target=/var/cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      mise install
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
