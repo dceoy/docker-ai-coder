@@ -43,31 +43,7 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
-RUN \
-      groupadd --gid "${USER_GID}" "${USER_NAME}" \
-      && useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USER_NAME}"
-
-ENV MISE_DATA_DIR=/usr/local/share/mise
-ENV MISE_CACHE_DIR=/var/cache/mise
-ENV MISE_GLOBAL_CONFIG_FILE=/etc/mise/mise.toml
-ENV NPM_CONFIG_MIN_RELEASE_AGE=1
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/share/ms-playwright
-ENV PATH="${MISE_DATA_DIR}/shims:${PATH}"
-
-RUN \
-      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
-      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      mkdir -p /etc/mise \
-      && cp /tmp/mise.toml /tmp/mise.lock /etc/mise/
-
-RUN \
-      mkdir -p "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}" \
-      && chown -R "${USER_UID}:${USER_GID}" "${MISE_DATA_DIR}" "${MISE_CACHE_DIR}"
-
-RUN \
-      mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
-      && playwright-cli install-browser chromium --with-deps \
-      && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -85,6 +61,10 @@ RUN \
 RUN \
       mkdir -p /opt/agent \
       && chown "${USER_UID}:${USER_GID}" /opt/agent
+
+RUN \
+      groupadd --gid "${USER_GID}" "${USER_NAME}" \
+      && useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USER_NAME}"
 
 HEALTHCHECK NONE
 
@@ -105,11 +85,28 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV NPM_CONFIG_MIN_RELEASE_AGE=86400
+ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
-      --mount=type=cache,target=/var/cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
+      mkdir -p "${HOME}/.config/mise" \
+      && cp /tmp/mise.toml "${HOME}/.config/mise/config.toml" \
+      && cp /tmp/mise.lock "${HOME}/.config/mise/mise.lock"
+
+RUN \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install
+
+USER root
+
+RUN \
+      mkdir -p "${PLAYWRIGHT_BROWSERS_PATH}" \
+      && playwright-cli install-browser chromium --with-deps \
+      && chmod -R a+rX "${PLAYWRIGHT_BROWSERS_PATH}"
+
+USER "${USER_NAME}"
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
