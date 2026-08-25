@@ -95,7 +95,7 @@ RUN \
       && cp /tmp/mise.lock "${HOME}/.config/mise/mise.lock"
 
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache/mise,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install
 
 RUN \
