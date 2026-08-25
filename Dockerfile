@@ -8,6 +8,8 @@ ARG USER_GID='1001'
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+ENV NPM_CONFIG_MIN_RELEASE_AGE=1
+
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
       && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
@@ -42,8 +44,7 @@ RUN \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
       && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy \
-      && NPM_CONFIG_MIN_RELEASE_AGE=86400 \
-        npx --yes playwright@1.63.0-alpha-2026-08-05 install-deps chromium
+      && npx --yes playwright install-deps chromium
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -85,7 +86,6 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV SHELL=/usr/bin/zsh
-ENV NPM_CONFIG_MIN_RELEASE_AGE=86400
 ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
