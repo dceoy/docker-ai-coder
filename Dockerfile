@@ -90,9 +90,8 @@ ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/b
 RUN \
       --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
       --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      mkdir -p "${HOME}/.config/mise" \
-      && cp /tmp/mise.toml "${HOME}/.config/mise/config.toml" \
-      && cp /tmp/mise.lock "${HOME}/.config/mise/mise.lock"
+      cp /tmp/mise.toml "${HOME}/mise.toml" \
+      && cp /tmp/mise.lock "${HOME}/mise.lock"
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
