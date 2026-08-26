@@ -100,7 +100,7 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install
+      mise install --locked
 
 RUN \
       playwright-cli install-browser chromium
