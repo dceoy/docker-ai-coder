@@ -84,6 +84,7 @@ USER "${USER_NAME}"
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
+ENV MISE_GLOBAL_CONFIG_FILE="${HOME}/mise.toml"
 ENV SHELL=/usr/bin/zsh
 ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
