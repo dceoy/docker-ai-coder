@@ -4,6 +4,7 @@ lockfile_version = 1
 
 [[tools.actionlint]]
 version = "1.7.12"
+backend = "aqua:rhysd/actionlint"
 specifiers = ["latest"]
 
 [tools.actionlint."platforms.linux-arm64"]
@@ -17,36 +18,37 @@ url = "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_
 url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/384924896"
 
 [[tools."github:anomalyco/opencode"]]
-version = "1.18.22"
+version = "1.18.23"
+backend = "github:anomalyco/opencode"
 specifiers = ["latest"]
 
 [tools."github:anomalyco/opencode"."platforms.linux-arm64"]
-checksum = "sha256:7243e7a417d190efa1b7b0981dbf0d6c8aa78ba2fb0181ea23336fdbb51c5178"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.18.22/opencode-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anomalyco/opencode/releases/assets/527648044"
+checksum = "sha256:86d3afaf4e8784f9adab189be2a315c12b27ec40a04b70defbe70595c3cc7c65"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.23/opencode-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anomalyco/opencode/releases/assets/528740696"
 provenance = "github-attestations"
 provenance_verified = true
 
 [tools."github:anomalyco/opencode"."platforms.linux-x64"]
-checksum = "sha256:23eca6a892c6b53c0f9ba2333b6906bdc31902634631d54cf17500e7e8cbfa20"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.18.22/opencode-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anomalyco/opencode/releases/assets/527648036"
+checksum = "sha256:ab7015cd8113e011a461f30a0c2b77d8299a144ff688cb62e93e8802835d7288"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.23/opencode-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anomalyco/opencode/releases/assets/528740635"
 provenance = "github-attestations"
-provenance_verified = true
 
 [[tools."github:anthropics/claude-code"]]
-version = "2.1.241"
+version = "2.1.245"
+backend = "github:anthropics/claude-code"
 specifiers = ["latest"]
 
 [tools."github:anthropics/claude-code"."platforms.linux-arm64"]
-checksum = "sha256:d3563afb0328eee644b5b830c3de42699b56a0d83de3423a466a0e2065b2417d"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.241/claude-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/525583913"
+checksum = "sha256:ec08af5c412a4456f200c20e586e0268eda62fac7952fe14ff97f0aab485c7b6"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.245/claude-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/528651264"
 
 [tools."github:anthropics/claude-code"."platforms.linux-x64"]
-checksum = "sha256:c171011648d71b96a0956469a46315a4c826ccba7e20854ae62aa5c776d6a794"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.241/claude-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/525583969"
+checksum = "sha256:7a0875ca6f73f82ffb8cd4679bbd2771d8a397eb864dadb6e26faed2a4ebb342"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.245/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/528651310"
 
 [[tools."github:google-antigravity/antigravity-cli"]]
 version = "1.1.20"
@@ -68,6 +70,7 @@ url_api = "https://api.github.com/repos/google-antigravity/antigravity-cli/relea
 
 [[tools.hadolint]]
 version = "2.15.1"
+backend = "aqua:hadolint/hadolint"
 specifiers = ["latest"]
 
 [tools.hadolint."platforms.linux-arm64"]
@@ -82,6 +85,7 @@ url_api = "https://api.github.com/repos/hadolint/hadolint/releases/assets/496546
 
 [[tools.herdr]]
 version = "0.8.2"
+backend = "aqua:herdrdev/herdr"
 specifiers = ["latest"]
 
 [tools.herdr."platforms.linux-arm64"]
@@ -96,38 +100,47 @@ url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/521169107
 
 [[tools."npm:@github/copilot"]]
 version = "1.0.80"
+backend = "npm:@github/copilot"
 specifiers = ["latest"]
 
 [[tools."npm:@openai/codex"]]
-version = "0.149.0"
+version = "0.149.1"
+backend = "npm:@openai/codex"
 specifiers = ["latest"]
 
 [[tools."npm:@openai/codex-security"]]
-version = "0.1.18"
+version = "0.1.20"
+backend = "npm:@openai/codex-security"
 specifiers = ["latest"]
 
 [[tools."npm:@playwright/cli"]]
 version = "0.1.18"
+backend = "npm:@playwright/cli"
 specifiers = ["latest"]
 
 [[tools."npm:@steipete/oracle"]]
 version = "0.18.0"
+backend = "npm:@steipete/oracle"
 specifiers = ["latest"]
 
 [[tools."npm:agent-browser"]]
-version = "0.34.0"
+version = "0.35.0"
+backend = "npm:agent-browser"
 specifiers = ["latest"]
 
 [[tools."pipx:checkov"]]
 version = "3.3.13"
+backend = "pipx:checkov"
 specifiers = ["latest"]
 
 [[tools."pipx:zizmor"]]
 version = "1.29.0"
+backend = "pipx:zizmor"
 specifiers = ["latest"]
 
 [[tools.terragrunt]]
 version = "1.1.3"
+backend = "aqua:gruntwork-io/terragrunt"
 specifiers = ["latest"]
 
 [tools.terragrunt."platforms.linux-arm64"]
@@ -142,6 +155,7 @@ url_api = "https://api.github.com/repos/gruntwork-io/terragrunt/releases/assets/
 
 [[tools.uv]]
 version = "0.12.5"
+backend = "aqua:astral-sh/uv"
 specifiers = ["latest"]
 
 [tools.uv."platforms.linux-arm64"]
