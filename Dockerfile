@@ -59,8 +59,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent
+      mkdir -p /opt/agent /opt/mise \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mise
 
 RUN \
       groupadd --gid "${USER_GID}" "${USER_NAME}" \
@@ -84,18 +84,22 @@ USER "${USER_NAME}"
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
-ENV MISE_GLOBAL_CONFIG_FILE="${HOME}/mise.toml"
+ENV MISE_CACHE_DIR=/opt/mise/cache
+ENV MISE_CONFIG_DIR=/opt/mise/config
+ENV MISE_DATA_DIR=/opt/mise/data
+ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
+ENV MISE_STATE_DIR=/opt/mise/state
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/home/${USER_NAME}/.local/share/mise/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
       --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
       --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      cp /tmp/mise.toml "${HOME}/mise.toml" \
-      && cp /tmp/mise.lock "${HOME}/mise.lock"
+      cp /tmp/mise.toml /opt/mise/mise.toml \
+      && cp /tmp/mise.lock /opt/mise/mise.lock
 
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install
 
 RUN \
