@@ -110,7 +110,8 @@ RUN \
       /usr/local/bin/cursor.install.sh
 
 RUN \
-      curl -fLo "${HOME}/.vim/autoload/plug.vim" --create-dirs \
+      mkdir -p "${HOME}/.vim/autoload" \
+      && curl -fsSL -o "${HOME}/.vim/autoload/plug.vim" \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # hadolint ignore=DL3059
