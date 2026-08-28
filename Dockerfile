@@ -109,6 +109,11 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/cursor.install.sh
 
+RUN \
+      mkdir -p "${HOME}/.vim/autoload" \
+      && curl -fsSL -o "${HOME}/.vim/autoload/plug.vim" \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 # hadolint ignore=DL3059
 RUN \
       npx --yes skills@latest add microsoft/playwright-cli \
