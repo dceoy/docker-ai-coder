@@ -105,8 +105,7 @@ RUN \
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
-      && cd "${MANTIS_HOME}/reference" \
-      && ./install.sh
+      && "${MANTIS_HOME}/reference/install.sh"
 
 RUN \
       playwright-cli install-browser chromium
