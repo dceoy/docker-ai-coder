@@ -23,7 +23,7 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
-        python3 ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
+        python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh
 
 RUN \
       extrepo enable mise \
@@ -59,8 +59,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mise \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mise
+      mkdir -p /opt/agent /opt/mantis /opt/mise \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/mise
 
 RUN \
       groupadd --gid "${USER_GID}" "${USER_NAME}" \
@@ -84,6 +84,7 @@ USER "${USER_NAME}"
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
+ENV MANTIS_HOME=/opt/mantis
 ENV MISE_CACHE_DIR=/opt/mise/cache
 ENV MISE_CONFIG_DIR=/opt/mise/config
 ENV MISE_DATA_DIR=/opt/mise/data
@@ -101,6 +102,10 @@ RUN \
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked
+
+RUN \
+      git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
+      && "${MANTIS_HOME}/reference/install.sh"
 
 RUN \
       playwright-cli install-browser chromium
