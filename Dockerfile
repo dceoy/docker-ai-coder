@@ -133,6 +133,8 @@ RUN \
         --skill security-review --global --agent claude-code --agent codex --agent universal --yes \
       && npx --yes skills@latest add google/mantis \
         --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
+      && npx --yes skills@latest add cloudflare/skills \
+        --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
