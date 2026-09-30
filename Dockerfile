@@ -24,7 +24,7 @@ RUN \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
         python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
-      && ln -s /usr/bin/python3 /usr/local/bin/python
+      && ln -s python3 /usr/bin/python
 
 RUN \
       extrepo enable mise \
