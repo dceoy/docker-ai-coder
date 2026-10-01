@@ -96,7 +96,7 @@ RUN \
       mkdir -p /opt/mise/.mise \
       && cp /tmp/mise.toml /opt/mise/mise.toml \
       && cp /tmp/mise.lock /opt/mise/mise.lock \
-      && cp -a /tmp/mise-locks /opt/mise/.mise/locks
+      && cp -R /tmp/mise-locks /opt/mise/.mise/locks
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
