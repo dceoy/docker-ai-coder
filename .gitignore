@@ -181,3 +181,6 @@ sandbox/
 
 # Playwright CLI
 .playwright-cli/
+
+# Mise
+.mise
