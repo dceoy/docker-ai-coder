@@ -102,7 +102,8 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked
+      MISE_DISABLE_TOOLS=pipx:checkov mise install --locked \
+      && mise install pipx:checkov
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
