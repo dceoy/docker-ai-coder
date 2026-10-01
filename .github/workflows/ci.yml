@@ -33,8 +33,6 @@ jobs:
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
   validate-mise-docker-build:
     if: github.event_name == 'pull_request'
-    needs:
-      - docker-lint-and-scan
     permissions:
       contents: read
     runs-on: ubuntu-latest
