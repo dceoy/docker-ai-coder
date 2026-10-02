@@ -35,10 +35,17 @@ jobs:
       runs-on: ubuntu-26.04-arm
       trivy-report-artifact-name: trivy-report
   docker-build-and-push:
-    if: >
-      github.event_name == 'pull_request'
-      || github.event_name == 'push'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'build')
+    if: >-
+      always()
+      && (
+        github.event_name == 'pull_request'
+        || github.event_name == 'push'
+        || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'build')
+      )
+      && (
+        github.event_name == 'pull_request'
+        || needs.docker-lint-and-scan.result == 'success'
+      )
     needs:
       - docker-lint-and-scan
     permissions:
