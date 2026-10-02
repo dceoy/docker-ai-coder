@@ -9,6 +9,13 @@ ARG USER_GID='1001'
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 ENV NPM_CONFIG_MIN_RELEASE_AGE=1
+ENV MISE_CACHE_DIR=/opt/mise/cache
+ENV MISE_CONFIG_DIR=/opt/mise/config
+ENV MISE_DATA_DIR=/opt/mise/data
+ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
+ENV MISE_STATE_DIR=/opt/mise/state
+ENV PNPM_HOME=/opt/pnpm
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -43,8 +50,13 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy \
-      && npx --yes playwright install-deps chromium
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
+
+RUN \
+      curl -fsSL https://astral.sh/uv/install.sh \
+        | env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh \
+      && curl -fsSL https://get.pnpm.io/install.sh \
+        | env SHELL=/bin/bash sh -
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -60,8 +72,9 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mantis /opt/mise \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/mise
+      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise \
+      && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
       groupadd --gid "${USER_GID}" "${USER_NAME}" \
@@ -78,32 +91,54 @@ ARG USER_GID='1001'
 
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
-
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
-ENV MISE_CACHE_DIR=/opt/mise/cache
-ENV MISE_CONFIG_DIR=/opt/mise/config
-ENV MISE_DATA_DIR=/opt/mise/data
-ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
-ENV MISE_STATE_DIR=/opt/mise/state
 ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
       --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
       --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      --mount=type=bind,source=.mise/locks,target=/tmp/mise-locks \
-      mkdir -p /opt/mise/.mise \
-      && cp /tmp/mise.toml /opt/mise/mise.toml \
-      && cp /tmp/mise.lock /opt/mise/mise.lock \
-      && cp -R /tmp/mise-locks /opt/mise/.mise/locks
+      mkdir -p /opt/mise \
+      && cat /tmp/mise.toml > /opt/mise/mise.toml \
+      && cat /tmp/mise.lock > /opt/mise/mise.lock
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked
 
 
-FROM mise-tools AS cli
+FROM mise-tools AS dependencies
+
+ARG USER_NAME='agent'
+ARG USER_UID='1001'
+ARG USER_GID='1001'
+
+# hadolint ignore=DL3066
+USER "${USER_NAME}"
+WORKDIR /opt/cli
+
+ENV UV_LINK_MODE=copy
+ENV UV_PYTHON_DOWNLOADS=never
+
+COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml pyproject.toml uv.lock ./
+
+# Keep the pnpm store in the image: the managed Node runtime links into it.
+RUN \
+      pnpm install --frozen-lockfile --store-dir /opt/pnpm/store
+
+RUN \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      uv sync --locked --no-dev --python /usr/bin/python3
+
+# hadolint ignore=DL3002,DL3066
+USER root
+
+RUN \
+      playwright install-deps chromium
+
+
+FROM dependencies AS cli
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
@@ -119,18 +154,14 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV MANTIS_HOME=/opt/mantis
-ENV MISE_CACHE_DIR=/opt/mise/cache
-ENV MISE_CONFIG_DIR=/opt/mise/config
-ENV MISE_DATA_DIR=/opt/mise/data
-ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
-ENV MISE_STATE_DIR=/opt/mise/state
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
       && "${MANTIS_HOME}/reference/install.sh"
 
+# hadolint ignore=DL3059
 RUN \
       playwright-cli install-browser chromium
 
@@ -145,19 +176,19 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      npx --yes skills@latest add microsoft/playwright-cli \
+      skills add microsoft/playwright-cli \
         --skill playwright-cli --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add vercel-labs/agent-browser \
+      && skills add vercel-labs/agent-browser \
         --skill agent-browser --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add herdrdev/herdr \
+      && skills add herdrdev/herdr \
         --skill herdr --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add cloudflare/security-audit-skill \
+      && skills add cloudflare/security-audit-skill \
         --skill security-audit --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add getsentry/skills \
+      && skills add getsentry/skills \
         --skill security-review --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add google/mantis \
+      && skills add google/mantis \
         --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
-      && npx --yes skills@latest add cloudflare/skills \
+      && skills add cloudflare/skills \
         --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
@@ -188,7 +219,10 @@ RUN \
       && git config --global user.email "${GIT_USER_EMAIL}"
 
 RUN \
-      rsync -a "${HOME}/" /opt/agent/
+      mkdir -p "${HOME}/.config/herdr" \
+      && printf '\n[terminal]\nshell_mode = "login"\n' \
+        >> "${HOME}/.config/herdr/config.toml" \
+      && rsync -a "${HOME}/" /opt/agent/
 
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
