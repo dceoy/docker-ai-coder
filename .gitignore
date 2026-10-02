@@ -182,7 +182,6 @@ sandbox/
 # Playwright CLI
 .playwright-cli/
 
-# Mise runtime state; retain lockfile dependency sidecars
-.mise/*
-!.mise/locks/
-!.mise/locks/**
+# Node dependencies and pnpm cache
+node_modules/
+.pnpm-store/
