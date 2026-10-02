@@ -64,19 +64,19 @@
   },
   {
     "name": "agy",
-    "version": "1.2.14",
+    "version": "1.2.15",
     "format": "tar.gz",
     "platforms": {
       "arm64": {
-        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.14/agy_cli_linux_arm64.tar.gz",
-        "sha256": "3b40c3baab245b43a41007c1db64df51f5f162b6059fcc4a4504731f2689d301",
+        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.15/agy_cli_linux_arm64.tar.gz",
+        "sha256": "851bdabda3b2eb679d0d46b469629b91752d1f1d7497185107408b60c58c2e32",
         "binaries": {
           "agy": "antigravity"
         }
       },
       "amd64": {
-        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.14/agy_cli_linux_x64.tar.gz",
-        "sha256": "68cf4d221cb62e0289245439d3d37f599bdc8e0c4e1e3dae03f326463a0c26dc",
+        "url": "https://github.com/google-antigravity/antigravity-cli/releases/download/1.2.15/agy_cli_linux_x64.tar.gz",
+        "sha256": "bbd4a4b29f0e9fe1fc2e1345b5d44fa08540e43014da46bc2c4bf70cf05745d8",
         "binaries": {
           "agy": "antigravity"
         }
@@ -148,20 +148,20 @@
   },
   {
     "name": "uv",
-    "version": "0.12.21",
+    "version": "0.12.22",
     "format": "tar.gz",
     "platforms": {
       "arm64": {
-        "url": "https://github.com/astral-sh/uv/releases/download/0.12.21/uv-aarch64-unknown-linux-gnu.tar.gz",
-        "sha256": "030b69227b40af8c1981b7301793dc66e71ed3c796ea8688209dd268bd91ec51",
+        "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-aarch64-unknown-linux-gnu.tar.gz",
+        "sha256": "6f66a14e8239871fb477f9746c941fedfa77e8fe28a8bc7c07e1dc7f53a66712",
         "binaries": {
           "uv": "uv",
           "uvx": "uvx"
         }
       },
       "amd64": {
-        "url": "https://github.com/astral-sh/uv/releases/download/0.12.21/uv-x86_64-unknown-linux-gnu.tar.gz",
-        "sha256": "23f02075b652bb1df64178cfae41b5caf160822e720e2663568f3f5d63bc52c0",
+        "url": "https://github.com/astral-sh/uv/releases/download/0.12.22/uv-x86_64-unknown-linux-gnu.tar.gz",
+        "sha256": "b9980552309f09c15172b8be828555e375097f16deb459795ce7bfd200380f0b",
         "binaries": {
           "uv": "uv",
           "uvx": "uvx"
