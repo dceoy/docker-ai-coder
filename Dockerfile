@@ -9,8 +9,13 @@ ARG USER_GID='1001'
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 ENV NPM_CONFIG_MIN_RELEASE_AGE=1
+ENV MISE_CACHE_DIR=/opt/mise/cache
+ENV MISE_CONFIG_DIR=/opt/mise/config
+ENV MISE_DATA_DIR=/opt/mise/data
+ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
+ENV MISE_STATE_DIR=/opt/mise/state
 ENV PNPM_HOME=/opt/pnpm
-ENV PATH="/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -24,12 +29,13 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils awscli bats build-essential ca-certificates curl gh git gnupg jq nodejs npm \
+        apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
         python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
       && ln -s python3 /usr/bin/python
 
 RUN \
-      curl -fsSL https://apt.releases.hashicorp.com/gpg \
+      extrepo enable mise \
+      && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
       && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${UBUNTU_CODENAME} main" \
@@ -44,14 +50,7 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests terraform trivy
-
-ARG TARGETARCH
-
-RUN \
-      --mount=type=bind,source=tools.json,target=/tmp/tools.json \
-      --mount=type=bind,source=scripts/install-tools.sh,target=/tmp/install-tools.sh \
-      bash /tmp/install-tools.sh /tmp/tools.json "${TARGETARCH}" /usr/local/bin
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
 RUN \
       npm install --global pnpm@11.28.3
@@ -70,8 +69,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/pnpm \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/pnpm
+      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm
 
 RUN \
       groupadd --gid "${USER_GID}" "${USER_NAME}" \
@@ -80,7 +79,32 @@ RUN \
 HEALTHCHECK NONE
 
 
-FROM base AS dependencies
+FROM base AS mise-tools
+
+ARG USER_NAME='agent'
+ARG USER_UID='1001'
+ARG USER_GID='1001'
+
+# hadolint ignore=DL3066
+USER "${USER_NAME}"
+WORKDIR "/home/${USER_NAME}"
+
+ENV HOME="/home/${USER_NAME}"
+ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+
+RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
+      mkdir -p /opt/mise \
+      && cat /tmp/mise.toml > /opt/mise/mise.toml \
+      && cat /tmp/mise.lock > /opt/mise/mise.lock
+
+RUN \
+      --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      mise install --locked
+
+
+FROM mise-tools AS dependencies
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
@@ -127,7 +151,7 @@ WORKDIR "/home/${USER_NAME}"
 ENV HOME="/home/${USER_NAME}"
 ENV MANTIS_HOME=/opt/mantis
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \

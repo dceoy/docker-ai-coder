@@ -185,3 +185,4 @@ sandbox/
 # Node dependencies and pnpm cache
 node_modules/
 .pnpm-store/
+.mise/
