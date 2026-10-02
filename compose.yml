@@ -9,7 +9,6 @@ services:
       target: cli
       platforms:
         - linux/arm64
-        - linux/amd64
       args:
         UBUNTU_VERSION: '26.04'
         USER_NAME: agent
