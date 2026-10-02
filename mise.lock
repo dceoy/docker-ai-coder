@@ -305,7 +305,6 @@ specifiers = ["latest"]
 version = "3.3.21"
 backend = "pipx:checkov"
 specifiers = ["latest"]
-uv = { path = ".mise/locks/pipx-checkov/3.3.21", digest = "sha256:ba738b93e3600295aec57a563baa69c27ddb47fe1a53930eb14a99aa05c0b525" }
 
 [[tools.terragrunt]]
 version = "1.1.6"
