@@ -7,8 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile
       target: cli
-      platforms:
-        - linux/arm64
       args:
         UBUNTU_VERSION: '26.04'
         USER_NAME: agent
