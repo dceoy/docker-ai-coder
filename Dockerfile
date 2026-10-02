@@ -218,7 +218,10 @@ RUN \
       && git config --global user.email "${GIT_USER_EMAIL}"
 
 RUN \
-      rsync -a "${HOME}/" /opt/agent/
+      mkdir -p "${HOME}/.config/herdr" \
+      && printf '\n[terminal]\nshell_mode = "login"\n' \
+        >> "${HOME}/.config/herdr/config.toml" \
+      && rsync -a "${HOME}/" /opt/agent/
 
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
