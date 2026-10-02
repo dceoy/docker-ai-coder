@@ -73,7 +73,8 @@ RUN \
 
 RUN \
       mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise \
+      && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
       groupadd --gid "${USER_GID}" "${USER_NAME}" \
