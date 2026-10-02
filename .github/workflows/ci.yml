@@ -31,6 +31,8 @@ jobs:
     permissions:
       contents: write
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
+    with:
+      runs-on: ubuntu-26.04-arm
   validate-mise-docker-build:
     if: github.event_name == 'pull_request'
     permissions:
@@ -72,6 +74,7 @@ jobs:
       push: true
       scan-before-build: false
       scan-after-build: true
+      runs-on: ubuntu-26.04-arm
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
