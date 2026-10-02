@@ -15,7 +15,7 @@ ENV MISE_DATA_DIR=/opt/mise/data
 ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
 ENV MISE_STATE_DIR=/opt/mise/state
 ENV PNPM_HOME=/opt/pnpm
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -53,7 +53,10 @@ RUN \
       && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
 RUN \
-      npm install --global pnpm@11.28.3
+      curl -fsSL https://astral.sh/uv/0.12.22/install.sh \
+        | env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh \
+      && curl -fsSL https://get.pnpm.io/install.sh \
+        | env PNPM_VERSION=11.28.3 SHELL=/bin/bash sh -
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
@@ -151,7 +154,7 @@ WORKDIR "/home/${USER_NAME}"
 ENV HOME="/home/${USER_NAME}"
 ENV MANTIS_HOME=/opt/mantis
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
