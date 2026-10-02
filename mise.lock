@@ -301,10 +301,11 @@ aube = { path = ".mise/locks/npm-command-code/1.72.4", digest = "sha256:312d323f
 backend = "npm:command-code"
 specifiers = ["latest"]
 
-[[tools."pipx:checkov"]]
+[[tools."pypi:checkov"]]
 version = "3.3.21"
-backend = "pipx:checkov"
+backend = "pypi:checkov"
 specifiers = ["latest"]
+uv = { path = ".mise/locks/pypi-checkov/3.3.21", digest = "sha256:048e88327f3c34184ebbe745a066edfd5d7afb00e1617e4711468aafb957971e" }
 
 [[tools.terragrunt]]
 version = "1.1.6"
