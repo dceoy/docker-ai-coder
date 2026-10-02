@@ -1,7 +1,6 @@
 {
   "name": "docker-ai-coder",
   "private": true,
-  "packageManager": "pnpm@11.28.3",
   "devEngines": {
     "runtime": {
       "name": "node",

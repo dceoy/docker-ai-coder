@@ -53,10 +53,10 @@ RUN \
       && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
 
 RUN \
-      curl -fsSL https://astral.sh/uv/0.12.22/install.sh \
+      curl -fsSL https://astral.sh/uv/install.sh \
         | env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh \
       && curl -fsSL https://get.pnpm.io/install.sh \
-        | env PNPM_VERSION=11.28.3 SHELL=/bin/bash sh -
+        | env SHELL=/bin/bash sh -
 
 RUN \
       curl -fsSL -o /usr/local/bin/print-github-tags \
