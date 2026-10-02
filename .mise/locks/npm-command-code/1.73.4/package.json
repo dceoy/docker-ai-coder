@@ -2,6 +2,6 @@
   "name": "mise-npm-install",
   "private": true,
   "dependencies": {
-    "command-code": "1.73.4"
+    "command-code": "1.74.0"
   }
 }
