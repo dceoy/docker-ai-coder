@@ -70,7 +70,40 @@ RUN \
 HEALTHCHECK NONE
 
 
-FROM base AS cli
+FROM base AS mise-tools
+
+ARG USER_NAME='agent'
+ARG USER_UID='1001'
+ARG USER_GID='1001'
+
+# hadolint ignore=DL3066
+USER "${USER_NAME}"
+
+WORKDIR "/home/${USER_NAME}"
+
+ENV HOME="/home/${USER_NAME}"
+ENV MISE_CACHE_DIR=/opt/mise/cache
+ENV MISE_CONFIG_DIR=/opt/mise/config
+ENV MISE_DATA_DIR=/opt/mise/data
+ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
+ENV MISE_STATE_DIR=/opt/mise/state
+ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+
+RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
+      --mount=type=bind,source=.mise/locks,target=/tmp/mise-locks \
+      mkdir -p /opt/mise/.mise \
+      && cp /tmp/mise.toml /opt/mise/mise.toml \
+      && cp /tmp/mise.lock /opt/mise/mise.lock \
+      && cp -R /tmp/mise-locks /opt/mise/.mise/locks
+
+RUN \
+      --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      mise install --locked
+
+
+FROM mise-tools AS cli
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
@@ -93,16 +126,6 @@ ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
 ENV MISE_STATE_DIR=/opt/mise/state
 ENV SHELL=/usr/bin/zsh
 ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
-
-RUN \
-      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
-      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      cp /tmp/mise.toml /opt/mise/mise.toml \
-      && cp /tmp/mise.lock /opt/mise/mise.lock
-
-RUN \
-      --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \

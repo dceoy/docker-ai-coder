@@ -31,10 +31,21 @@ jobs:
     permissions:
       contents: write
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
+    with:
+      runs-on: ubuntu-26.04-arm
+      trivy-report-artifact-name: trivy-report
   docker-build-and-push:
-    if: >
-      github.event_name == 'push'
-      || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'build')
+    if: >-
+      always()
+      && (
+        github.event_name == 'pull_request'
+        || github.event_name == 'push'
+        || (github.event_name == 'workflow_dispatch' && inputs.workflow == 'build')
+      )
+      && (
+        github.event_name == 'pull_request'
+        || needs.docker-lint-and-scan.result == 'success'
+      )
     needs:
       - docker-lint-and-scan
     permissions:
@@ -48,10 +59,11 @@ jobs:
       image-name: ${{ github.repository_owner }}/ai-coder
       context: .
       file: ./Dockerfile
-      platforms: linux/amd64,linux/arm64
-      push: true
+      platforms: linux/arm64
+      push: ${{ github.event_name != 'pull_request' }}
       scan-before-build: false
       scan-after-build: true
+      runs-on: ubuntu-26.04-arm
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
