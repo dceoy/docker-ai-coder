@@ -33,6 +33,7 @@ jobs:
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
     with:
       runs-on: ubuntu-26.04-arm
+      trivy-report-artifact-name: trivy-report
   validate-mise-docker-build:
     if: github.event_name == 'pull_request'
     permissions:
