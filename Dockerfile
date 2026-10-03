@@ -35,13 +35,14 @@ RUN \
         python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
       && ln -s python3 /usr/bin/python
 
+WORKDIR "/tmp/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}"
+
 RUN \
       curl -fsSL --retry 3 -o /tmp/sqlite.tar.gz \
         "https://sqlite.org/2026/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}.tar.gz" \
       && printf '%s  %s\n' "${SQLITE_SHA256}" /tmp/sqlite.tar.gz > /tmp/sqlite.sha256 \
       && sha256sum -c /tmp/sqlite.sha256 \
       && tar -xzf /tmp/sqlite.tar.gz -C /tmp \
-      && cd "/tmp/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}" \
       && CFLAGS="-O2 \
         -DSQLITE_ENABLE_FTS3 \
         -DSQLITE_ENABLE_FTS3_PARENTHESIS \
@@ -66,6 +67,8 @@ RUN \
       && ldconfig \
       && python3 -c "import sqlite3, sys; v=sqlite3.sqlite_version_info; sys.exit(f'linked SQLite {sqlite3.sqlite_version} is too old') if v < (3, 51, 3) else None" \
       && rm -rf /tmp/sqlite.tar.gz /tmp/sqlite.sha256 "/tmp/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}"
+
+WORKDIR /
 
 RUN \
       extrepo enable mise \
