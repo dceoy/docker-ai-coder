@@ -16,9 +16,9 @@ docker image pull ghcr.io/dceoy/ai-coder:latest
 ## Hermes Agent
 
 The image includes [Hermes Agent](https://github.com/NousResearch/hermes-agent)
-v2026.9.24 and its compatible Python 3.13 runtime through Mise; both versions
-are pinned in `mise.lock`. Its runtime state is stored in the shared
-`home-data` volume under
+v2026.9.24. Mise pins the compatible Python 3.13 runtime in `mise.lock`, and
+Hermes dependencies are installed from the upstream `uv.lock`. Runtime state
+is stored in the shared `home-data` volume under
 `/home/agent/.hermes`.
 
 Run the setup wizard once:

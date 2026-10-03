@@ -259,11 +259,6 @@ checksum = "sha256:c75b1fa49f7a3ba4b8b11789912a6147e4214a3b6fd3556d0f80076c8887d
 url = "https://github.com/herdrdev/herdr/releases/download/v0.9.3/herdr-windows-x86_64.zip"
 url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/599036387"
 
-[[tools."pypi:git+https://github.com/NousResearch/hermes-agent.git"]]
-version = "v2026.9.24"
-backend = "pypi:git+https://github.com/NousResearch/hermes-agent.git"
-specifiers = ["v2026.9.24"]
-
 [[tools.python]]
 version = "3.13.16"
 backend = "core:python"
