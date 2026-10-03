@@ -62,7 +62,7 @@ jobs:
       platforms: linux/arm64
       push: ${{ github.event_name != 'pull_request' }}
       scan-before-build: false
-      scan-after-build: true
+      scan-after-build: ${{ github.event_name != 'pull_request' }}
       runs-on: ubuntu-26.04-arm
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
