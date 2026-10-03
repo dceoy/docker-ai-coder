@@ -11,6 +11,7 @@ github_attestations = false
 actionlint = "latest"
 hadolint = "latest"
 herdr = "latest"
+python = "3.13"
 terragrunt = "latest"
 "github:anomalyco/opencode" = "latest"
 "github:anthropics/claude-code" = "latest"

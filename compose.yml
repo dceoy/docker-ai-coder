@@ -40,5 +40,18 @@ services:
     command:
       - herdr
       - server
+  hermes:
+    extends:
+      service: herdr
+    profiles:
+      - hermes
+    container_name: hermes
+    restart: unless-stopped
+    environment:
+      HERMES_HOME: /home/agent/.hermes
+    command:
+      - hermes
+      - gateway
+      - run
 volumes:
   home-data:
