@@ -15,8 +15,10 @@ docker image pull ghcr.io/dceoy/ai-coder:latest
 
 ## Hermes Agent
 
-The image includes [Hermes Agent](https://github.com/NousResearch/hermes-agent).
-Its runtime state is stored in the shared `home-data` volume under
+The image includes [Hermes Agent](https://github.com/NousResearch/hermes-agent)
+v2026.9.24 and its compatible Python 3.13 runtime through Mise; both versions
+are pinned in `mise.lock`. Its runtime state is stored in the shared
+`home-data` volume under
 `/home/agent/.hermes`.
 
 Run the setup wizard once:
@@ -25,10 +27,16 @@ Run the setup wizard once:
 docker compose run --rm hermes hermes setup
 ```
 
-To use the Codex app-server runtime after selecting an OpenAI/Codex model:
+To use the Codex app-server runtime, start an interactive session:
 
 ```sh
-docker compose run --rm hermes hermes codex-runtime codex_app_server
+docker compose run --rm hermes hermes
+```
+
+Then run this command in the Hermes session:
+
+```text
+/codex-runtime codex_app_server
 ```
 
 Start the persistent gateway service:
@@ -37,11 +45,6 @@ Start the persistent gateway service:
 docker compose up -d hermes
 ```
 
-For an interactive Hermes session:
-
-```sh
-docker compose run --rm hermes hermes
-```
 
 ## Dependencies
 

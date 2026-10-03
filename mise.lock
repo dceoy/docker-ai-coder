@@ -259,6 +259,22 @@ checksum = "sha256:c75b1fa49f7a3ba4b8b11789912a6147e4214a3b6fd3556d0f80076c8887d
 url = "https://github.com/herdrdev/herdr/releases/download/v0.9.3/herdr-windows-x86_64.zip"
 url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/599036387"
 
+[[tools."pypi:git+https://github.com/NousResearch/hermes-agent.git"]]
+version = "v2026.9.24"
+backend = "pypi:git+https://github.com/NousResearch/hermes-agent.git"
+specifiers = ["v2026.9.24"]
+
+[[tools.python]]
+version = "3.13.16"
+backend = "core:python"
+specifiers = ["3.13"]
+
+[tools.python."platforms.linux-arm64"]
+checksum = "sha256:f94c8f69f3e68b026b916b3aa32b9b3bfff63fd7c95b2affa8272b1601d668fa"
+size = 29311682
+url = "https://github.com/astral-sh/python-build-standalone/releases/download/20261001/cpython-3.13.16%2B20261001-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz"
+provenance = "github-attestations"
+
 [[tools.terragrunt]]
 version = "1.1.6"
 backend = "aqua:gruntwork-io/terragrunt"

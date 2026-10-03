@@ -17,7 +17,7 @@ ENV MISE_DATA_DIR=/opt/mise/data
 ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
 ENV MISE_STATE_DIR=/opt/mise/state
 ENV PNPM_HOME=/opt/pnpm
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/hermes/.venv/bin:/opt/pnpm/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -106,8 +106,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/hermes /opt/mantis /opt/cli /opt/mise /opt/pnpm \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/hermes /opt/mantis /opt/cli /opt/mise \
+      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
@@ -139,7 +139,8 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked
+      mise install --locked python \
+      && UV_PYTHON=3.13 UV_PYTHON_DOWNLOADS=never mise install --locked
 
 
 FROM mise-tools AS dependencies
@@ -180,7 +181,6 @@ ARG USER_GID='1001'
 ARG ZSH_THEME='nicoulaj'
 ARG GIT_USER_NAME='claude'
 ARG GIT_USER_EMAIL='noreply@anthropic.com'
-ARG HERMES_VERSION='v2026.9.24'
 
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
@@ -191,11 +191,6 @@ ENV HOME="/home/${USER_NAME}"
 ENV MANTIS_HOME=/opt/mantis
 ENV SHELL=/usr/bin/zsh
 ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
-
-RUN \
-      git clone --depth=1 --branch "${HERMES_VERSION}" --single-branch \
-        https://github.com/NousResearch/hermes-agent.git /opt/hermes \
-      && uv sync --locked --no-dev --project /opt/hermes --python /usr/bin/python3
 
 RUN \
       git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
