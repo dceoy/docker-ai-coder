@@ -5,6 +5,8 @@ FROM public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION} AS base
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
 ARG USER_GID='1001'
+ARG SQLITE_AUTOCONF_VERSION='3530400'
+ARG SQLITE_SHA256='0e9483900e92cd5de8fd48d16bf9200145a61f7fd5be542a5ac81d8a9516eb9c'
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -32,6 +34,38 @@ RUN \
         apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
         python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
       && ln -s python3 /usr/bin/python
+
+RUN \
+      curl -fsSL --retry 3 -o /tmp/sqlite.tar.gz \
+        "https://sqlite.org/2026/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}.tar.gz" \
+      && printf '%s  %s\n' "${SQLITE_SHA256}" /tmp/sqlite.tar.gz > /tmp/sqlite.sha256 \
+      && sha256sum -c /tmp/sqlite.sha256 \
+      && tar -xzf /tmp/sqlite.tar.gz -C /tmp \
+      && cd "/tmp/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}" \
+      && CFLAGS="-O2 \
+        -DSQLITE_ENABLE_FTS3 \
+        -DSQLITE_ENABLE_FTS3_PARENTHESIS \
+        -DSQLITE_ENABLE_FTS4 \
+        -DSQLITE_ENABLE_FTS5 \
+        -DSQLITE_ENABLE_RTREE \
+        -DSQLITE_ENABLE_GEOPOLY \
+        -DSQLITE_ENABLE_COLUMN_METADATA \
+        -DSQLITE_ENABLE_UNLOCK_NOTIFY \
+        -DSQLITE_ENABLE_DBSTAT_VTAB \
+        -DSQLITE_ENABLE_DBPAGE_VTAB \
+        -DSQLITE_ENABLE_MATH_FUNCTIONS \
+        -DSQLITE_ENABLE_PREUPDATE_HOOK \
+        -DSQLITE_ENABLE_SESSION \
+        -DSQLITE_SECURE_DELETE \
+        -DSQLITE_THREADSAFE=1 \
+        -DSQLITE_MAX_VARIABLE_NUMBER=250000" \
+        ./configure --prefix=/usr/local --disable-static \
+      && make -j"$(nproc)" \
+      && make install \
+      && printf '/usr/local/lib\n' > /etc/ld.so.conf.d/000-sqlite-fixed.conf \
+      && ldconfig \
+      && python3 -c "import sqlite3, sys; v=sqlite3.sqlite_version_info; sys.exit(f'linked SQLite {sqlite3.sqlite_version} is too old') if v < (3, 51, 3) else None" \
+      && rm -rf /tmp/sqlite.tar.gz /tmp/sqlite.sha256 "/tmp/sqlite-autoconf-${SQLITE_AUTOCONF_VERSION}"
 
 RUN \
       extrepo enable mise \
