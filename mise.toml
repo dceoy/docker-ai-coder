@@ -12,6 +12,7 @@ actionlint = "latest"
 hadolint = "latest"
 herdr = "latest"
 terragrunt = "latest"
+zizmor = "latest"
 "github:anomalyco/opencode" = "latest"
 "github:anthropics/claude-code" = "latest"
 "github:google-antigravity/antigravity-cli" = { version = "latest", matching = "agy_cli", rename_exe = { antigravity = "agy" } }
