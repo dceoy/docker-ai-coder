@@ -18,9 +18,8 @@ zizmor = "latest"
 "github:google-antigravity/antigravity-cli" = { version = "latest", matching = "agy_cli", rename_exe = { antigravity = "agy" } }
 
 [tools."http:cursor-agent"]
-version = "latest"
-version_list_url = "https://cursor.com/install"
-version_regex = 'downloads\.cursor\.com/lab/([^/]+)/'
+# Pin Cursor's current release because its installer exposes no release history.
+version = "2026.10.01-e373342"
 strip_components = 1
 rename_exe = "agent"
 
