@@ -15,7 +15,7 @@ ENV MISE_DATA_DIR=/opt/mise/data
 ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
 ENV MISE_STATE_DIR=/opt/mise/state
 ENV PNPM_HOME=/opt/pnpm
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
+ENV PATH="/opt/mise/data/shims:/opt/cli/bin:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -101,7 +101,19 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked
+      mise install --locked \
+      && mkdir -p /opt/cli/bin \
+      && printf '%s\n' \
+        '#!/bin/sh' \
+        'set -eu' \
+        'tool_dir="$(mise where http:cursor-agent)"' \
+        'PATH="${tool_dir}:${PATH}"' \
+        'export PATH' \
+        'exec "${tool_dir}/agent" "$@"' \
+        > /opt/cli/bin/agent \
+      && chmod +x /opt/cli/bin/agent \
+      && ln -s agent /opt/cli/bin/cursor-agent \
+      && rm -f /opt/mise/data/shims/agent /opt/mise/data/shims/node /opt/mise/data/shims/rg
 
 
 FROM mise-tools AS dependencies
