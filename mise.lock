@@ -259,6 +259,56 @@ checksum = "sha256:c75b1fa49f7a3ba4b8b11789912a6147e4214a3b6fd3556d0f80076c8887d
 url = "https://github.com/herdrdev/herdr/releases/download/v0.9.3/herdr-windows-x86_64.zip"
 url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/599036387"
 
+[[tools."http:cursor-agent"]]
+version = "2026.10.01-e373342"
+backend = "http:cursor-agent"
+specifiers = ["2026.10.01-e373342"]
+
+[tools."http:cursor-agent".options]
+rename_exe = "agent"
+
+[tools."http:cursor-agent"."platforms.linux-arm64"]
+checksum = "sha256:785c5f6bf2a60eb1121e27ed8c14f5ee07ed1b5b6692324f2d9a997238245eb5"
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/arm64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.linux-x64"]
+checksum = "sha256:a79726c6e644520e993970be4c45775a6889802b67abe461a677a53219ae28e8"
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/x64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.macos-arm64"]
+checksum = "sha256:629e51de43a0b7fb3b86f5ebc7e579f7df7df941b39f29e82945cde750145afc"
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/arm64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.macos-x64"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/x64/agent-cli-package.tar.gz"
+
+[[tools."http:cursor-agent"]]
+version = "2026.10.01-e373342"
+backend = "http:cursor-agent"
+specifiers = ["2026.10.01-e373342"]
+
+[tools."http:cursor-agent".options]
+rename_exe = "agent"
+strip_components = "1"
+
+[tools."http:cursor-agent"."platforms.linux-arm64"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/arm64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.linux-arm64-musl"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/arm64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.linux-x64"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/x64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.linux-x64-musl"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/x64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.macos-arm64"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/arm64/agent-cli-package.tar.gz"
+
+[tools."http:cursor-agent"."platforms.macos-x64"]
+url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/x64/agent-cli-package.tar.gz"
+
 [[tools.terragrunt]]
 version = "1.1.6"
 backend = "aqua:gruntwork-io/terragrunt"
@@ -322,26 +372,3 @@ url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/552067
 checksum = "sha256:10e6b18b11ea07e515a16f0f0518c7b07527bc9977c1fd5698181ce7f3554202"
 url = "https://github.com/zizmorcore/zizmor/releases/download/v1.30.1/zizmor-x86_64-apple-darwin.tar.gz"
 url_api = "https://api.github.com/repos/zizmorcore/zizmor/releases/assets/552067641"
-
-[[tools."http:cursor-agent"]]
-version = "2026.10.01-e373342"
-backend = "http:cursor-agent"
-specifiers = ["2026.10.01-e373342"]
-
-[tools."http:cursor-agent".options]
-rename_exe = "agent"
-
-[tools."http:cursor-agent"."platforms.linux-arm64"]
-checksum = "sha256:785c5f6bf2a60eb1121e27ed8c14f5ee07ed1b5b6692324f2d9a997238245eb5"
-url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/arm64/agent-cli-package.tar.gz"
-
-[tools."http:cursor-agent"."platforms.linux-x64"]
-checksum = "sha256:a79726c6e644520e993970be4c45775a6889802b67abe461a677a53219ae28e8"
-url = "https://downloads.cursor.com/lab/2026.10.01-e373342/linux/x64/agent-cli-package.tar.gz"
-
-[tools."http:cursor-agent"."platforms.macos-arm64"]
-checksum = "sha256:629e51de43a0b7fb3b86f5ebc7e579f7df7df941b39f29e82945cde750145afc"
-url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/arm64/agent-cli-package.tar.gz"
-
-[tools."http:cursor-agent"."platforms.macos-x64"]
-url = "https://downloads.cursor.com/lab/2026.10.01-e373342/darwin/x64/agent-cli-package.tar.gz"
