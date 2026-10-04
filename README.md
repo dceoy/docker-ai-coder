@@ -32,9 +32,15 @@ with pnpm under `/opt/pnpm` and uv under `/usr/local/bin`. Mise tools are instal
 under `/opt/mise`, and pnpm and uv environments under `/opt/cli`, outside the
 persistent home volume.
 
-Update dependencies in `package.json` or `pyproject.toml`, then run
-`pnpm install --lockfile-only` or `uv lock` and commit the resulting lockfile.
-The package resolvers exclude releases newer than one day.
+To refresh dependencies within declared version constraints, run:
+
+```sh
+pnpm update --lockfile-only --ignore-scripts --no-save
+uv lock --upgrade
+```
+
+Dependabot monitors root npm and uv dependencies daily. The package resolvers
+exclude releases newer than one day.
 
 Standalone CLI versions, download URLs, and checksums are recorded in
 `mise.lock`. Update a standalone tool with `mise lock --bump <tool>` and commit

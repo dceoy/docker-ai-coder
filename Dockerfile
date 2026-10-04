@@ -29,7 +29,7 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo gh git gnupg jq nodejs npm \
+        apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo file gh git gnupg jq nodejs npm \
         python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
       && ln -s python3 /usr/bin/python
 

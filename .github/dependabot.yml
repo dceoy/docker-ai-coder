@@ -14,3 +14,19 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
+  - package-ecosystem: uv
+    directories:
+      - /
+      - /hermes
+    schedule:
+      interval: daily
+    cooldown:
+      default-days: 1
+    open-pull-requests-limit: 10
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+    cooldown:
+      default-days: 1
+    open-pull-requests-limit: 10
