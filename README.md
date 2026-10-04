@@ -44,4 +44,6 @@ exclude releases newer than one day.
 
 Standalone CLI versions, download URLs, and checksums are recorded in
 `mise.lock`. Update a standalone tool with `mise lock --bump <tool>` and commit
-the resulting lockfile with `mise.toml`.
+the resulting lockfile with `mise.toml`. Cursor Agent is pinned in `mise.toml`
+because Cursor's installer exposes only its current release; after the release
+has passed the one-day cooldown, update the version pin and run `mise lock`.
