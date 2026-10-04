@@ -31,6 +31,6 @@ git ls-files -z -- '*.sh' '*.bash' '*.bats' \
   | xargs -0 -t shellcheck
 
 # GitHub Actions
-uvx zizmor --fix=safe .github/workflows
+zizmor --fix=safe .github/workflows
 git ls-files -z -- '.github/workflows/*.yml' | xargs -0 -t actionlint
 uvx checkov --framework=all --output=github_failed_only --directory=.
