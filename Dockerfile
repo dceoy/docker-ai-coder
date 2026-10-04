@@ -101,7 +101,11 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked \
+      mise lock http:cursor-agent \
+      && printf '%s\n' 'CURSOR_MISE_LOCK_BEGIN' \
+      && cat /opt/mise/mise.lock \
+      && printf '%s\n' 'CURSOR_MISE_LOCK_END' \
+      && mise install --locked \
       && mkdir -p /opt/cli/bin \
       && printf '%s\n' \
         '#!/bin/sh' \
