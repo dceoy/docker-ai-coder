@@ -15,7 +15,7 @@
     "@playwright/cli": "0.1.22",
     "@steipete/oracle": "0.21.4",
     "agent-browser": "0.38.1",
-    "command-code": "1.73.4",
+    "command-code": "1.74.1",
     "playwright": "1.64.0-alpha-1790635538000",
     "skills": "1.7.0"
   },
