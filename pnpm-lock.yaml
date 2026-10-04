@@ -27,8 +27,8 @@ importers:
         specifier: 0.38.1
         version: 0.38.1
       command-code:
-        specifier: 1.73.4
-        version: 1.73.4(supports-color@10.2.2)
+        specifier: 1.74.1
+        version: 1.74.1(supports-color@10.2.2)
       playwright:
         specifier: 1.64.0-alpha-1790635538000
         version: 1.64.0-alpha-1790635538000
@@ -1196,8 +1196,8 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
-  command-code@1.73.4:
-    resolution: {integrity: sha512-OLLtN2S/p6NMIPiFjfgRbwAfHqXYFClXhvueomQ481ErOEofqfUK2bloC6TyQ8e9zGVdfiXefqKBR8WQKhrkaA==}
+  command-code@1.74.1:
+    resolution: {integrity: sha512-AEr4cPm08RQ86xKZTCOIOgf9ohob/L5ugB2ZO8X/iPzOQVk4nxDInRAofKy6/eQTfDlfb49J1y+Nyx3ngXMBFA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -3881,7 +3881,7 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
-  command-code@1.73.4(supports-color@10.2.2):
+  command-code@1.74.1(supports-color@10.2.2):
     dependencies:
       '@ai-sdk/anthropic': 3.0.127(zod@4.6.5)
       '@ai-sdk/openai': 3.0.124(zod@4.6.5)
