@@ -24,8 +24,8 @@ importers:
         specifier: 0.21.4
         version: 0.21.4(@types/node@26.6.4)(supports-color@10.2.2)(ws@8.22.0)
       agent-browser:
-        specifier: 0.38.1
-        version: 0.38.1
+        specifier: 0.38.2
+        version: 0.38.2
       command-code:
         specifier: 1.74.1
         version: 1.74.1(supports-color@10.2.2)
@@ -999,8 +999,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  agent-browser@0.38.1:
-    resolution: {integrity: sha512-k58FCz0yUOCANoNkMiqJe+H2y6r6sUZazqXsWF+MYq1iRC42PjtLcBoag6SSTOD/FRQppvPDvE5HDYEhclvnhw==}
+  agent-browser@0.38.2:
+    resolution: {integrity: sha512-b/7hvo2RrqocvybjB9kwpX12kGkxkFvtdJ4XPDoott5TLK2n3aPX+lYg7ALd+2YvPi2LrTKGzQYu/rxZC2Y7ZA==}
     engines: {node: '>=24.0.0', pnpm: '>=11.0.0'}
     hasBin: true
 
@@ -3699,7 +3699,7 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agent-browser@0.38.1: {}
+  agent-browser@0.38.2: {}
 
   ai@6.0.300(zod@4.6.5):
     dependencies:
