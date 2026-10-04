@@ -68,10 +68,6 @@ RUN \
       && chmod +x /usr/local/bin/install.ohmyz.sh
 
 RUN \
-      curl -fsSL -o /usr/local/bin/cursor.install.sh https://cursor.com/install \
-      && chmod +x /usr/local/bin/cursor.install.sh
-
-RUN \
       mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
       && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
@@ -164,10 +160,6 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       playwright-cli install-browser chromium
-
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/cursor.install.sh
 
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
