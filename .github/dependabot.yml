@@ -15,9 +15,7 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
   - package-ecosystem: uv
-    directories:
-      - /
-      - /hermes
+    directory: /
     schedule:
       interval: daily
     cooldown:
