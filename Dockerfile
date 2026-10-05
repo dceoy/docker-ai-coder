@@ -127,7 +127,9 @@ COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.
 # Keep the pnpm store in the image: the managed Node runtime links into it.
 RUN \
       pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
-      && node --version
+      && node --version \
+      && npm --version \
+      && npx --version
 
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
