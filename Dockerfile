@@ -8,13 +8,14 @@ ARG USER_GID='1001'
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-ENV NPM_CONFIG_MIN_RELEASE_AGE=1
 ENV MISE_CACHE_DIR=/opt/mise/cache
 ENV MISE_CONFIG_DIR=/opt/mise/config
 ENV MISE_DATA_DIR=/opt/mise/data
 ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
 ENV MISE_STATE_DIR=/opt/mise/state
 ENV PNPM_HOME=/opt/pnpm
+ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
+ENV UV_PYTHON_PREFERENCE=only-managed
 ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
@@ -29,9 +30,8 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo file gh git gnupg jq nodejs npm \
-        python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh \
-      && ln -s python3 /usr/bin/python
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo file gh git gnupg jq \
+        ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh
 
 RUN \
       extrepo enable mise \
@@ -72,8 +72,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise \
+      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
@@ -95,6 +95,16 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+
+ENV UV_LINK_MODE=copy
+
+# The ARM64 Google Cloud SDK requires Python while mise installs its tools.
+COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock /opt/cli/
+
+RUN \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      uv sync --project /opt/cli --locked --no-dev \
+      && python --version
 
 RUN \
       --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
@@ -120,18 +130,14 @@ ARG USER_GID='1001'
 USER "${USER_NAME}"
 WORKDIR /opt/cli
 
-ENV UV_LINK_MODE=copy
-ENV UV_PYTHON_DOWNLOADS=never
-
-COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml pyproject.toml uv.lock ./
+COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Keep the pnpm store in the image: the managed Node runtime links into it.
 RUN \
-      pnpm install --frozen-lockfile --store-dir /opt/pnpm/store
-
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      uv sync --locked --no-dev --python /usr/bin/python3
+      pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
+      && node --version \
+      && npm --version \
+      && npx --version
 
 # hadolint ignore=DL3002,DL3066
 USER root

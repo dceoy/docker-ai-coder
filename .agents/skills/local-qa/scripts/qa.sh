@@ -5,18 +5,17 @@ cd "$(git rev-parse --show-toplevel)"
 
 COOLDOWN_DAYS=7
 export UV_EXCLUDE_NEWER="${COOLDOWN_DAYS} days"
-export NPM_CONFIG_MIN_RELEASE_AGE="${COOLDOWN_DAYS}"
 export PNPM_CONFIG_MINIMUM_RELEASE_AGE=$((COOLDOWN_DAYS * 24 * 60))
 
 # Markdown and JSON
-npx -y prettier --write './**/*.{md,json}'
+pnpm dlx prettier --write './**/*.{md,json}'
 if [[ -f .markdownlint-cli2.jsonc ]]; then
-  git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t npx -y markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
+  git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t pnpm dlx markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
 else
   (
     trap 'rm -f .markdownlint-cli2.jsonc' EXIT
     printf '%s\n' '{"config":{"MD013":false,"MD033":false,"MD041":false}}' > .markdownlint-cli2.jsonc
-    git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t npx -y markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
+    git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t pnpm dlx markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
   )
 fi
 

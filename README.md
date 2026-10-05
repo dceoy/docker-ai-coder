@@ -26,12 +26,17 @@ pnpm install --frozen-lockfile
 uv sync --locked --no-dev
 ```
 
-pnpm also installs the project's pinned Node 24 runtime. Add
+pnpm also installs the project's pinned Node 24 runtime and the pinned npm
+CLI from `package.json`, which provides both `npm` and `npx`. In the Docker
+image, uv downloads and manages the Python runtime required by `pyproject.toml`;
+no system Node.js, npm, or Python packages are required. Add
 `node_modules/.bin` and `.venv/bin` to your PATH to run the installed tools.
+
 The Docker image installs the latest pnpm and uv using their official scripts,
-with pnpm under `/opt/pnpm` and uv under `/usr/local/bin`. Mise tools are installed
-under `/opt/mise`, and pnpm and uv environments under `/opt/cli`, outside the
-persistent home volume.
+with pnpm under `/opt/pnpm`, uv under `/usr/local/bin`, and uv-managed Python
+under `/opt/uv/python`. Mise tools are installed under `/opt/mise`, and the
+pnpm and uv project environments live under `/opt/cli`, outside the persistent
+home volume.
 
 To refresh dependencies within declared version constraints, run:
 
