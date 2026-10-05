@@ -97,6 +97,42 @@ url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-588.0.0
 [tools.gcloud."platforms.windows-x64"]
 url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-588.0.0-windows-x86_64-bundled-python.zip"
 
+[[tools."github:NousResearch/hermes-agent"]]
+version = "2026.9.24"
+backend = "github:NousResearch/hermes-agent"
+specifiers = ["2026.9.24"]
+
+[tools."github:NousResearch/hermes-agent".options]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v{{ version }}.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.linux-arm64"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.linux-arm64-musl"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.linux-x64"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.linux-x64-musl"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.macos-arm64"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[tools."github:NousResearch/hermes-agent"."platforms.macos-x64"]
+url = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+url_api = "https://github.com/NousResearch/hermes-agent/archive/refs/tags/v2026.9.24.tar.gz"
+
+[[tools."github:NousResearch/hermes-agent"]]
+version = "2026.9.24"
+backend = "github:NousResearch/hermes-agent"
+
 [[tools."github:anomalyco/opencode"]]
 version = "1.18.35"
 backend = "github:anomalyco/opencode"
