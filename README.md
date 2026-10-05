@@ -12,6 +12,24 @@ Pull the image from [GitHub Container Registry](https://github.com/dceoy/docker-
 docker image pull ghcr.io/dceoy/ai-coder:latest
 ```
 
+## Hermes Agent
+
+Hermes Agent is installed with its upstream installer. The release is managed
+by Mise in `mise.toml`, and its persistent state is stored in the
+`hermes-data` volume.
+
+Run the setup wizard once:
+
+```sh
+docker compose run --rm hermes hermes setup
+```
+
+Then start the gateway:
+
+```sh
+docker compose up -d hermes
+```
+
 ## Dependencies
 
 Standalone CLI tools, including AWS CLI v2 and Google Cloud CLI, are managed
