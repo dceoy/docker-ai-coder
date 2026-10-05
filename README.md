@@ -14,8 +14,9 @@ docker image pull ghcr.io/dceoy/ai-coder:latest
 
 ## Dependencies
 
-Standalone CLI tools are managed with Mise. JavaScript dependencies are managed
-with pnpm, and Python dependencies are managed with uv. Install the latest pnpm
+Standalone CLI tools, including AWS CLI v2 and Google Cloud CLI, are managed
+with Mise. JavaScript dependencies are managed with pnpm, and Python
+dependencies are managed with uv. Install the latest pnpm
 and uv using their official installation scripts before installing the
 locked tools and dependencies locally:
 
@@ -42,6 +43,7 @@ uv lock --upgrade
 Dependabot monitors root npm and uv dependencies daily. The package resolvers
 exclude releases newer than one day.
 
-Standalone CLI versions, download URLs, and checksums are recorded in
-`mise.lock`. Update a standalone tool with `mise lock --bump <tool>` and commit
-the resulting lockfile with `mise.toml`.
+Standalone CLI versions and download URLs are recorded in `mise.lock`; checksum
+recording depends on the selected backend.
+Update a standalone tool with `mise lock --bump <tool>` and commit the resulting
+lockfile with `mise.toml`.

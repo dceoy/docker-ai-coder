@@ -22,7 +22,7 @@ fi
 
 # YAML
 git ls-files -z -- '*.yml' \
-  | xargs -0 -t uvx yamllint -d '{"extends": "relaxed", "rules": {"line-length": "disable"}}'
+  | xargs -0 -t uv run --locked yamllint -d '{"extends": "relaxed", "rules": {"line-length": "disable"}}'
 
 # Shell scripts
 git ls-files -z -- '*.sh' '*.bash' '*.bats' \
