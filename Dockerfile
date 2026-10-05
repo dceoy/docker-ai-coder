@@ -113,6 +113,7 @@ RUN \
       && cat /tmp/mise.toml > /opt/mise/mise.toml \
       && cat /tmp/mise.lock > /opt/mise/mise.lock
 
+# hadolint ignore=DL4006
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked \
