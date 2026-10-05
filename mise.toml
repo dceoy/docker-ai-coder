@@ -9,6 +9,8 @@ github_attestations = false
 
 [tools]
 actionlint = "latest"
+awscli = "2"
+gcloud = "latest"
 hadolint = "latest"
 herdr = "latest"
 terragrunt = "latest"
