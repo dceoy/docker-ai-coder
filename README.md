@@ -43,6 +43,7 @@ uv lock --upgrade
 Dependabot monitors root npm and uv dependencies daily. The package resolvers
 exclude releases newer than one day.
 
-Standalone CLI versions, download URLs, and checksums are recorded in
-`mise.lock`. Update a standalone tool with `mise lock --bump <tool>` and commit
-the resulting lockfile with `mise.toml`.
+Standalone CLI versions and download URLs are recorded in `mise.lock`; checksum
+recording depends on the selected backend.
+Update a standalone tool with `mise lock --bump <tool>` and commit the resulting
+lockfile with `mise.toml`.
