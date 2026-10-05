@@ -42,6 +42,61 @@ checksum = "sha256:6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f
 url = "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip"
 url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/384924919"
 
+[[tools.awscli]]
+version = "2.34.26"
+backend = "aqua:aws/aws-cli"
+specifiers = ["2"]
+
+[tools.awscli."platforms.linux-arm64"]
+checksum = "sha256:b9d249bfb3cf77eb02468e619619191f0370564b9940d4530585a77e17e94948"
+url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.34.26.zip"
+
+[tools.awscli."platforms.linux-arm64-musl"]
+checksum = "sha256:b9d249bfb3cf77eb02468e619619191f0370564b9940d4530585a77e17e94948"
+url = "https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.34.26.zip"
+
+[tools.awscli."platforms.linux-x64"]
+checksum = "sha256:209aeaf8b724b10db12299d4b6cca51dbd8ce3b3339ccf08d1f6d9570561cb3f"
+url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.26.zip"
+
+[tools.awscli."platforms.linux-x64-musl"]
+checksum = "sha256:209aeaf8b724b10db12299d4b6cca51dbd8ce3b3339ccf08d1f6d9570561cb3f"
+url = "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.26.zip"
+
+[tools.awscli."platforms.macos-arm64"]
+checksum = "sha256:5aee499162c9a04df079107d4f34218c4bad12156d0d838d3ead660e9e9298a8"
+url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.26.pkg"
+
+[tools.awscli."platforms.macos-x64"]
+checksum = "sha256:5aee499162c9a04df079107d4f34218c4bad12156d0d838d3ead660e9e9298a8"
+url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.26.pkg"
+
+[[tools.gcloud]]
+version = "587.0.0"
+backend = "vfox:mise-plugins/vfox-gcloud"
+specifiers = ["latest"]
+
+[tools.gcloud."platforms.linux-arm64"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-linux-arm.tar.gz"
+
+[tools.gcloud."platforms.linux-arm64-musl"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-linux-arm.tar.gz"
+
+[tools.gcloud."platforms.linux-x64"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-linux-x86_64.tar.gz"
+
+[tools.gcloud."platforms.linux-x64-musl"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-linux-x86_64.tar.gz"
+
+[tools.gcloud."platforms.macos-arm64"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-darwin-arm.tar.gz"
+
+[tools.gcloud."platforms.macos-x64"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-darwin-x86_64.tar.gz"
+
+[tools.gcloud."platforms.windows-x64"]
+url = "https://storage.googleapis.com/cloud-sdk-release/google-cloud-sdk-587.0.0-windows-x86_64-bundled-python.zip"
+
 [[tools."github:anomalyco/opencode"]]
 version = "1.18.34"
 backend = "github:anomalyco/opencode"

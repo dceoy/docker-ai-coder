@@ -29,8 +29,8 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils awscli bats build-essential ca-certificates curl extrepo file gh git gnupg jq nodejs npm \
-        python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget yamllint zsh \
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo file gh git gnupg jq nodejs npm \
+        python3 python3-venv ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh \
       && ln -s python3 /usr/bin/python
 
 RUN \
@@ -102,6 +102,8 @@ RUN \
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked \
+      && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
+      && gcloud --version > /dev/null \
       && mkdir -p /opt/cli/bin \
       && printf '%s\n' \
         '#!/bin/sh' \
