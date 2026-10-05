@@ -30,8 +30,8 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo file gh git gnupg jq \
-        ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file gh git gnupg jq \
+        libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh
 
 RUN \
       extrepo enable mise \
@@ -113,6 +113,7 @@ RUN \
       && cat /tmp/mise.toml > /opt/mise/mise.toml \
       && cat /tmp/mise.lock > /opt/mise/mise.lock
 
+# hadolint ignore=DL4006
 RUN \
       --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked \
