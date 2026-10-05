@@ -96,6 +96,16 @@ WORKDIR "/home/${USER_NAME}"
 ENV HOME="/home/${USER_NAME}"
 ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
+ENV UV_LINK_MODE=copy
+
+# The ARM64 Google Cloud SDK requires Python while mise installs its tools.
+COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock /opt/cli/
+
+RUN \
+      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      uv sync --project /opt/cli --locked --no-dev \
+      && python --version
+
 RUN \
       --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
       --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
@@ -120,9 +130,7 @@ ARG USER_GID='1001'
 USER "${USER_NAME}"
 WORKDIR /opt/cli
 
-ENV UV_LINK_MODE=copy
-
-COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml pyproject.toml uv.lock ./
+COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Keep the pnpm store in the image: the managed Node runtime links into it.
 RUN \
@@ -130,11 +138,6 @@ RUN \
       && node --version \
       && npm --version \
       && npx --version
-
-RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      uv sync --locked --no-dev \
-      && python --version
 
 # hadolint ignore=DL3002,DL3066
 USER root
