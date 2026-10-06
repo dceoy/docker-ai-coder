@@ -13,7 +13,7 @@ gcloud = "https://github.com/mise-plugins/vfox-gcloud.git#111300c330e2f69065080a
 [tools]
 actionlint = "latest"
 awscli = "2"
-gcloud = "latest"
+gcloud = "587.0.0"
 hadolint = "latest"
 herdr = "latest"
 terragrunt = "latest"
