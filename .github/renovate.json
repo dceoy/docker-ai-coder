@@ -2,19 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "minimumReleaseAge": "1 day",
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^mise\\.toml$/"],
-      "matchStrings": [
-        "gcloud\\s*=\\s*[^\\n]*vfox-gcloud\\.git#(?<currentDigest>[0-9a-f]{40})"
-      ],
-      "currentValueTemplate": "main",
-      "depNameTemplate": "vfox-gcloud",
-      "packageNameTemplate": "https://github.com/jdx/vfox-gcloud",
-      "datasourceTemplate": "git-refs"
-    }
-  ],
   "packageRules": [
     {
       "description": "Automatically merge minor and patch-level updates",
