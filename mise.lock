@@ -73,7 +73,7 @@ url = "https://awscli.amazonaws.com/AWSCLIV2-2.34.26.pkg"
 
 [[tools.gcloud]]
 version = "587.0.0"
-backend = "vfox:mise-plugins/vfox-gcloud"
+backend = "vfox:jdx/vfox-gcloud"
 specifiers = ["latest"]
 
 [tools.gcloud."platforms.linux-arm64"]
