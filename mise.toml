@@ -7,13 +7,10 @@ minimum_release_age = "1d"
 [settings.aqua]
 github_attestations = false
 
-[plugins]
-gcloud = "https://github.com/mise-plugins/vfox-gcloud.git#111300c330e2f69065080abccde1d3ad42d582df"
-
 [tools]
 actionlint = "latest"
 awscli = "2"
-gcloud = "587.0.0"
+gcloud = "latest"
 hadolint = "latest"
 herdr = "latest"
 terragrunt = "latest"
