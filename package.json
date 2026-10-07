@@ -17,7 +17,7 @@
     "agent-browser": "0.38.2",
     "command-code": "1.74.1",
     "npm": "12.2.0",
-    "playwright": "1.64.0-alpha-1790635538000",
+    "playwright": "1.64.0-beta-1791301756000",
     "skills": "1.7.0"
   },
   "devDependencies": {}
