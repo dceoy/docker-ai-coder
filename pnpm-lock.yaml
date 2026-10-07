@@ -27,8 +27,8 @@ importers:
         specifier: 0.38.2
         version: 0.38.2
       command-code:
-        specifier: 1.74.1
-        version: 1.74.1(supports-color@10.2.2)
+        specifier: 1.74.3
+        version: 1.74.3(supports-color@10.2.2)
       npm:
         specifier: 12.2.0
         version: 12.2.0
@@ -1199,8 +1199,8 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
-  command-code@1.74.1:
-    resolution: {integrity: sha512-AEr4cPm08RQ86xKZTCOIOgf9ohob/L5ugB2ZO8X/iPzOQVk4nxDInRAofKy6/eQTfDlfb49J1y+Nyx3ngXMBFA==}
+  command-code@1.74.3:
+    resolution: {integrity: sha512-K0eLCJtkWDvdR7JegxANKe5CUdsujO7+VtGeH/SLyjTWRnXLPoR5poBKiedgoRdn0NNtEQ/+/tE/3VqjAsmtQA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -3968,7 +3968,7 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
-  command-code@1.74.1(supports-color@10.2.2):
+  command-code@1.74.3(supports-color@10.2.2):
     dependencies:
       '@ai-sdk/anthropic': 3.0.127(zod@4.6.5)
       '@ai-sdk/openai': 3.0.124(zod@4.6.5)
