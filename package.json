@@ -18,7 +18,7 @@
     "command-code": "1.77.0",
     "npm": "12.2.0",
     "playwright": "1.64.0-beta-1791393188000",
-    "skills": "1.7.0"
+    "skills": "1.7.1"
   },
   "devDependencies": {}
 }
