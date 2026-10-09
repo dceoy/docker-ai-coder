@@ -33,8 +33,8 @@ importers:
         specifier: 12.2.0
         version: 12.2.0
       playwright:
-        specifier: 1.64.0-beta-1791393188000
-        version: 1.64.0-beta-1791393188000
+        specifier: 1.64.0
+        version: 1.64.0
       skills:
         specifier: 1.7.1
         version: 1.7.1
@@ -2293,23 +2293,23 @@ packages:
     resolution: {integrity: sha512-o8mkY4E/+LNUf6LzX96ht6k6CEDi65k9G2rjMtBe9Oo+VPKSvl+0GKHuH/AlG+GA5LPG/i5hrekkxUc3s2HU+Q==}
     hasBin: true
 
+  playwright-core@1.64.0:
+    resolution: {integrity: sha512-T9r+MZkTECl2+oUcZ26YgZzTrYidTsIhYYkJix+6iDOymOb1FB2RLLSOxRGnZGv5DStt+aduIVbt+E8WygXYpg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   playwright-core@1.64.0-alpha-1790635538000:
     resolution: {integrity: sha512-pNwaXirhXMRLaRQs4NQ18EpTdtDoFwyPH9FOaaDC7YXG4hpwE2xmwCic/1srbuExVQC7zT9LJSJpDBAru+Vo9A==}
     engines: {node: '>=20'}
     hasBin: true
 
-  playwright-core@1.64.0-beta-1791393188000:
-    resolution: {integrity: sha512-OYZ1SfoCUUiuxov0V0qJVkEp+M3rRv9lO9yf8PtCyS8Oemco+IueEhVwW0icm3RXRDaUZ28cHDHX/wq7UwcX3A==}
+  playwright@1.64.0:
+    resolution: {integrity: sha512-kVzTnYFYEyQ9RGzBjNCd2+yEqWmVbxl3AHPynv3qQ6JTjv4a+kwRcnqQwIpuP3NnrnIrE/Q6wWAIAvMfIE2/Yg==}
     engines: {node: '>=20'}
     hasBin: true
 
   playwright@1.64.0-alpha-1790635538000:
     resolution: {integrity: sha512-/5XDUMxpOd/9AojJtWDFIRV3EJZNQ0AwvK69wgt3CPzy8wTgiBG9pX45VfxtqtvIRGwfWzMhrvawNKreG69Snw==}
-    engines: {node: '>=20'}
-    hasBin: true
-
-  playwright@1.64.0-beta-1791393188000:
-    resolution: {integrity: sha512-ky5L2kphpUUfAawN9+P6Zuq+D+1z2pw4JQkP+Aij59OIbh9dkuo/HYkge03XtkM/xvjJT2xjUgR33jprb7Z3pw==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -4897,17 +4897,17 @@ snapshots:
     dependencies:
       pngjs: 6.0.0
 
+  playwright-core@1.64.0: {}
+
   playwright-core@1.64.0-alpha-1790635538000: {}
 
-  playwright-core@1.64.0-beta-1791393188000: {}
+  playwright@1.64.0:
+    dependencies:
+      playwright-core: 1.64.0
 
   playwright@1.64.0-alpha-1790635538000:
     dependencies:
       playwright-core: 1.64.0-alpha-1790635538000
-
-  playwright@1.64.0-beta-1791393188000:
-    dependencies:
-      playwright-core: 1.64.0-beta-1791393188000
 
   pngjs@6.0.0: {}
 
