@@ -72,8 +72,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm /opt/uv \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise /opt/uv \
+      mkdir -p /opt/agent /opt/mantis /opt/cli /var/lib/hermes /opt/mise /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /var/lib/hermes /opt/mise /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
@@ -140,11 +140,17 @@ RUN \
       && npm --version \
       && npx --version
 
+RUN \
+      HERMES_VERSION="$(mise tool github:NousResearch/hermes-agent --requested)" \
+      && mise exec -- install.sh --branch "v${HERMES_VERSION}" --dir /opt/cli/hermes \
+        --hermes-home /var/lib/hermes --skip-setup --skip-browser
+
 # hadolint ignore=DL3002,DL3066
 USER root
 
 RUN \
-      playwright install-deps chromium
+      ln -s /opt/cli/hermes/venv/bin/hermes /usr/local/bin/hermes \
+      && playwright install-deps chromium
 
 
 FROM dependencies AS cli
