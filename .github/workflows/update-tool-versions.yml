@@ -1,0 +1,75 @@
+---
+name: Update tool versions
+on:
+  schedule:
+    - cron: '17 0 * * 1'
+  workflow_dispatch:  # checkov:skip=CKV_GHA_7:manual runs do not accept inputs
+permissions: {}
+concurrency:
+  group: update-tool-versions
+  cancel-in-progress: false
+jobs:
+  update-tool-versions:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - name: Set up mise
+        uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db  # v3
+        with:
+          install: false
+          cache: false
+      - name: Set up uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7.6.0
+        with:
+          enable-cache: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
+        with:
+          node-version: '24'
+      - name: Set up pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1  # v4
+        with:
+          version: 11
+          run_install: false
+      - name: Upgrade mise tool locks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mise lock --bump
+      - name: Upgrade Python dependencies
+        run: |
+          uv add --upgrade --bounds exact --no-sync checkov yamllint
+          uv lock --upgrade
+          uv lock --check
+      - name: Upgrade Node.js dependencies
+        run: |
+          pnpm update --latest --ignore-scripts
+          pnpm install --lockfile-only --frozen-lockfile --ignore-scripts
+      - name: Create or update pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}  # zizmor: ignore[secrets-outside-env] optional caller-provided token
+          branch: chore/update-tool-versions
+          delete-branch: true
+          add-paths: |
+            mise.lock
+            pyproject.toml
+            uv.lock
+            package.json
+            pnpm-lock.yaml
+          commit-message: "chore: update mise, uv, and pnpm tool versions"
+          title: "chore: update mise, uv, and pnpm tool versions"
+          body: |
+            Automated weekly tool and dependency version refresh.
+
+            - Re-resolve versions selected by `mise.toml` and update `mise.lock`.
+            - Upgrade pinned Python direct dependencies while retaining exact pins,
+              then refresh `uv.lock` (including transitive dependencies).
+            - Upgrade pinned pnpm dependencies and refresh `pnpm-lock.yaml`.
+            - Respect each package manager's minimum release age.
+
+            Review breaking changes and required CI checks before merging.
+            This workflow does not automatically merge its PR.
