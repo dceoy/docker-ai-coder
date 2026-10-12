@@ -138,7 +138,8 @@ RUN \
       pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
-      && npx --version
+      && npx --version \
+      && pi --version
 
 # hadolint ignore=DL3002,DL3066
 USER root
