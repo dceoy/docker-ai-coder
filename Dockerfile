@@ -138,7 +138,8 @@ RUN \
       pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
-      && npx --version
+      && npx --version \
+      && pi --version
 
 # hadolint ignore=DL3002,DL3066
 USER root
@@ -172,11 +173,6 @@ RUN \
 RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/cursor.install.sh
-
-# The Pi installer pins its runtime dependencies.
-RUN \
-      curl -fsSL https://pi.dev/install.sh | sh \
-      && pi --version
 
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
