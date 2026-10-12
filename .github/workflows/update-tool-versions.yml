@@ -35,17 +35,23 @@ jobs:
         with:
           version: 11
           run_install: false
-      - name: Upgrade mise tool locks
+      - name: Upgrade mise version specifications and locks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mise lock --bump
+        run: |
+          mise trust mise.toml
+          mise upgrade --bump --local
+          mise lock --bump
       - name: Upgrade Python dependencies
         run: |
           uv add --upgrade --bounds exact --no-sync checkov yamllint
           uv lock --upgrade
           uv lock --check
-      - name: Upgrade Node.js dependencies
+      - name: Upgrade Node.js and pnpm dependencies
         run: |
+          # Keep Node.js on its configured major version, but refresh its exact pin.
+          node_major="$(jq -r '.devEngines.runtime.version | match("[0-9]+").string' package.json)"
+          pnpm runtime set node "${node_major}"
           pnpm update --latest --ignore-scripts
           pnpm install --lockfile-only --frozen-lockfile --ignore-scripts
       - name: Create or update pull request
@@ -55,6 +61,7 @@ jobs:
           branch: chore/update-tool-versions
           delete-branch: true
           add-paths: |
+            mise.toml
             mise.lock
             pyproject.toml
             uv.lock
@@ -65,10 +72,12 @@ jobs:
           body: |
             Automated weekly tool and dependency version refresh.
 
-            - Re-resolve versions selected by `mise.toml` and update `mise.lock`.
+            - Upgrade version specifications in `mise.toml` and refresh `mise.lock`.
             - Upgrade pinned Python direct dependencies while retaining exact pins,
               then refresh `uv.lock` (including transitive dependencies).
-            - Upgrade pinned pnpm dependencies and refresh `pnpm-lock.yaml`.
+            - Update the pinned Node.js runtime within its current major version,
+              upgrade pnpm dependency specs in `package.json`, and refresh
+              `pnpm-lock.yaml`.
             - Respect each package manager's minimum release age.
 
             Review breaking changes and required CI checks before merging.
