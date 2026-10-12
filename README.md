@@ -52,14 +52,3 @@ Standalone CLI versions and download URLs are recorded in `mise.lock`; checksum
 recording depends on the selected backend.
 Update a standalone tool with `mise lock --bump <tool>` and commit the resulting
 lockfile with `mise.toml`.
-
-## Pi coding agent
-
-[Pi](https://pi.dev/docs/latest/quickstart) (`@earendil-works/pi-coding-agent`)
-is installed alongside the other JavaScript CLIs via pnpm and managed in
-`package.json` and `pnpm-lock.yaml`. The image build verifies installation with
-`pi --version`.
-
-Run `pi` from a project directory, then use `/login` to authenticate with a
-supported provider or supply the appropriate provider API key through the
-environment.
