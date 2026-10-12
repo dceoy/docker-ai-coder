@@ -173,6 +173,11 @@ RUN \
       --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/cursor.install.sh
 
+# The Pi installer pins its runtime dependencies.
+RUN \
+      curl -fsSL https://pi.dev/install.sh | sh \
+      && pi --version
+
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
       && curl -fsSL -o "${HOME}/.vim/autoload/plug.vim" \
