@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   update-tool-versions:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04-arm
     permissions:
       contents: write
       pull-requests: write
