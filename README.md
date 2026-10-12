@@ -52,3 +52,14 @@ Standalone CLI versions and download URLs are recorded in `mise.lock`; checksum
 recording depends on the selected backend.
 Update a standalone tool with `mise lock --bump <tool>` and commit the resulting
 lockfile with `mise.toml`.
+
+## Pi coding agent
+
+The Docker image also installs [Pi](https://pi.dev/) (the
+`@earendil-works/pi-coding-agent` CLI) through its official installer, which
+pins its runtime dependencies independently of the project's pnpm lockfile.
+The image build verifies the installation with `pi --version`.
+
+Run `pi` from a project directory, then use `/login` to authenticate with a
+supported provider or supply the appropriate provider API key through the
+environment.
