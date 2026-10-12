@@ -2,5 +2,6 @@ minimumReleaseAge: 1440
 allowBuilds:
   '@google/genai': true
   agent-browser: true
+  esbuild: true
   protobufjs: true
 enableGlobalVirtualStore: false
