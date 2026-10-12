@@ -9,6 +9,7 @@
     }
   },
   "dependencies": {
+    "@earendil-works/pi-coding-agent": "latest",
     "@github/copilot": "latest",
     "@openai/codex": "latest",
     "@openai/codex-security": "latest",
