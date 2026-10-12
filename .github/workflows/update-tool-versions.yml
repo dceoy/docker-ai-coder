@@ -37,7 +37,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mise trust mise.toml
-          mise upgrade --bump --local
+          mise upgrade --bump --local --exclude github:NousResearch/hermes-agent
+          # Explicitly bump the pinned lazy Hermes tool as well as regular tools.
+          mise upgrade --bump --local github:NousResearch/hermes-agent
           mise lock --bump
           uv lock --upgrade
           uv lock --check
@@ -60,5 +62,6 @@ jobs:
           commit-message: "chore: update mise, uv, and pnpm tool versions"
           title: "chore: update mise, uv, and pnpm tool versions"
           body: |
-            Update tool version specifications and lockfiles using mise, uv, and pnpm.
+            Update tool version specifications and lockfiles using mise, uv, and pnpm,
+            including the pinned Hermes Agent release and its source-archive URLs.
             Review compatibility and CI before merging. No automatic merging.
