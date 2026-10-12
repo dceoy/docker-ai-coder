@@ -72,8 +72,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/mantis /opt/cli /opt/mise /opt/pnpm /opt/uv \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/mantis /opt/cli /opt/mise /opt/uv \
+      mkdir -p /opt/agent /opt/cli /opt/mise /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /opt/mise /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
@@ -162,13 +162,8 @@ USER "${USER_NAME}"
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
-ENV MANTIS_HOME=/opt/mantis
 ENV SHELL=/usr/bin/zsh
 ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
-
-RUN \
-      git clone --depth=1 https://github.com/google/mantis.git "${MANTIS_HOME}" \
-      && "${MANTIS_HOME}/reference/install.sh"
 
 # hadolint ignore=DL3059
 RUN \
@@ -195,8 +190,6 @@ RUN \
         --skill security-audit --global --agent claude-code --agent codex --agent universal --yes \
       && skills add getsentry/skills \
         --skill security-review --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add google/mantis \
-        --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
       && skills add cloudflare/skills \
         --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
       && mkdir -p "${HOME}/.playwright" \
