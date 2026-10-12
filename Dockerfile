@@ -138,8 +138,7 @@ RUN \
       pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
-      && npx --version \
-      && pi --version
+      && npx --version
 
 RUN \
       HERMES_VERSION="$(mise tool github:NousResearch/hermes-agent --requested)" \
