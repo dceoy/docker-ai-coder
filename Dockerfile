@@ -143,7 +143,7 @@ RUN \
 
 RUN \
       HERMES_VERSION="$(mise tool github:NousResearch/hermes-agent --requested)" \
-      && mise exec -- install.sh --branch "v${HERMES_VERSION}" --dir /opt/cli/hermes \
+      && env -u UV_PYTHON_PREFERENCE mise exec -- install.sh --branch "v${HERMES_VERSION}" --dir /opt/cli/hermes \
         --hermes-home /var/lib/hermes --skip-setup --skip-browser
 
 # hadolint ignore=DL3002,DL3066
