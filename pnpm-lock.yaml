@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@github/copilot':
-        specifier: 1.0.93
-        version: 1.0.93
+        specifier: 1.0.95
+        version: 1.0.95
       '@openai/codex':
-        specifier: 0.161.0
-        version: 0.161.0
+        specifier: 0.162.1
+        version: 0.162.1
       '@openai/codex-security':
         specifier: 0.2.0
         version: 0.2.0(@types/node@26.6.5)(graphql@17.0.2)
@@ -24,11 +24,11 @@ importers:
         specifier: 0.21.4
         version: 0.21.4(@types/node@26.6.5)(supports-color@10.2.2)(ws@8.22.0)
       agent-browser:
-        specifier: 0.38.2
-        version: 0.38.2
+        specifier: 0.39.0
+        version: 0.39.0
       command-code:
-        specifier: 1.79.1
-        version: 1.79.1(supports-color@10.2.2)
+        specifier: 1.79.2
+        version: 1.79.2(supports-color@10.2.2)
       npm:
         specifier: 12.2.0
         version: 12.2.0
@@ -36,8 +36,8 @@ importers:
         specifier: 1.64.0
         version: 1.64.0
       skills:
-        specifier: 1.7.1
-        version: 1.7.1
+        specifier: 1.7.2
+        version: 1.7.2
     devDependencies:
       node:
         specifier: runtime:24.21.0
@@ -162,60 +162,60 @@ packages:
     resolution: {integrity: sha512-0qRWscafAHzQ+DdfXX+YgPN2KDTIzWBNfN5Q6z1CgCWsRxtkwK8HfQUc00xIejfRWSGWPIxcCTg82hvg06bodg==}
     engines: {node: '>= 10'}
 
-  '@github/copilot-darwin-arm64@1.0.93':
-    resolution: {integrity: sha512-04a+20y9WcM3oTD7PpfSzC154MpNKGInfzgm49u0FmSBodOiaq1FzpQ28rKmFhgdLVi0cv9IO8NNn+aewNeQ2Q==}
+  '@github/copilot-darwin-arm64@1.0.95':
+    resolution: {integrity: sha512-rh4KQhjg2uO/fJHlDkOQh3R2etNRsnQ22vLbcJcEObFVrc449m6g3injew08QhDQQT16fP+ADfPRcGxcy74P6g==}
     cpu: [arm64]
     os: [darwin]
     hasBin: true
 
-  '@github/copilot-darwin-x64@1.0.93':
-    resolution: {integrity: sha512-D6gwTwb3mSqIxwSFpaLu0tUJ7KGKCQtifXgbqU/QU2idrsqHXMRaFif19L8iyMZs/rtWMKPdSvz7wMyW3Xk1DQ==}
+  '@github/copilot-darwin-x64@1.0.95':
+    resolution: {integrity: sha512-nmsq2Bituesm4i9uqVol6iGg8gA3TjCjdN0o1iwlusfDL/Jlv41/3GLrZ9TzevQISZcZHL+LotEdE7G/Kx2D4w==}
     cpu: [x64]
     os: [darwin]
     hasBin: true
 
-  '@github/copilot-linux-arm64@1.0.93':
-    resolution: {integrity: sha512-SbWYNri8DMoU4i0X5KsypfGQw5hWceiedZ8dEeQhedsd/uRv1IJYZna68IO5HYwGyU581ehr6VXm6XUt3qTDSw==}
+  '@github/copilot-linux-arm64@1.0.95':
+    resolution: {integrity: sha512-w7IoYHSdsH//rs01QbG+at5G94k4Ny1bk3bEKpntk4g68RkQm05pJXAH9NBTkqSr4ImvTPlFvMcWjIecG64FfA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
     hasBin: true
 
-  '@github/copilot-linux-x64@1.0.93':
-    resolution: {integrity: sha512-tEXAZDdA1lHl6AGcYFGb+qaFWxCbYYQosXw+PVQFMdnDsc85uZ7xDPaxD7oW7cQpbwkrqUCioR88tcPpV0rJrA==}
+  '@github/copilot-linux-x64@1.0.95':
+    resolution: {integrity: sha512-xjZ6/72iFhy/ZcXpSUDzMzcplOayWkuIc0DrT+54Oqk4ODPYs3HCzk3wo1HnC3qP68Ft1KRA6btT3g3wO/PG5w==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
     hasBin: true
 
-  '@github/copilot-linuxmusl-arm64@1.0.93':
-    resolution: {integrity: sha512-3DlPGRpq280plB/JuGbjyk1ehwn73+In1kL/vTO6Xs6acRTRtF6SPioyMdrkS59OEEQRYvxCemrM/n9gEdCg3Q==}
+  '@github/copilot-linuxmusl-arm64@1.0.95':
+    resolution: {integrity: sha512-AkAjFCcs1XVkQozewZWxZsKJ9aDqth+UVZ7MMI9pjC5rEKflmRbwBK5hcRgGxClFWyrKGyJG8MbPizgbqV4a/A==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@github/copilot-linuxmusl-x64@1.0.93':
-    resolution: {integrity: sha512-in6W71pUV6+Kj0vF+39+Oxg9S5z2o3SrQiZ6DHXKRPYVhUJVRrTG/jMrXEoVVrevLqWTRVN2JU19swXEZj89FQ==}
+  '@github/copilot-linuxmusl-x64@1.0.95':
+    resolution: {integrity: sha512-VA+FXne/ElXsgawIgvFEPiANoPeRv4tkG4zpsK/ZnJjNuxh0ntzg+E6sU/pCPWtAXRCIJofO88WRQfsakGacRw==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
     hasBin: true
 
-  '@github/copilot-win32-arm64@1.0.93':
-    resolution: {integrity: sha512-ZVNfokntDf7778NuL2CCmqjGONBQ8oPaglvfdEydFuKehwe5iLw9WUWYgEBPc/txUdQzJp5Zoyr6vDgVioPq4g==}
+  '@github/copilot-win32-arm64@1.0.95':
+    resolution: {integrity: sha512-FzWaFhLKH94VXnQYAZ/1R6+IFw3XE+lZjTTx41JfPLroJgyyi009mrJapU5cqsghkBFoQ2xmNJMgM68Mt+3P+g==}
     cpu: [arm64]
     os: [win32]
     hasBin: true
 
-  '@github/copilot-win32-x64@1.0.93':
-    resolution: {integrity: sha512-0avwLUdZxiLYINoTalLZUxNcarOd1IoMaT4jJWtaJRtD6MgL5yW8+5P+5sVihKPg7R2AWymU3V8U45IYEvDmgw==}
+  '@github/copilot-win32-x64@1.0.95':
+    resolution: {integrity: sha512-Z8YKyUsIrXw2hKv3qUR7TeaP98jNRjcx59whZX7RzbVa2wHyNh/gYcy/o74hHhdc2kO1B1cwtq7dNv2ChCX8dA==}
     cpu: [x64]
     os: [win32]
     hasBin: true
 
-  '@github/copilot@1.0.93':
-    resolution: {integrity: sha512-rfkBL3hCIu73XNpOL9a0epZYmbCBtkoNzMVVjpZlGpLE2Aj7CeMCr0NweZKnHqL9VpMaoJyfWbSd1aI0I9Bt3w==}
+  '@github/copilot@1.0.95':
+    resolution: {integrity: sha512-TAYlgMwjTnHi04ZGRc6Z+41piGeUC6xuA8z7gWVc5qOTqJLi/B3vCVg9ttkwvxnahbTWjX8x0DORwrJMXOQxGg==}
     hasBin: true
 
   '@google/genai@2.28.0':
@@ -642,47 +642,6 @@ packages:
     engines: {node: ^22.13.0 || ^24.0.0 || ^26.0.0}
     hasBin: true
 
-  '@openai/codex@0.161.0':
-    resolution: {integrity: sha512-+ZnJFGBbQBwYnjUTs+PoacgYVxmNyxMLiadIz6eSJ0AzQW0mRVxuuOQizSbz2qeNAJia9Syxag6j2uGf7guD2Q==}
-    engines: {node: '>=16'}
-    hasBin: true
-
-  '@openai/codex@0.161.0-darwin-arm64':
-    resolution: {integrity: sha512-arxKLYB3uKjewwOpGFo5/MGe8+4JzNB17KIYBmGfF4k3QU+QC4ieXVUwqHmQX2nXrB1BzNMN0gtAgm1AGBTg8w==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@openai/codex@0.161.0-darwin-x64':
-    resolution: {integrity: sha512-svVXwOisMkf/e9BD8Qyp0BQYOTsRnrYErfLq+o7aNMts8Evg06rRsHUfxH6HAiJ99dUgC/4CLr3Rpwh3833TfQ==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@openai/codex@0.161.0-linux-arm64':
-    resolution: {integrity: sha512-SBu0n4C1Pby9rGKUNA02yHEg/ScbECgiTIiKiKhbYWiUWqGPV1hY0Br7joEntbz0dyNzSWqNPD8uOqxcOry/Fg==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@openai/codex@0.161.0-linux-x64':
-    resolution: {integrity: sha512-AVkNzeJWyCHHPyg5vxD8UE6aFsYaOwq0/x6mtmkOKy6LdjvsyxLr7Q7UULlk+Ma3+PnrN8uIxG2/XGPQ936hgA==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [linux]
-
-  '@openai/codex@0.161.0-win32-arm64':
-    resolution: {integrity: sha512-tgo++ui5X5pXkaz113Q4/PNVviWXlvUdHH4zY+SoGwHm4720JsRPjuUJcUNZ9WtryEiw3Xpj5nKp8pgCXJUjYA==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@openai/codex@0.161.0-win32-x64':
-    resolution: {integrity: sha512-VdNnttGOG3nbwoREvVurVBXci/EJD/kncVJnvtXjpEE+YhC1twvvrVNmtlZcZGEEVi06xLN/ov0d6nxjZ1XLSg==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [win32]
-
   '@openai/codex@0.162.0-alpha.15':
     resolution: {integrity: sha512-TPOZK+HRsmGDJhV0Saz1Rdad+533JPoQGo2S3qvyfa3N5NPIgWR4OLqzooFF86piGpAV7z3TSK+FitnB/tS/VQ==}
     engines: {node: '>=16'}
@@ -720,6 +679,47 @@ packages:
 
   '@openai/codex@0.162.0-alpha.15-win32-x64':
     resolution: {integrity: sha512-o3HSlkrGzzSNsb/M6ayBFV+JdtQHN6BJ6pVGPizAYwdgAmBMyOhv/ayB7czN+pBK3c4/smRs/RRTUOD6yPMKdA==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [win32]
+
+  '@openai/codex@0.162.1':
+    resolution: {integrity: sha512-NWZdi/kxyjv/8EUGFupziGU38YyleugZRM4JXgY5XFH7FUmaFA33NZS2Bmq0HPazf7S3jJQQWsZ/jAK9jsrV3Q==}
+    engines: {node: '>=16'}
+    hasBin: true
+
+  '@openai/codex@0.162.1-darwin-arm64':
+    resolution: {integrity: sha512-YVXpg57itBuQxjofay3KDF5UbnZF4Y1ZmNFzUCz0ZQiQN+DndxOjN5V87rnXvPaC4qCPO2El74DzewoBP8JyPQ==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@openai/codex@0.162.1-darwin-x64':
+    resolution: {integrity: sha512-0/WHRhbUnM1wAjfyCO54Q8s4vQRxLVBbqW6XuQf7rZTEMTYPKRIQU9aPeRgjG653ZCSjtBrslWQ+G9urY9CksQ==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@openai/codex@0.162.1-linux-arm64':
+    resolution: {integrity: sha512-Ss7W/SrKtQFNaMtSojNoiykJgX+iDC8daM+YrcvgmJADtQPk0cd3w6Dna4CYH2CYvf9nQranj69fpcTzZ3sQIQ==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@openai/codex@0.162.1-linux-x64':
+    resolution: {integrity: sha512-cjK2mdHIfEepZ1lQ1MX3aTQC+8ncIsvnacl/6vI2dIIcfP8/MrhTQ2+qRlkXFNDzJSj1d36quIszP+3/4CUJWQ==}
+    engines: {node: '>=16'}
+    cpu: [x64]
+    os: [linux]
+
+  '@openai/codex@0.162.1-win32-arm64':
+    resolution: {integrity: sha512-teVVACnEcupkR6XSmUQKwlGg/oA15d1DQDPVSoAfilHgctPEpTi5y11jYS6JhJO+AFnYM84gyo5SOS5vlnCQSg==}
+    engines: {node: '>=16'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@openai/codex@0.162.1-win32-x64':
+    resolution: {integrity: sha512-dfl4MhHuEi0ARKyNmrTxk+RQmsWNCQAoVLUtrYq+yrW1C8P2sg5ziwgHUUACHjYLKuACV7ARH5Nq5pnCz3GlaQ==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
@@ -1024,8 +1024,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  agent-browser@0.38.2:
-    resolution: {integrity: sha512-b/7hvo2RrqocvybjB9kwpX12kGkxkFvtdJ4XPDoott5TLK2n3aPX+lYg7ALd+2YvPi2LrTKGzQYu/rxZC2Y7ZA==}
+  agent-browser@0.39.0:
+    resolution: {integrity: sha512-VtImIqCpHC/xJFw91IAcLlBJzebCBjynOwIKnx4kuCeI2JicpPBMKykdjQ1wmnj2dL2voNKRv8iK+Joe6aHFtw==}
     engines: {node: '>=24.0.0', pnpm: '>=11.0.0'}
     hasBin: true
 
@@ -1221,8 +1221,8 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
-  command-code@1.79.1:
-    resolution: {integrity: sha512-EO/15K8AEvu4K/2i6in+Oe83cFqQzvZ2qvcABtpH6A1F/eDCwtXErMolcxRtllAkiEEd0XM5LFxMvIIhIlYMzg==}
+  command-code@1.79.2:
+    resolution: {integrity: sha512-e7seLyyriUJtK5MArViSVRekCmRP5VCZrHgoURWayH7agAwvsE+nq+c0rt1dzVs/iD/lc5cMZLu9I0+SZnPORA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -2502,8 +2502,8 @@ packages:
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  skills@1.7.1:
-    resolution: {integrity: sha512-LUHR/+3D3evhwejiMfBStH7ndqJkV9UlwkjH1LpQ8j1g1cJO1yrXs+R+xS0AuV6E7iX0uZt44xEMAPZC+o40nA==}
+  skills@1.7.2:
+    resolution: {integrity: sha512-j+GzyF/oNahsjjjup6y3lJpFkC1lQjIkf4kAMXICA1hboBqi0fAGXAGoE4x9FRZiP1br/YE9+L3/Tqq6PIAe0A==}
     engines: {node: '>=22.20.0'}
     hasBin: true
 
@@ -2918,42 +2918,42 @@ snapshots:
       '@crosscopy/clipboard-win32-arm64-msvc': 0.2.8
       '@crosscopy/clipboard-win32-x64-msvc': 0.2.8
 
-  '@github/copilot-darwin-arm64@1.0.93':
+  '@github/copilot-darwin-arm64@1.0.95':
     optional: true
 
-  '@github/copilot-darwin-x64@1.0.93':
+  '@github/copilot-darwin-x64@1.0.95':
     optional: true
 
-  '@github/copilot-linux-arm64@1.0.93':
+  '@github/copilot-linux-arm64@1.0.95':
     optional: true
 
-  '@github/copilot-linux-x64@1.0.93':
+  '@github/copilot-linux-x64@1.0.95':
     optional: true
 
-  '@github/copilot-linuxmusl-arm64@1.0.93':
+  '@github/copilot-linuxmusl-arm64@1.0.95':
     optional: true
 
-  '@github/copilot-linuxmusl-x64@1.0.93':
+  '@github/copilot-linuxmusl-x64@1.0.95':
     optional: true
 
-  '@github/copilot-win32-arm64@1.0.93':
+  '@github/copilot-win32-arm64@1.0.95':
     optional: true
 
-  '@github/copilot-win32-x64@1.0.93':
+  '@github/copilot-win32-x64@1.0.95':
     optional: true
 
-  '@github/copilot@1.0.93':
+  '@github/copilot@1.0.95':
     dependencies:
       detect-libc: 2.1.2
     optionalDependencies:
-      '@github/copilot-darwin-arm64': 1.0.93
-      '@github/copilot-darwin-x64': 1.0.93
-      '@github/copilot-linux-arm64': 1.0.93
-      '@github/copilot-linux-x64': 1.0.93
-      '@github/copilot-linuxmusl-arm64': 1.0.93
-      '@github/copilot-linuxmusl-x64': 1.0.93
-      '@github/copilot-win32-arm64': 1.0.93
-      '@github/copilot-win32-x64': 1.0.93
+      '@github/copilot-darwin-arm64': 1.0.95
+      '@github/copilot-darwin-x64': 1.0.95
+      '@github/copilot-linux-arm64': 1.0.95
+      '@github/copilot-linux-x64': 1.0.95
+      '@github/copilot-linuxmusl-arm64': 1.0.95
+      '@github/copilot-linuxmusl-x64': 1.0.95
+      '@github/copilot-win32-arm64': 1.0.95
+      '@github/copilot-win32-x64': 1.0.95
 
   '@google/genai@2.28.0(supports-color@10.2.2)':
     dependencies:
@@ -3488,33 +3488,6 @@ snapshots:
       - react-devtools-core
       - utf-8-validate
 
-  '@openai/codex@0.161.0':
-    optionalDependencies:
-      '@openai/codex-darwin-arm64': '@openai/codex@0.161.0-darwin-arm64'
-      '@openai/codex-darwin-x64': '@openai/codex@0.161.0-darwin-x64'
-      '@openai/codex-linux-arm64': '@openai/codex@0.161.0-linux-arm64'
-      '@openai/codex-linux-x64': '@openai/codex@0.161.0-linux-x64'
-      '@openai/codex-win32-arm64': '@openai/codex@0.161.0-win32-arm64'
-      '@openai/codex-win32-x64': '@openai/codex@0.161.0-win32-x64'
-
-  '@openai/codex@0.161.0-darwin-arm64':
-    optional: true
-
-  '@openai/codex@0.161.0-darwin-x64':
-    optional: true
-
-  '@openai/codex@0.161.0-linux-arm64':
-    optional: true
-
-  '@openai/codex@0.161.0-linux-x64':
-    optional: true
-
-  '@openai/codex@0.161.0-win32-arm64':
-    optional: true
-
-  '@openai/codex@0.161.0-win32-x64':
-    optional: true
-
   '@openai/codex@0.162.0-alpha.15':
     optionalDependencies:
       '@openai/codex-darwin-arm64': '@openai/codex@0.162.0-alpha.15-darwin-arm64'
@@ -3540,6 +3513,33 @@ snapshots:
     optional: true
 
   '@openai/codex@0.162.0-alpha.15-win32-x64':
+    optional: true
+
+  '@openai/codex@0.162.1':
+    optionalDependencies:
+      '@openai/codex-darwin-arm64': '@openai/codex@0.162.1-darwin-arm64'
+      '@openai/codex-darwin-x64': '@openai/codex@0.162.1-darwin-x64'
+      '@openai/codex-linux-arm64': '@openai/codex@0.162.1-linux-arm64'
+      '@openai/codex-linux-x64': '@openai/codex@0.162.1-linux-x64'
+      '@openai/codex-win32-arm64': '@openai/codex@0.162.1-win32-arm64'
+      '@openai/codex-win32-x64': '@openai/codex@0.162.1-win32-x64'
+
+  '@openai/codex@0.162.1-darwin-arm64':
+    optional: true
+
+  '@openai/codex@0.162.1-darwin-x64':
+    optional: true
+
+  '@openai/codex@0.162.1-linux-arm64':
+    optional: true
+
+  '@openai/codex@0.162.1-linux-x64':
+    optional: true
+
+  '@openai/codex@0.162.1-win32-arm64':
+    optional: true
+
+  '@openai/codex@0.162.1-win32-x64':
     optional: true
 
   '@opentelemetry/api-logs@0.221.0':
@@ -3856,7 +3856,7 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  agent-browser@0.38.2: {}
+  agent-browser@0.39.0: {}
 
   ai@6.0.303(zod@4.6.5):
     dependencies:
@@ -4038,7 +4038,7 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
-  command-code@1.79.1(supports-color@10.2.2):
+  command-code@1.79.2(supports-color@10.2.2):
     dependencies:
       '@ai-sdk/anthropic': 3.0.129(zod@4.6.5)
       '@ai-sdk/openai': 3.0.125(zod@4.6.5)
@@ -5099,7 +5099,7 @@ snapshots:
 
   sisteransi@1.0.5: {}
 
-  skills@1.7.1:
+  skills@1.7.2:
     dependencies:
       tar: 7.5.22
       yaml: 2.9.1
