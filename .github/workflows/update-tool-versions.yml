@@ -39,7 +39,6 @@ jobs:
           mise trust mise.toml
           mise upgrade --bump --local
           mise lock --bump
-          uv add --upgrade --bounds exact --no-sync checkov yamllint
           uv lock --upgrade
           uv lock --check
           pnpm runtime set node "$(jq -r '.devEngines.runtime.version | split(".")[0]' package.json)"

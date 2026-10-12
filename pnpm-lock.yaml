@@ -9,34 +9,34 @@ importers:
   .:
     dependencies:
       '@github/copilot':
-        specifier: 1.0.95
+        specifier: latest
         version: 1.0.95
       '@openai/codex':
-        specifier: 0.162.1
+        specifier: latest
         version: 0.162.1
       '@openai/codex-security':
-        specifier: 0.2.0
+        specifier: latest
         version: 0.2.0(@types/node@26.6.5)(graphql@17.0.2)
       '@playwright/cli':
-        specifier: 0.1.22
+        specifier: latest
         version: 0.1.22
       '@steipete/oracle':
-        specifier: 0.21.4
+        specifier: latest
         version: 0.21.4(@types/node@26.6.5)(supports-color@10.2.2)(ws@8.22.0)
       agent-browser:
-        specifier: 0.39.0
+        specifier: latest
         version: 0.39.0
       command-code:
-        specifier: 1.79.2
+        specifier: latest
         version: 1.79.2(supports-color@10.2.2)
       npm:
-        specifier: 12.2.0
+        specifier: latest
         version: 12.2.0
       playwright:
-        specifier: 1.64.0
+        specifier: latest
         version: 1.64.0
       skills:
-        specifier: 1.7.2
+        specifier: latest
         version: 1.7.2
     devDependencies:
       node:

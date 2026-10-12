@@ -3,8 +3,8 @@ name = "docker-ai-coder"
 version = "0.0.0"
 requires-python = ">=3.12"
 dependencies = [
-    "checkov==3.3.25",
-    "yamllint==1.38.0",
+    "checkov",
+    "yamllint",
 ]
 
 [tool.uv]

@@ -757,8 +757,8 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "checkov", specifier = "==3.3.25" },
-    { name = "yamllint", specifier = "==1.38.0" },
+    { name = "checkov" },
+    { name = "yamllint" },
 ]
 
 [[package]]
