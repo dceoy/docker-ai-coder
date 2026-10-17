@@ -38,9 +38,6 @@ importers:
       playwright:
         specifier: latest
         version: 1.64.1
-      skills:
-        specifier: latest
-        version: 1.7.2
     devDependencies:
       node:
         specifier: runtime:24.21.0
@@ -2725,11 +2722,6 @@ packages:
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
-
-  skills@1.7.2:
-    resolution: {integrity: sha512-j+GzyF/oNahsjjjup6y3lJpFkC1lQjIkf4kAMXICA1hboBqi0fAGXAGoE4x9FRZiP1br/YE9+L3/Tqq6PIAe0A==}
-    engines: {node: '>=22.20.0'}
-    hasBin: true
 
   skin-tone@2.0.0:
     resolution: {integrity: sha512-kUMbT1oBJCpgrnKoSr0o6wPtvRWT9W9UKvGLwfJYO2WuahZRHOpEyL1ckyMGgMWh0UdpmaoFqKKD29WTomNEGA==}
@@ -5714,11 +5706,6 @@ snapshots:
   simple-xml-to-json@1.2.7: {}
 
   sisteransi@1.0.5: {}
-
-  skills@1.7.2:
-    dependencies:
-      tar: 7.5.22
-      yaml: 2.9.1
 
   skin-tone@2.0.0:
     dependencies:

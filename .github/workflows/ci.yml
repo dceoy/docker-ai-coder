@@ -66,6 +66,7 @@ jobs:
       runs-on: ubuntu-26.04-arm
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
       github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
