@@ -49,7 +49,7 @@ jobs:
     needs:
       - docker-lint-and-scan
     permissions:
-      contents: write
+      contents: read
       packages: write
       id-token: write
     uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@main  # zizmor: ignore[unpinned-uses]
