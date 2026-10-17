@@ -192,6 +192,7 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
+      --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true \
       for agent in claude-code codex universal; do \
         gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent "${agent}" --force \
         && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent "${agent}" --force \
