@@ -30,7 +30,7 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file gh git gnupg jq \
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq \
         libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh
 
 RUN \
@@ -43,14 +43,20 @@ RUN \
       && curl -fsSL https://get.trivy.dev/deb/public.key \
         | gpg --dearmor -o /usr/share/keyrings/trivy.gpg \
       && echo 'deb [signed-by=/usr/share/keyrings/trivy.gpg] https://get.trivy.dev/deb generic main' \
-        > /etc/apt/sources.list.d/trivy.list
+        > /etc/apt/sources.list.d/trivy.list \
+      && curl -fsSL -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list
 
 # hadolint ignore=DL3008
 RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise terraform trivy
+      && apt-get -yqq install --no-install-recommends --no-install-suggests gh mise terraform trivy \
+      && gh skill --help > /dev/null
 
 RUN \
       curl -fsSL https://astral.sh/uv/install.sh \
@@ -186,18 +192,15 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
-      skills add microsoft/playwright-cli \
-        --skill playwright-cli --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add vercel-labs/agent-browser \
-        --skill agent-browser --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add herdrdev/herdr \
-        --skill herdr --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add cloudflare/security-audit-skill \
-        --skill security-audit --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add getsentry/skills \
-        --skill security-review --global --agent claude-code --agent codex --agent universal --yes \
-      && skills add cloudflare/skills \
-        --skill '*' --global --agent claude-code --agent codex --agent universal --yes \
+      --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true \
+      for agent in claude-code codex universal; do \
+        gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent "${agent}" --force \
+        && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent "${agent}" --force \
+        && gh skill install herdrdev/herdr skills/herdr --scope user --agent "${agent}" --force \
+        && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent "${agent}" --force \
+        && gh skill install getsentry/skills skills/security-review --scope user --agent "${agent}" --force \
+        && gh skill install cloudflare/skills --all --scope user --agent "${agent}" --force || exit 1; \
+      done \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"

@@ -18,8 +18,7 @@
     "agent-browser": "latest",
     "command-code": "latest",
     "npm": "latest",
-    "playwright": "latest",
-    "skills": "latest"
+    "playwright": "latest"
   },
   "devDependencies": {}
 }
