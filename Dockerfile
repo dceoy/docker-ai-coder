@@ -198,7 +198,7 @@ RUN \
         && gh skill install herdrdev/herdr skills/herdr --scope user --agent "${agent}" --force \
         && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent "${agent}" --force \
         && gh skill install getsentry/skills skills/security-review --scope user --agent "${agent}" --force \
-        && gh skill install cloudflare/skills --all --scope user --agent "${agent}" --force; \
+        && gh skill install cloudflare/skills --all --scope user --agent "${agent}" --force || exit 1; \
       done \
       && mkdir -p "${HOME}/.playwright" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
