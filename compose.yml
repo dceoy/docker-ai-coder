@@ -7,6 +7,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: cli
+      secrets:
+        - GH_TOKEN
       args:
         UBUNTU_VERSION: '26.04'
         USER_NAME: agent
@@ -58,3 +60,6 @@ services:
 volumes:
   home-data:
   hermes-data:
+secrets:
+  GH_TOKEN:
+    environment: GH_TOKEN
