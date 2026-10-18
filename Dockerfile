@@ -175,7 +175,8 @@ ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bi
 
 # hadolint ignore=DL3059
 RUN \
-      playwright-cli install-browser chromium
+      playwright-cli install-browser chromium \
+      && test -d "${PLAYWRIGHT_BROWSERS_PATH}"
 
 RUN \
       --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}" \
@@ -198,6 +199,8 @@ RUN \
       && mkdir -p "${HOME}/.claude" "${HOME}/.codex" "${HOME}/.playwright" \
       && ln -s ../.agents/skills "${HOME}/.claude/skills" \
       && ln -s ../.agents/skills "${HOME}/.codex/skills" \
+      && test -d "${HOME}/.claude/skills" \
+      && test -d "${HOME}/.codex/skills" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
