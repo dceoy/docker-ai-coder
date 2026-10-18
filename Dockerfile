@@ -105,7 +105,7 @@ USER "${USER_NAME}"
 WORKDIR /opt/agent
 
 ENV HOME=/opt/agent
-ENV PATH="/opt/cli/.mise/data/shims:/opt/agent/.local/bin:/opt/agent/.opencode/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:${PATH}"
 
 ENV UV_LINK_MODE=copy
 
@@ -180,7 +180,7 @@ WORKDIR /opt/agent
 ENV HOME=/opt/agent
 ENV SHELL=/usr/bin/zsh
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/cli/ms-playwright
-ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/opt/agent/.local/bin:/opt/agent/.opencode/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 # hadolint ignore=DL3059
 RUN \
