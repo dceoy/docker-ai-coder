@@ -13,6 +13,11 @@ ENV MISE_CONFIG_DIR=/opt/cli/.mise/config
 ENV MISE_DATA_DIR=/opt/cli/.mise/data
 ENV MISE_GLOBAL_CONFIG_FILE=/opt/cli/mise.toml
 ENV MISE_STATE_DIR=/opt/cli/.mise/state
+ENV MISE_USE_VERSIONS_HOST_TRACK=false
+ENV GH_TELEMETRY=false
+ENV CHECKPOINT_DISABLE=1
+ENV TRIVY_DISABLE_TELEMETRY=true
+ENV TRIVY_SKIP_VERSION_CHECK=true
 ENV PNPM_HOME=/opt/pnpm
 ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 ENV UV_PYTHON_PREFERENCE=only-managed
@@ -31,7 +36,7 @@ RUN \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq \
-        libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip vim wget zsh
+        libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip util-linux vim wget zsh
 
 RUN \
       extrepo enable mise \
@@ -97,27 +102,29 @@ ARG USER_GID='1001'
 
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
-WORKDIR "/home/${USER_NAME}"
+WORKDIR /opt/agent
 
-ENV HOME="/home/${USER_NAME}"
-ENV PATH="/opt/cli/.mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV HOME=/opt/agent
+ENV PATH="/opt/cli/.mise/data/shims:${PATH}"
 
 ENV UV_LINK_MODE=copy
 
 # The ARM64 Google Cloud SDK requires Python while mise installs its tools.
-COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock /opt/cli/
-
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      uv sync --project /opt/cli --locked --no-dev \
+      --mount=type=bind,source=pyproject.toml,target=/tmp/pyproject.toml \
+      --mount=type=bind,source=uv.lock,target=/tmp/uv.lock \
+      --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      cp /tmp/pyproject.toml /tmp/uv.lock /opt/cli/ \
+      && uv sync --project /opt/cli --locked --no-dev \
       && python --version
-
-COPY --chown=${USER_UID}:${USER_GID} mise.toml mise.lock /opt/cli/
 
 # hadolint ignore=DL4006
 RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
       --mount=type=cache,target=/opt/cli/.mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked \
+      cp /tmp/mise.toml /tmp/mise.lock /opt/cli/ \
+      && mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
       && gcloud --version > /dev/null
 
@@ -132,11 +139,13 @@ ARG USER_GID='1001'
 USER "${USER_NAME}"
 WORKDIR /opt/cli
 
-COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 # Keep the pnpm store in the image: the managed Node runtime links into it.
 RUN \
-      pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
+      --mount=type=bind,source=package.json,target=/tmp/package.json \
+      --mount=type=bind,source=pnpm-lock.yaml,target=/tmp/pnpm-lock.yaml \
+      --mount=type=bind,source=pnpm-workspace.yaml,target=/tmp/pnpm-workspace.yaml \
+      cp /tmp/package.json /tmp/pnpm-lock.yaml /tmp/pnpm-workspace.yaml /opt/cli/ \
+      && pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
       && npx --version
@@ -166,19 +175,26 @@ ARG GIT_USER_EMAIL='noreply@anthropic.com'
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
 
-WORKDIR "/home/${USER_NAME}"
+WORKDIR /opt/agent
 
-ENV HOME="/home/${USER_NAME}"
+ENV HOME=/opt/agent
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/cli/ms-playwright
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 # hadolint ignore=DL3059
 RUN \
-      playwright-cli install-browser chromium
+      playwright-cli install-browser chromium \
+      && test -d "${PLAYWRIGHT_BROWSERS_PATH}"
 
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/cursor.install.sh
+      --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}" \
+      /usr/local/bin/cursor.install.sh \
+      && for name in agent cursor-agent; do \
+        link="${HOME}/.local/bin/${name}" \
+        && target="$(readlink -f "${link}")" \
+        && ln -sfn "$(realpath --relative-to="$(dirname "${link}")" "${target}")" "${link}" || exit 1; \
+      done
 
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
@@ -188,33 +204,34 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true \
-      for agent in claude-code codex universal; do \
-        gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent "${agent}" --force \
-        && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent "${agent}" --force \
-        && gh skill install herdrdev/herdr skills/herdr --scope user --agent "${agent}" --force \
-        && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent "${agent}" --force \
-        && gh skill install getsentry/skills skills/security-review --scope user --agent "${agent}" --force \
-        && gh skill install cloudflare/skills --all --scope user --agent "${agent}" --force || exit 1; \
-      done \
-      && mkdir -p "${HOME}/.playwright" \
+      gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent universal --force \
+      && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent universal --force \
+      && gh skill install herdrdev/herdr skills/herdr --scope user --agent universal --force \
+      && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent universal --force \
+      && gh skill install getsentry/skills skills/security-review --scope user --agent universal --force \
+      && gh skill install cloudflare/skills --all --scope user --agent universal --force \
+      && mkdir -p "${HOME}/.claude" "${HOME}/.codex" "${HOME}/.playwright" \
+      && ln -s ../.agents/skills "${HOME}/.claude/skills" \
+      && ln -s ../.agents/skills "${HOME}/.codex/skills" \
+      && test -d "${HOME}/.claude/skills" \
+      && test -d "${HOME}/.codex/skills" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
 # hadolint ignore=SC2016
 RUN \
       /usr/local/bin/install.ohmyz.sh --unattended \
-      && sed -ie "s/^ZSH_THEME=.*/ZSH_THEME='${ZSH_THEME}'/g" ~/.zshrc \
-      && rm -f ~/.zshrce \
+      && sed -ie "s/^ZSH_THEME=.*/ZSH_THEME='${ZSH_THEME}'/g" "${HOME}/.zshrc" \
+      && rm -f "${HOME}/.zshrce" \
       && { \
         echo 'alias l="ls"'; \
         echo 'alias g="git"'; \
         echo 'alias v="vim"'; \
-      } >> ~/.zprofile
+      } >> "${HOME}/.zprofile"
 
 RUN \
       echo '.DS_Store' > "${HOME}/.gitignore" \
       && git config --global color.ui auto \
-      && git config --global core.excludesfile "${HOME}/.gitignore" \
       && git config --global core.pager '' \
       && git config --global core.quotepath false \
       && git config --global core.precomposeunicode false \
@@ -227,8 +244,7 @@ RUN \
 RUN \
       mkdir -p "${HOME}/.config/herdr" \
       && printf '\n[terminal]\nshell_mode = "login"\n' \
-        >> "${HOME}/.config/herdr/config.toml" \
-      && rsync -a "${HOME}/" /opt/agent/
+        >> "${HOME}/.config/herdr/config.toml"
 
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
@@ -237,7 +253,23 @@ RUN \
       && claude plugin install --scope=user security-guidance@claude-plugins-official \
       && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
-      && claude plugin install --scope=user codex@openai-codex
+      && claude plugin install --scope=user codex@openai-codex \
+      && for metadata in \
+        "${CLAUDE_CONFIG_DIR}/plugins/installed_plugins.json" \
+        "${CLAUDE_CONFIG_DIR}/plugins/known_marketplaces.json"; do \
+        test -s "${metadata}" \
+        && sed -i "s|${HOME}/|/home/${USER_NAME}/|g" "${metadata}" \
+        && jq empty "${metadata}" \
+        && ! grep -Fq "${HOME}/" "${metadata}" || exit 1; \
+      done
 
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENV HOME="/home/${USER_NAME}"
+ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+WORKDIR "/home/${USER_NAME}"
+
+RUN \
+      --mount=type=bind,source=entrypoint.sh,target=/tmp/entrypoint.sh \
+      install -m 0755 /tmp/entrypoint.sh /opt/cli/entrypoint.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/opt/cli/entrypoint.sh"]
 CMD ["herdr", "server"]

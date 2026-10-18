@@ -3,6 +3,7 @@ min_version = "2026.9.17"
 [settings]
 lockfile = true
 minimum_release_age = "1d"
+use_versions_host_track = false
 
 [settings.aqua]
 github_attestations = false

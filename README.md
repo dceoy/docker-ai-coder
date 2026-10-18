@@ -57,6 +57,25 @@ under `/opt/uv/python`. The Mise configuration and lockfile sit alongside
 are kept in `/opt/cli/.mise`. pnpm and uv project environments also live under
 `/opt/cli`, outside the persistent home volume.
 
+The build installs agent configuration and skills directly into `/opt/agent`
+without duplicating a populated build home. Skills are stored once in
+`.agents/skills` and linked into the Claude Code and Codex skill directories.
+Playwright Chromium is installed in `/opt/cli/ms-playwright` rather than in
+an agent home cache.
+
+At runtime, `HOME` is `/home/agent`, backed by the `home-data` volume.
+On the first start of a home volume, `entrypoint.sh` seeds missing files
+from `/opt/agent` before starting Herdr or Hermes and records an initialization
+marker. It uses `flock` to serialize initialization when containers share
+`home-data`. It also registers `/workspace` as a Git safe directory without
+adding duplicate entries. Later container recreations preserve the home volume,
+including user edits and intentional deletions. Existing volumes are initialized
+without overwriting their files. Do not use `docker compose down -v` if you
+want to keep your configuration.
+
+Dockerfile input files are staged with BuildKit `RUN --mount=type=bind`,
+rather than `COPY` or `ADD`.
+
 To refresh dependencies within declared version constraints, run:
 
 ```sh
