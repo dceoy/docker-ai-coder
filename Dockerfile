@@ -8,15 +8,15 @@ ARG USER_GID='1001'
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-ENV MISE_CACHE_DIR=/opt/mise/cache
-ENV MISE_CONFIG_DIR=/opt/mise/config
-ENV MISE_DATA_DIR=/opt/mise/data
-ENV MISE_GLOBAL_CONFIG_FILE=/opt/mise/mise.toml
-ENV MISE_STATE_DIR=/opt/mise/state
+ENV MISE_CACHE_DIR=/opt/cli/.mise/cache
+ENV MISE_CONFIG_DIR=/opt/cli/.mise/config
+ENV MISE_DATA_DIR=/opt/cli/.mise/data
+ENV MISE_GLOBAL_CONFIG_FILE=/opt/cli/mise.toml
+ENV MISE_STATE_DIR=/opt/cli/.mise/state
 ENV PNPM_HOME=/opt/pnpm
 ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 ENV UV_PYTHON_PREFERENCE=only-managed
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -78,8 +78,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/cli /var/lib/hermes /opt/mise /opt/pnpm /opt/uv \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /var/lib/hermes /opt/mise /opt/uv \
+      mkdir -p /opt/agent /opt/cli/.mise /var/lib/hermes /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /opt/cli/.mise /var/lib/hermes /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
@@ -100,7 +100,7 @@ USER "${USER_NAME}"
 WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
-ENV PATH="/opt/mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 ENV UV_LINK_MODE=copy
 
@@ -112,16 +112,11 @@ RUN \
       uv sync --project /opt/cli --locked --no-dev \
       && python --version
 
-RUN \
-      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
-      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
-      mkdir -p /opt/mise \
-      && cat /tmp/mise.toml > /opt/mise/mise.toml \
-      && cat /tmp/mise.lock > /opt/mise/mise.lock
+COPY --chown=${USER_UID}:${USER_GID} mise.toml mise.lock /opt/cli/
 
 # hadolint ignore=DL4006
 RUN \
-      --mount=type=cache,target=/opt/mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      --mount=type=cache,target=/opt/cli/.mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
       && gcloud --version > /dev/null
@@ -175,7 +170,7 @@ WORKDIR "/home/${USER_NAME}"
 
 ENV HOME="/home/${USER_NAME}"
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 
 # hadolint ignore=DL3059
 RUN \

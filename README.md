@@ -52,9 +52,10 @@ no system Node.js, npm, or Python packages are required. Add
 
 The Docker image installs the latest pnpm and uv using their official scripts,
 with pnpm under `/opt/pnpm`, uv under `/usr/local/bin`, and uv-managed Python
-under `/opt/uv/python`. Mise tools are installed under `/opt/mise`, and the
-pnpm and uv project environments live under `/opt/cli`, outside the persistent
-home volume.
+under `/opt/uv/python`. The Mise configuration and lockfile sit alongside
+`package.json` and `pyproject.toml` in `/opt/cli`; Mise-managed tools and state
+are kept in `/opt/cli/.mise`. pnpm and uv project environments also live under
+`/opt/cli`, outside the persistent home volume.
 
 To refresh dependencies within declared version constraints, run:
 
