@@ -218,7 +218,7 @@ RUN \
 RUN \
       echo '.DS_Store' > "${HOME}/.gitignore" \
       && git config --global color.ui auto \
-      && git config --global core.excludesfile "${HOME}/.gitignore" \
+      && git config --global core.excludesfile '~/.gitignore' \
       && git config --global core.pager '' \
       && git config --global core.quotepath false \
       && git config --global core.precomposeunicode false \
@@ -240,7 +240,15 @@ RUN \
       && claude plugin install --scope=user security-guidance@claude-plugins-official \
       && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
-      && claude plugin install --scope=user codex@openai-codex
+      && claude plugin install --scope=user codex@openai-codex \
+      && for metadata in \
+        "${CLAUDE_CONFIG_DIR}/plugins/installed_plugins.json" \
+        "${CLAUDE_CONFIG_DIR}/plugins/known_marketplaces.json"; do \
+        test -s "${metadata}" \
+        && sed -i "s|${HOME}/|/home/${USER_NAME}/|g" "${metadata}" \
+        && jq empty "${metadata}" \
+        && ! grep -Fq "${HOME}/" "${metadata}" || exit 1; \
+      done
 
 ENV HOME="/home/${USER_NAME}"
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
