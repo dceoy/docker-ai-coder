@@ -57,6 +57,16 @@ under `/opt/uv/python`. The Mise configuration and lockfile sit alongside
 are kept in `/opt/cli/.mise`. pnpm and uv project environments also live under
 `/opt/cli`, outside the persistent home volume.
 
+The build installs agent configuration and skills directly into `/opt/agent`
+without duplicating a populated build home. Skills are stored once in
+`.agents/skills` and linked into the Claude Code and Codex skill directories.
+Playwright Chromium is installed in `/opt/cli/ms-playwright` rather than in
+an agent home cache.
+
+At runtime, `HOME` is `/home/agent`, backed by the `home-data` volume.
+Docker Compose seeds missing files from `/opt/agent` without overwriting
+existing user files, including when reusing an older home volume.
+
 To refresh dependencies within declared version constraints, run:
 
 ```sh
