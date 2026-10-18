@@ -29,16 +29,11 @@ services:
     user: agent
     working_dir: /workspace
     post_start:
-      - command: rsync -au --ignore-existing /opt/agent/ /home/agent/
-        user: root
       - command: git config --global --add safe.directory /workspace
         user: agent
     environment:
       GH_TOKEN: ${GH_TOKEN:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-    entrypoint:
-      - /usr/bin/tini
-      - --
     command:
       - herdr
       - server
