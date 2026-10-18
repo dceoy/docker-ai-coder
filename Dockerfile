@@ -97,10 +97,10 @@ ARG USER_GID='1001'
 
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
-WORKDIR "/home/${USER_NAME}"
+WORKDIR /opt/agent
 
-ENV HOME="/home/${USER_NAME}"
-ENV PATH="/opt/cli/.mise/data/shims:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV HOME=/opt/agent
+ENV PATH="/opt/cli/.mise/data/shims:/opt/agent/.local/bin:/opt/agent/.opencode/bin:${PATH}"
 
 ENV UV_LINK_MODE=copy
 
@@ -108,7 +108,7 @@ ENV UV_LINK_MODE=copy
 COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock /opt/cli/
 
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
+      --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       uv sync --project /opt/cli --locked --no-dev \
       && python --version
 
@@ -166,18 +166,19 @@ ARG GIT_USER_EMAIL='noreply@anthropic.com'
 # hadolint ignore=DL3066
 USER "${USER_NAME}"
 
-WORKDIR "/home/${USER_NAME}"
+WORKDIR /opt/agent
 
-ENV HOME="/home/${USER_NAME}"
+ENV HOME=/opt/agent
 ENV SHELL=/usr/bin/zsh
-ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/cli/ms-playwright
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:/opt/agent/.local/bin:/opt/agent/.opencode/bin:${PATH}"
 
 # hadolint ignore=DL3059
 RUN \
       playwright-cli install-browser chromium
 
 RUN \
-      --mount=type=cache,target=/home/${USER_NAME}/.cache,uid="${USER_UID}",gid="${USER_GID}" \
+      --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}" \
       /usr/local/bin/cursor.install.sh
 
 RUN \
@@ -188,15 +189,15 @@ RUN \
 # hadolint ignore=DL3059
 RUN \
       --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true \
-      for agent in claude-code codex universal; do \
-        gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent "${agent}" --force \
-        && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent "${agent}" --force \
-        && gh skill install herdrdev/herdr skills/herdr --scope user --agent "${agent}" --force \
-        && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent "${agent}" --force \
-        && gh skill install getsentry/skills skills/security-review --scope user --agent "${agent}" --force \
-        && gh skill install cloudflare/skills --all --scope user --agent "${agent}" --force || exit 1; \
-      done \
-      && mkdir -p "${HOME}/.playwright" \
+      gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent universal --force \
+      && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent universal --force \
+      && gh skill install herdrdev/herdr skills/herdr --scope user --agent universal --force \
+      && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent universal --force \
+      && gh skill install getsentry/skills skills/security-review --scope user --agent universal --force \
+      && gh skill install cloudflare/skills --all --scope user --agent universal --force \
+      && mkdir -p "${HOME}/.claude" "${HOME}/.codex" "${HOME}/.playwright" \
+      && ln -s ../.agents/skills "${HOME}/.claude/skills" \
+      && ln -s ../.agents/skills "${HOME}/.codex/skills" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
         > "${HOME}/.playwright/cli.config.json"
 
@@ -228,7 +229,6 @@ RUN \
       mkdir -p "${HOME}/.config/herdr" \
       && printf '\n[terminal]\nshell_mode = "login"\n' \
         >> "${HOME}/.config/herdr/config.toml" \
-      && rsync -a "${HOME}/" /opt/agent/
 
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
@@ -238,6 +238,10 @@ RUN \
       && claude plugin marketplace add --scope=user anthropics/knowledge-work-plugins \
       && claude plugin marketplace add --scope=user openai/codex-plugin-cc \
       && claude plugin install --scope=user codex@openai-codex
+
+ENV HOME="/home/${USER_NAME}"
+ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
+WORKDIR "/home/${USER_NAME}"
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["herdr", "server"]
