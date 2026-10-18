@@ -180,7 +180,12 @@ RUN \
 
 RUN \
       --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}" \
-      /usr/local/bin/cursor.install.sh
+      /usr/local/bin/cursor.install.sh \
+      && for name in agent cursor-agent; do \
+        link="${HOME}/.local/bin/${name}" \
+        && target="$(readlink -f "${link}")" \
+        && ln -sfn "$(realpath --relative-to="$(dirname "${link}")" "${target}")" "${link}" || exit 1; \
+      done
 
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
