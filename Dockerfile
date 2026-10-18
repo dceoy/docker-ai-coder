@@ -228,7 +228,7 @@ RUN \
 RUN \
       mkdir -p "${HOME}/.config/herdr" \
       && printf '\n[terminal]\nshell_mode = "login"\n' \
-        >> "${HOME}/.config/herdr/config.toml" \
+        >> "${HOME}/.config/herdr/config.toml"
 
 RUN \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
