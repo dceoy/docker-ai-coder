@@ -259,5 +259,5 @@ ENV HOME="/home/${USER_NAME}"
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 WORKDIR "/home/${USER_NAME}"
 
-ENTRYPOINT ["/usr/bin/tini", "--", "/bin/bash", "-ec", "rsync -a --ignore-existing /opt/agent/ \"$HOME/\" && exec \"$@\"", "--"]
+ENTRYPOINT ["/usr/bin/tini","--","/bin/bash","-ec","if [ ! -e \"$HOME/.docker-ai-coder-initialized\" ]; then rsync -a --ignore-existing /opt/agent/ \"$HOME/\" && touch \"$HOME/.docker-ai-coder-initialized\"; fi; exec \"$@\"","--"]
 CMD ["herdr", "server"]
