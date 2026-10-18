@@ -32,6 +32,7 @@ jobs:
       contents: write
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main   # zizmor: ignore[unpinned-uses]
     with:
+      # Reuse this Trivy scan for GitHub Dependency Graph publication.
       submit-dependencies: true
       snapshot-correlator: source
       runs-on: ubuntu-26.04-arm
