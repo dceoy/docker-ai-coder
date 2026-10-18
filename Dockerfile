@@ -243,5 +243,5 @@ ENV HOME="/home/${USER_NAME}"
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 WORKDIR "/home/${USER_NAME}"
 
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/bin/bash", "-ec", "rsync -a --ignore-existing /opt/agent/ \"$HOME/\" && exec \"$@\"", "--"]
 CMD ["herdr", "server"]
