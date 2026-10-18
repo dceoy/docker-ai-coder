@@ -221,18 +221,17 @@ RUN \
 # hadolint ignore=SC2016
 RUN \
       /usr/local/bin/install.ohmyz.sh --unattended \
-      && sed -ie "s/^ZSH_THEME=.*/ZSH_THEME='${ZSH_THEME}'/g" ~/.zshrc \
-      && rm -f ~/.zshrce \
+      && sed -ie "s/^ZSH_THEME=.*/ZSH_THEME='${ZSH_THEME}'/g" "${HOME}/.zshrc" \
+      && rm -f "${HOME}/.zshrce" \
       && { \
         echo 'alias l="ls"'; \
         echo 'alias g="git"'; \
         echo 'alias v="vim"'; \
-      } >> ~/.zprofile
+      } >> "${HOME}/.zprofile"
 
 RUN \
       echo '.DS_Store' > "${HOME}/.gitignore" \
       && git config --global color.ui auto \
-      && git config --global core.excludesfile '~/.gitignore' \
       && git config --global core.pager '' \
       && git config --global core.quotepath false \
       && git config --global core.precomposeunicode false \
