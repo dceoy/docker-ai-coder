@@ -64,8 +64,12 @@ Playwright Chromium is installed in `/opt/cli/ms-playwright` rather than in
 an agent home cache.
 
 At runtime, `HOME` is `/home/agent`, backed by the `home-data` volume.
-The image entrypoint seeds missing files from `/opt/agent` before starting
-Herdr or Hermes, without overwriting existing files in older home volumes.
+On the first start of a home volume, the image entrypoint seeds missing files
+from `/opt/agent` before starting Herdr or Hermes and records an initialization
+marker. Later container recreations preserve the home volume unchanged, including
+user edits and intentional deletions. Existing volumes are initialized without
+overwriting their files. Do not use `docker compose down -v` if you want to
+keep your configuration.
 
 To refresh dependencies within declared version constraints, run:
 
