@@ -29,7 +29,7 @@ services:
     user: agent
     working_dir: /workspace
     post_start:
-      - command: bash -c '[[ -d /home/agent/.claude ]] || rsync -au /opt/agent/ /home/agent/'
+      - command: rsync -au --ignore-existing /opt/agent/ /home/agent/
         user: root
       - command: git config --global --add safe.directory /workspace
         user: agent
