@@ -78,8 +78,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/cli /var/lib/hermes /opt/pnpm /opt/uv \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /var/lib/hermes /opt/uv \
+      mkdir -p /opt/agent /opt/cli/.mise /var/lib/hermes /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /opt/cli/.mise /var/lib/hermes /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
