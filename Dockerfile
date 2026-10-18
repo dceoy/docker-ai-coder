@@ -105,19 +105,21 @@ ENV PATH="/opt/cli/.mise/data/shims:/opt/agent/.local/bin:/opt/agent/.opencode/b
 ENV UV_LINK_MODE=copy
 
 # The ARM64 Google Cloud SDK requires Python while mise installs its tools.
-COPY --chown=${USER_UID}:${USER_GID} pyproject.toml uv.lock /opt/cli/
-
 RUN \
+      --mount=type=bind,source=pyproject.toml,target=/tmp/pyproject.toml \
+      --mount=type=bind,source=uv.lock,target=/tmp/uv.lock \
       --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      uv sync --project /opt/cli --locked --no-dev \
+      cp /tmp/pyproject.toml /tmp/uv.lock /opt/cli/ \
+      && uv sync --project /opt/cli --locked --no-dev \
       && python --version
-
-COPY --chown=${USER_UID}:${USER_GID} mise.toml mise.lock /opt/cli/
 
 # hadolint ignore=DL4006
 RUN \
+      --mount=type=bind,source=mise.toml,target=/tmp/mise.toml \
+      --mount=type=bind,source=mise.lock,target=/tmp/mise.lock \
       --mount=type=cache,target=/opt/cli/.mise/cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
-      mise install --locked \
+      cp /tmp/mise.toml /tmp/mise.lock /opt/cli/ \
+      && mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
       && gcloud --version > /dev/null
 
@@ -132,11 +134,13 @@ ARG USER_GID='1001'
 USER "${USER_NAME}"
 WORKDIR /opt/cli
 
-COPY --chown=${USER_UID}:${USER_GID} package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-
 # Keep the pnpm store in the image: the managed Node runtime links into it.
 RUN \
-      pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
+      --mount=type=bind,source=package.json,target=/tmp/package.json \
+      --mount=type=bind,source=pnpm-lock.yaml,target=/tmp/pnpm-lock.yaml \
+      --mount=type=bind,source=pnpm-workspace.yaml,target=/tmp/pnpm-workspace.yaml \
+      cp /tmp/package.json /tmp/pnpm-lock.yaml /tmp/pnpm-workspace.yaml /opt/cli/ \
+      && pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
       && npx --version
@@ -259,5 +263,9 @@ ENV HOME="/home/${USER_NAME}"
 ENV PATH="/home/${USER_NAME}/.local/bin:/home/${USER_NAME}/.opencode/bin:${PATH}"
 WORKDIR "/home/${USER_NAME}"
 
-ENTRYPOINT ["/usr/bin/tini","--","/bin/bash","-ec","if [ ! -e \"$HOME/.docker-ai-coder-initialized\" ]; then rsync -a --ignore-existing /opt/agent/ \"$HOME/\" && touch \"$HOME/.docker-ai-coder-initialized\"; fi; exec \"$@\"","--"]
+RUN \
+      --mount=type=bind,source=entrypoint.sh,target=/tmp/entrypoint.sh \
+      install -m 0755 /tmp/entrypoint.sh /opt/cli/entrypoint.sh
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/opt/cli/entrypoint.sh"]
 CMD ["herdr", "server"]
