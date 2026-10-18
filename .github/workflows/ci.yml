@@ -82,7 +82,7 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   source-dependency-submission:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push')
     permissions:
       contents: write
     uses: dceoy/gha-for-devops/.github/workflows/dependency-submission.yml@main  # zizmor: ignore[unpinned-uses]
@@ -92,17 +92,19 @@ jobs:
       snapshot-correlator: source
   image-dependency-submission:
     if: >-
-      github.event_name != 'pull_request'
+      github.ref == 'refs/heads/main'
+      && github.event_name != 'pull_request'
       && needs.docker-build-and-push.result == 'success'
-      && needs.docker-build-and-push.outputs.image-ref != ''
+      && needs.docker-build-and-push.outputs.build-push-digest != ''
     needs:
       - docker-build-and-push
     permissions:
       contents: write
+      packages: read
     uses: dceoy/gha-for-devops/.github/workflows/dependency-submission.yml@main  # zizmor: ignore[unpinned-uses]
     with:
       scan-type: image
-      image-ref: ${{ needs.docker-build-and-push.outputs.image-ref }}
+      image-ref: ghcr.io/${{ github.repository_owner }}/ai-coder@${{ needs.docker-build-and-push.outputs.build-push-digest }}
       registry: ghcr.io
       snapshot-correlator: image
     secrets:
