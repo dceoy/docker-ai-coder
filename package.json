@@ -1,13 +1,6 @@
 {
   "name": "docker-ai-coder",
   "private": true,
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24.21.0",
-      "onFail": "download"
-    }
-  },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "latest",
     "@github/copilot": "latest",
@@ -20,5 +13,12 @@
     "npm": "latest",
     "playwright": "latest"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "24.21.0",
+      "onFail": "download"
+    }
+  }
 }
