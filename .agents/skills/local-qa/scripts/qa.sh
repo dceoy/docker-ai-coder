@@ -8,7 +8,7 @@ export UV_EXCLUDE_NEWER="${COOLDOWN_DAYS} days"
 export PNPM_CONFIG_MINIMUM_RELEASE_AGE=$((COOLDOWN_DAYS * 24 * 60))
 
 # Markdown and JSON
-pnpm dlx prettier --write './**/*.{md,json}'
+pnpm dlx oxfmt --write './**/*.{md,json}'
 if [[ -f .markdownlint-cli2.jsonc ]]; then
   git ls-files -z -- '*.md' '*.mdx' | xargs -0 -t pnpm dlx markdownlint-cli2 --fix --config .markdownlint-cli2.jsonc
 else
