@@ -28,3 +28,17 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: daily
+    cooldown:
+      default-days: 1
+    open-pull-requests-limit: 10
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: daily
+    cooldown:
+      default-days: 1
+    open-pull-requests-limit: 10
