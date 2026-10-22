@@ -25,7 +25,7 @@ permissions: {}
 jobs:
   docker-lint-and-scan:
     permissions:
-      contents: write
+      contents: read
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@fix/docker-lint-sbom-submission  # zizmor: ignore[unpinned-uses]
     with:
       submit-dependencies: true
