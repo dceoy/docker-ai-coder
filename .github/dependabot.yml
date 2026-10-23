@@ -8,12 +8,20 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - '*'
   - package-ecosystem: docker
     directories:
       - /
     schedule:
       interval: daily
     open-pull-requests-limit: 10
+    groups:
+      docker-dependencies:
+        patterns:
+          - '*'
   - package-ecosystem: uv
     directory: /
     schedule:
@@ -21,6 +29,10 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+    groups:
+      uv-dependencies:
+        patterns:
+          - '*'
   - package-ecosystem: npm
     directory: /
     schedule:
@@ -28,6 +40,10 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+    groups:
+      npm-dependencies:
+        patterns:
+          - '*'
   - package-ecosystem: docker-compose
     directory: /
     schedule:
@@ -35,6 +51,10 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+    groups:
+      docker-compose-dependencies:
+        patterns:
+          - '*'
   - package-ecosystem: devcontainers
     directory: /
     schedule:
@@ -42,3 +62,7 @@ updates:
     cooldown:
       default-days: 1
     open-pull-requests-limit: 10
+    groups:
+      devcontainers-dependencies:
+        patterns:
+          - '*'
