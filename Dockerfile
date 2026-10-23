@@ -116,7 +116,7 @@ RUN \
       --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       cp /tmp/pyproject.toml /tmp/uv.lock /opt/cli/ \
       && uv sync --project /opt/cli --locked --no-dev \
-      && python --version
+      && python --version \
       && find /opt/cli/.venv -type d -name __pycache__ -prune -exec rm -rf {} +
 
 # hadolint ignore=DL4006
