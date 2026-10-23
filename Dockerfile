@@ -117,6 +117,7 @@ RUN \
       cp /tmp/pyproject.toml /tmp/uv.lock /opt/cli/ \
       && uv sync --project /opt/cli --locked --no-dev \
       && python --version
+      && find /opt/cli/.venv -type d -name __pycache__ -prune -exec rm -rf {} +
 
 # hadolint ignore=DL4006
 RUN \
@@ -151,14 +152,18 @@ RUN \
       && npx --version
 
 RUN \
+      --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       HERMES_VERSION="$(mise tool github:NousResearch/hermes-agent --requested)" \
       && env -u UV_PYTHON_PREFERENCE mise exec -- install.sh --branch "v${HERMES_VERSION}" --dir /opt/cli/hermes \
-        --hermes-home /var/lib/hermes --skip-setup --skip-browser
+        --hermes-home /var/lib/hermes --skip-setup --skip-browser \
+      && find /opt/cli/hermes -type d -name __pycache__ -prune -exec rm -rf {} +
 
 # hadolint ignore=DL3002,DL3066
 USER root
 
 RUN \
+      --mount=type=cache,target=/var/cache/apt,sharing=locked \
+      --mount=type=cache,target=/var/lib/apt,sharing=locked \
       ln -s /opt/cli/hermes/venv/bin/hermes /usr/local/bin/hermes \
       && playwright install-deps chromium
 
@@ -184,6 +189,7 @@ ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bi
 
 # hadolint ignore=DL3059
 RUN \
+      --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       playwright-cli install-browser chromium \
       && test -d "${PLAYWRIGHT_BROWSERS_PATH}"
 
@@ -203,6 +209,7 @@ RUN \
 
 # hadolint ignore=DL3059
 RUN \
+      --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true \
       gh skill install microsoft/playwright-cli skills/playwright-cli --scope user --agent universal --force \
       && gh skill install vercel-labs/agent-browser skills/agent-browser --scope user --agent universal --force \
@@ -247,6 +254,7 @@ RUN \
         >> "${HOME}/.config/herdr/config.toml"
 
 RUN \
+      --mount=type=cache,target=/opt/agent/.cache,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       export CLAUDE_CONFIG_DIR='/opt/agent/.claude' \
       && claude plugin marketplace add --scope=user anthropics/claude-plugins-official \
       && claude plugin install --scope=user claude-security@claude-plugins-official \
