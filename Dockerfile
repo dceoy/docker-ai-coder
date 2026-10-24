@@ -146,6 +146,7 @@ RUN \
       --mount=type=bind,source=pnpm-lock.yaml,target=/tmp/pnpm-lock.yaml \
       --mount=type=bind,source=pnpm-workspace.yaml,target=/tmp/pnpm-workspace.yaml \
       cp /tmp/package.json /tmp/pnpm-lock.yaml /tmp/pnpm-workspace.yaml /opt/cli/ \
+      && pnpm runtime set node latest -g \
       && pnpm install --frozen-lockfile --store-dir /opt/pnpm/store \
       && node --version \
       && npm --version \
