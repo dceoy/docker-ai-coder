@@ -1,4 +1,7 @@
 minimumReleaseAge: 1440
+overrides:
+  fast-uri: 3.1.9
+  zod@<4.6.6: 4.6.7
 allowBuilds:
   '@google/genai': true
   agent-browser: true
