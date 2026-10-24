@@ -14,11 +14,7 @@
     "playwright": "latest"
   },
   "devDependencies": {},
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "24.21.0",
-      "onFail": "download"
-    }
+  "engines": {
+    "node": ">=24.22.1"
   }
 }
