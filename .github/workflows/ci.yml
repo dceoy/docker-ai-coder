@@ -29,7 +29,20 @@ jobs:
     uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main  # zizmor: ignore[unpinned-uses]
     with:
       use-trivy: false
+      use-semgrep: false
       runs-on: ubuntu-26.04-arm
+  source-security-scan:
+    permissions:
+      contents: read
+    uses: dceoy/gha-for-devops/.github/workflows/source-security-scan.yml@main  # zizmor: ignore[unpinned-uses]
+    with:
+      use-osv-scanner: false
+      use-trivy: false
+      use-semgrep: true
+      semgrep-includes: |
+        Dockerfile*
+        *.dockerfile
+      runs-on: ubuntu-slim
   source-trivy-scan:
     permissions:
       contents: write
