@@ -12,7 +12,7 @@ The image builds on Docker Hardened Images Community Debian 13 (`dhi.io/debian-b
 docker login dhi.io
 ```
 
-For GitHub Actions builds, configure the repository secret `DHI_TOKEN` with a Docker Hub access token. The reusable workflow logs in to DHI using that token and continues to publish to GHCR with `GITHUB_TOKEN`.
+For GitHub Actions builds, configure the repository secret `DOCKER_TOKEN` with a Docker Hub access token. The reusable workflow logs in to DHI using that token and continues to publish to GHCR with `GITHUB_TOKEN`.
 
 ## Docker image
 
