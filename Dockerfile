@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG UBUNTU_VERSION=26.04
-FROM public.ecr.aws/ubuntu/ubuntu:${UBUNTU_VERSION} AS base
+ARG DEBIAN_TAG=trixie-dev
+FROM dhi.io/debian-base:${DEBIAN_TAG} AS base
 
 ARG USER_NAME='agent'
 ARG USER_UID='1001'
@@ -35,7 +35,7 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq \
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq passwd \
         libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip util-linux vim wget zsh
 
 RUN \
@@ -43,7 +43,7 @@ RUN \
       && curl -fsSL https://apt.releases.hashicorp.com/gpg \
         | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
       && . /etc/os-release \
-      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${UBUNTU_CODENAME} main" \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${VERSION_CODENAME} main" \
         > /etc/apt/sources.list.d/hashicorp.list \
       && curl -fsSL https://get.trivy.dev/deb/public.key \
         | gpg --dearmor -o /usr/share/keyrings/trivy.gpg \
