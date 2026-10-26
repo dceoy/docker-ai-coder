@@ -25,21 +25,36 @@ jobs:
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
         with:
           enable-cache: false
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
-        with:
-          node-version: '24'
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413  # v6.1.0
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e  # v3.1.2
         with:
           version: 11
-          run_install: false
+          install: false
       - name: Upgrade version specifications and lockfiles
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Resolve the pinned lazy Hermes version via the authenticated GitHub API.
+          hermes_version="$(gh api repos/NousResearch/hermes-agent/releases/latest --jq '.tag_name | ltrimstr("v")')"
+          HERMES_VERSION="${hermes_version}" python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          path = Path("mise.toml")
+          before = path.read_text()
+          after, count = re.subn(
+              r'(\[tools\."github:NousResearch/hermes-agent"\]\nversion = ")[^"]+(")',
+              lambda match: f'{match.group(1)}{os.environ["HERMES_VERSION"]}{match.group(2)}',
+              before,
+              count=1,
+          )
+          if count != 1:
+              raise ValueError("Hermes Agent version not found in mise.toml")
+          if before != after:
+              path.write_text(after)
+          PY
           mise trust mise.toml
-          mise upgrade --bump --local --exclude github:NousResearch/hermes-agent
-          # Explicitly bump the pinned lazy Hermes tool as well as regular tools.
-          mise upgrade --bump --local github:NousResearch/hermes-agent
+          # Refresh all lockfile entries without installing any tool binaries.
           mise lock --bump
           uv lock --upgrade
           uv lock --check
