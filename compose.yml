@@ -10,7 +10,7 @@ services:
       secrets:
         - GH_TOKEN
       args:
-        UBUNTU_VERSION: '26.04'
+        DEBIAN_TAG: trixie-dev
         USER_NAME: agent
         USER_UID: '1001'
         USER_GID: '1001'
