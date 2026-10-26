@@ -63,6 +63,7 @@ jobs:
     uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@main  # zizmor: ignore[unpinned-uses]
     with:
       registry: ghcr.io
+      login-dhi: true
       registry-user: ${{ github.repository_owner }}
       image-name: ${{ github.repository_owner }}/ai-coder
       context: .
@@ -75,6 +76,7 @@ jobs:
       runs-on: ubuntu-26.04-arm
     secrets:
       DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DHI_TOKEN: ${{ secrets.DHI_TOKEN }}
       BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
