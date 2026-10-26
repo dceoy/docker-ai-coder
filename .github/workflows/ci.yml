@@ -75,8 +75,8 @@ jobs:
       scan-after-build: ${{ github.event_name != 'pull_request' }}
       runs-on: ubuntu-26.04-arm
     secrets:
-      DOCKER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      DHI_TOKEN: ${{ secrets.DHI_TOKEN }}
+      DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       BUILD_SECRETS: GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
   dependabot-auto-merge:
     if: >
