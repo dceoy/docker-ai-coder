@@ -4,6 +4,16 @@ Container configurations for AI coding agents
 
 [![CI](https://github.com/dceoy/docker-ai-coder/actions/workflows/ci.yml/badge.svg)](https://github.com/dceoy/docker-ai-coder/actions/workflows/ci.yml)
 
+## Docker Hardened Images
+
+The image builds on Docker Hardened Images Community Debian 13 (`dhi.io/debian-base:trixie-dev`) to preserve the interactive shell and APT toolchain. Authenticate with Docker Hub credentials before building locally:
+
+```sh
+docker login dhi.io
+```
+
+For GitHub Actions builds, configure the repository secret `DHI_TOKEN` with a Docker Hub access token. The reusable workflow logs in to DHI using that token and continues to publish to GHCR with `GITHUB_TOKEN`.
+
 ## Docker image
 
 Pull the image from [GitHub Container Registry](https://github.com/dceoy/docker-ai-coder/pkgs/container/ai-coder).
