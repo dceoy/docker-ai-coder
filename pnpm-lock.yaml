@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  undici@8.12.2: 8.12.2
+  undici@8.10.2: 8.12.2
   fast-uri: 3.1.9
   zod@<4.6.6: 4.6.7
 
