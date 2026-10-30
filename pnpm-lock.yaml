@@ -24,7 +24,7 @@ importers:
         version: 0.165.0
       '@openai/codex-security':
         specifier: latest
-        version: 0.8.0(@types/node@26.6.5)(graphql@17.0.2)
+        version: 0.8.1(@types/node@26.6.5)(graphql@17.0.2)
       '@playwright/cli':
         specifier: latest
         version: 0.1.22
@@ -33,10 +33,10 @@ importers:
         version: 0.22.2(@aws-sdk/credential-provider-node@3.972.88)(@smithy/signature-v4@5.7.4)(@types/node@26.6.5)(google-auth-library@10.9.1(supports-color@10.2.2))(supports-color@10.2.2)(ws@8.22.0)
       agent-browser:
         specifier: latest
-        version: 0.40.0
+        version: 0.41.0
       command-code:
         specifier: latest
-        version: 1.88.1(supports-color@10.2.2)
+        version: 1.88.2(supports-color@10.2.2)
       npm:
         specifier: latest
         version: 12.2.1
@@ -750,55 +750,14 @@ packages:
   '@octokit/types@18.0.0':
     resolution: {integrity: sha512-l6bAF43PNxkJp6g+W4PjoUSSkxHomXw2nOum5CTftJz1NlV3vu93NImgOYtLf6CbBUb5j+fiuzW0PPQ5JTSvZA==}
 
-  '@openai/codex-sdk@0.164.0':
-    resolution: {integrity: sha512-FyhTWM4Xa8hXpWhkr9MOvROVhBqTeD+s/XCzVLzqSQXTSnGSNkdBWjv0IzZdOO29BX4LwtMjul6ogB8tOME5og==}
+  '@openai/codex-sdk@0.165.0':
+    resolution: {integrity: sha512-q5nRFLYOL1Nank+isfrzD/cT2C7kbAIA8iCeucB07dMKUQjnb5x6Ld2SXQIuHad8pqdNVLRXD40aO20mKZglRg==}
     engines: {node: '>=18'}
 
-  '@openai/codex-security@0.8.0':
-    resolution: {integrity: sha512-BjVuYR0bio79SC/F4j+HSHOIc7lvG679EpUH2KmvbM7QLxhj2QyP6/jmXSkXjoY/e7+Yuytj9EnNg8IS8QPpzQ==}
+  '@openai/codex-security@0.8.1':
+    resolution: {integrity: sha512-x2uZxs+SP6Z0vQKDxTpCWP/VXD4z91r0wX81yQ7U+PgSAlbeIgpkIb0d7MKoYlFPyciLFA5mHmsDitcrDEykMg==}
     engines: {node: ^22.13.0 || ^24.0.0 || ^26.0.0}
     hasBin: true
-
-  '@openai/codex@0.164.0':
-    resolution: {integrity: sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==}
-    engines: {node: '>=16'}
-    hasBin: true
-
-  '@openai/codex@0.164.0-darwin-arm64':
-    resolution: {integrity: sha512-pDizgOUAtq3/k3AbUFHbaU19WpYKCja+oFpNSTLKrDQj4lTUNSDuTPJip4uQVn2/1EipQdpQrGMOQBVuI1znAA==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@openai/codex@0.164.0-darwin-x64':
-    resolution: {integrity: sha512-lIe+udnguPGzBezkgbkj2Eaz0YqOhNXT7jja136Fj0sXfI+UKNS2icmaK14GcoRAgeVEpDTtC1ftamWBPmD1zg==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@openai/codex@0.164.0-linux-arm64':
-    resolution: {integrity: sha512-LL5iTQjyDL4YRX44EWqhIfEQ5uGnmgxkQBJSxjZSeJ8L1Og83pdlzUJW/PRJ76oaVwOVgh6HXwuPEiBNEHU4lg==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@openai/codex@0.164.0-linux-x64':
-    resolution: {integrity: sha512-XLAoaWsGOT2khzl+P4FYDPTkzAr9W0VFXFaVkqlFdkM0soa1gH/4S0wSD57Ek3HHwkirAEGz2/Mwehseh+l5Mg==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [linux]
-
-  '@openai/codex@0.164.0-win32-arm64':
-    resolution: {integrity: sha512-Zkzt8HNmB/vOnlDo5D7IOlrt5rHaxYQB7iGbNP7bHcXZtrk6gaD7UriwaieGYJpcf8DqAT/0tqzY4xbs8ZwbmQ==}
-    engines: {node: '>=16'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@openai/codex@0.164.0-win32-x64':
-    resolution: {integrity: sha512-urWPhwh9YavuoAPIkmVYKBTtd5OtGVL4Ki0Fb28dhK/Mz6Pt4LSy+gbRrZFz5+RXrw9ubvXuXDCcd8beYcWhDg==}
-    engines: {node: '>=16'}
-    cpu: [x64]
-    os: [win32]
 
   '@openai/codex@0.165.0':
     resolution: {integrity: sha512-aiwtQVp2KBhJld966CuU5bVfQ46VNB4mNTl6giX3WGZdt4euI3tv2RUqJpnupPNA8DXHg2z+RoQ0Zfw87dy8Lw==}
@@ -1177,8 +1136,8 @@ packages:
     resolution: {integrity: sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==}
     engines: {node: '>= 20'}
 
-  agent-browser@0.40.0:
-    resolution: {integrity: sha512-uqDAR3ozwJKYzVENMr/ZKYTZT1LUZauI49rTiK/KsFBxQDVTdtmrWGWTMWZlaIIQWToEtZUfWVXBSSTY6aHzrA==}
+  agent-browser@0.41.0:
+    resolution: {integrity: sha512-XJtBouE5+gGUKyZU1COSmnxU6MKIlmLE2oEyHzl0ohLVOhuRjx9kqQ9vOqxiiW/Gbvi4JPF4Oz777Mn3FGiHAA==}
     engines: {node: '>=24.0.0', pnpm: '>=11.0.0'}
     hasBin: true
 
@@ -1381,8 +1340,8 @@ packages:
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
 
-  command-code@1.88.1:
-    resolution: {integrity: sha512-OUxRyk/nadTMtYJbYwxIYfRpdQwla9EA2lSqx1gNUJzLBJLBDUgGBPS7VrCDRZBjaQGI2VsS3D7NWTmajmkhHQ==}
+  command-code@1.88.2:
+    resolution: {integrity: sha512-B/+JVQecxHlkouzsVnFsRlxZ3e8VY35Grr934T1fx+c8aq4Em9kxI79B1gQ195xW50f3Svq8qc8j0QThSpNjWw==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -4011,17 +3970,17 @@ snapshots:
     dependencies:
       '@octokit/openapi-types': 29.0.1
 
-  '@openai/codex-sdk@0.164.0':
+  '@openai/codex-sdk@0.165.0':
     dependencies:
-      '@openai/codex': 0.164.0
+      '@openai/codex': 0.165.0
 
-  '@openai/codex-security@0.8.0(@types/node@26.6.5)(graphql@17.0.2)':
+  '@openai/codex-security@0.8.1(@types/node@26.6.5)(graphql@17.0.2)':
     dependencies:
       '@inquirer/prompts': 8.7.4(@types/node@26.6.5)
       '@linear/sdk': 98.0.0(graphql@17.0.2)
       '@octokit/core': 7.0.8
-      '@openai/codex': 0.164.0
-      '@openai/codex-sdk': 0.164.0
+      '@openai/codex': 0.165.0
+      '@openai/codex-sdk': 0.165.0
       ajv: 8.20.0
       fflate: 0.8.3
       incur: 0.7.1
@@ -4043,33 +4002,6 @@ snapshots:
       - '@types/react'
       - graphql
       - react-devtools-core
-
-  '@openai/codex@0.164.0':
-    optionalDependencies:
-      '@openai/codex-darwin-arm64': '@openai/codex@0.164.0-darwin-arm64'
-      '@openai/codex-darwin-x64': '@openai/codex@0.164.0-darwin-x64'
-      '@openai/codex-linux-arm64': '@openai/codex@0.164.0-linux-arm64'
-      '@openai/codex-linux-x64': '@openai/codex@0.164.0-linux-x64'
-      '@openai/codex-win32-arm64': '@openai/codex@0.164.0-win32-arm64'
-      '@openai/codex-win32-x64': '@openai/codex@0.164.0-win32-x64'
-
-  '@openai/codex@0.164.0-darwin-arm64':
-    optional: true
-
-  '@openai/codex@0.164.0-darwin-x64':
-    optional: true
-
-  '@openai/codex@0.164.0-linux-arm64':
-    optional: true
-
-  '@openai/codex@0.164.0-linux-x64':
-    optional: true
-
-  '@openai/codex@0.164.0-win32-arm64':
-    optional: true
-
-  '@openai/codex@0.164.0-win32-x64':
-    optional: true
 
   '@openai/codex@0.165.0':
     optionalDependencies:
@@ -4452,7 +4384,7 @@ snapshots:
 
   agent-base@9.0.0: {}
 
-  agent-browser@0.40.0: {}
+  agent-browser@0.41.0: {}
 
   ai@6.0.315(zod@4.6.7):
     dependencies:
@@ -4638,7 +4570,7 @@ snapshots:
 
   comma-separated-tokens@2.0.3: {}
 
-  command-code@1.88.1(supports-color@10.2.2):
+  command-code@1.88.2(supports-color@10.2.2):
     dependencies:
       '@ai-sdk/anthropic': 3.0.135(zod@4.6.7)
       '@ai-sdk/openai': 3.0.131(zod@4.6.7)
