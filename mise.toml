@@ -21,7 +21,7 @@ zizmor = "latest"
 "github:google-antigravity/antigravity-cli" = { version = "latest", matching = "agy_cli", rename_exe = { antigravity = "agy" } }
 
 [tools."github:NousResearch/hermes-agent"]
-version = "0.22.5"
+version = "0.22.6"
 lazy = true
 lazy_bins = ["install.sh"]
 os = ["linux", "macos"]
