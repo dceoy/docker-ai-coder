@@ -13,7 +13,10 @@
     "npm": "latest",
     "playwright": "latest"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "markdownlint-cli2": "latest",
+    "oxfmt": "latest"
+  },
   "engines": {
     "node": ">=24.22.1",
     "pnpm": ">=11 <13"
