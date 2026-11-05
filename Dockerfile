@@ -35,7 +35,7 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg passwd \
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq passwd \
         libffi-dev ripgrep rsync tini tree unzip util-linux vim wget zsh
 
 # hadolint ignore=DL3008
