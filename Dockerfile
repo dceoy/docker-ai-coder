@@ -35,8 +35,8 @@ RUN \
       apt-get -yqq update \
       && apt-get -yqq upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
-        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq passwd \
-        libffi-dev ripgrep rsync shellcheck shfmt tini tree unzip util-linux vim wget zsh
+        apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg passwd \
+        libffi-dev ripgrep rsync tini tree unzip util-linux vim wget zsh
 
 RUN \
       extrepo enable mise \
