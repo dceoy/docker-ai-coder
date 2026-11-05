@@ -38,30 +38,13 @@ RUN \
         apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg passwd \
         libffi-dev ripgrep rsync tini tree unzip util-linux vim wget zsh
 
-RUN \
-      extrepo enable mise \
-      && curl -fsSL https://apt.releases.hashicorp.com/gpg \
-        | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-      && . /etc/os-release \
-      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com ${VERSION_CODENAME} main" \
-        > /etc/apt/sources.list.d/hashicorp.list \
-      && curl -fsSL https://get.trivy.dev/deb/public.key \
-        | gpg --dearmor -o /usr/share/keyrings/trivy.gpg \
-      && echo 'deb [signed-by=/usr/share/keyrings/trivy.gpg] https://get.trivy.dev/deb generic main' \
-        > /etc/apt/sources.list.d/trivy.list \
-      && curl -fsSL -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
-        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-      && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-        > /etc/apt/sources.list.d/github-cli.list
-
 # hadolint ignore=DL3008
 RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
-      apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests gh mise terraform trivy \
-      && gh skill --help > /dev/null
+      extrepo enable mise \
+      && apt-get -yqq update \
+      && apt-get -yqq install --no-install-recommends --no-install-suggests mise
 
 RUN \
       curl -fsSL https://astral.sh/uv/install.sh \
@@ -127,7 +110,10 @@ RUN \
       cp /tmp/mise.toml /tmp/mise.lock /opt/cli/ \
       && mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
-      && gcloud --version > /dev/null
+      && gcloud --version > /dev/null \
+      && gh skill --help > /dev/null \
+      && terraform version > /dev/null \
+      && trivy --version > /dev/null
 
 
 FROM mise-tools AS dependencies
