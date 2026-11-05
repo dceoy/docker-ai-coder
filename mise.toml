@@ -12,7 +12,6 @@ github_attestations = false
 actionlint = "latest"
 awscli = "2"
 gcloud = "latest"
-gh = "latest"
 hadolint = "latest"
 herdr = "latest"
 shellcheck = "latest"

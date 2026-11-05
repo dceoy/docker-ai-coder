@@ -43,8 +43,14 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       extrepo enable mise \
+      && curl -fsSL -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+        https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+      && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+      && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+        > /etc/apt/sources.list.d/github-cli.list \
       && apt-get -yqq update \
-      && apt-get -yqq install --no-install-recommends --no-install-suggests mise
+      && apt-get -yqq install --no-install-recommends --no-install-suggests gh mise \
+      && gh skill --help > /dev/null
 
 RUN \
       curl -fsSL https://astral.sh/uv/install.sh \
@@ -111,7 +117,6 @@ RUN \
       && mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
       && gcloud --version > /dev/null \
-      && gh skill --help > /dev/null \
       && terraform version > /dev/null \
       && trivy --version > /dev/null
 
