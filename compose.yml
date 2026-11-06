@@ -53,9 +53,38 @@ services:
       - hermes
       - gateway
       - run
+  codex-app-server:
+    extends:
+      service: herdr
+    profiles:
+      - codex
+    container_name: codex-app-server
+    restart: unless-stopped
+    tty: false
+    stdin_open: false
+    environment:
+      # `extends` merges environment maps; blank credentials inherited from herdr.
+      GH_TOKEN: ''
+      ANTHROPIC_API_KEY: ''
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - '127.0.0.1:4500:4500'
+    secrets:
+      - CODEX_WS_TOKEN
+    command:
+      - codex
+      - app-server
+      - --listen
+      - ws://0.0.0.0:4500
+      - --ws-auth
+      - capability-token
+      - --ws-token-file
+      - /run/secrets/CODEX_WS_TOKEN
 volumes:
   home-data:
   hermes-data:
 secrets:
+  CODEX_WS_TOKEN:
+    environment: CODEX_WS_TOKEN
   GH_TOKEN:
     environment: GH_TOKEN

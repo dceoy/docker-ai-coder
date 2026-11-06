@@ -40,10 +40,42 @@ Then start the gateway:
 docker compose up -d hermes
 ```
 
+## Codex app server
+
+Create a dedicated token for incoming WebSocket connections:
+
+```sh
+export CODEX_WS_TOKEN="$(openssl rand -hex 32)"
+```
+
+For API key authentication, set `OPENAI_API_KEY` in your environment and store
+it in the shared home volume before starting the server:
+
+```sh
+docker compose run --rm codex-app-server sh -c \
+  'printenv OPENAI_API_KEY | codex login --with-api-key'
+```
+
+Skip that login step if the shared home already contains Codex credentials.
+The API key authenticates outbound model requests and is separate from the
+inbound WebSocket token. Then start the server:
+
+```sh
+docker compose up -d codex-app-server
+```
+
+The WebSocket endpoint is available at `ws://127.0.0.1:4500` on the host.
+Compose mounts `CODEX_WS_TOKEN` as a secret file and the server requires
+capability-token authentication. Clients must send
+`Authorization: Bearer <CODEX_WS_TOKEN>` during the WebSocket handshake, replacing
+the placeholder with the token value. Keep the token securely for clients and
+subsequent container recreations. To rotate it, export a new value and run
+`docker compose up -d --force-recreate codex-app-server`.
+
 ## Dependencies
 
-Standalone CLI tools, including AWS CLI v2 and Google Cloud CLI, are managed
-with Mise. JavaScript dependencies are managed with pnpm, and Python
+Go, Rust, and standalone CLI tools, including AWS CLI v2 and Google Cloud CLI,
+are managed with Mise. JavaScript dependencies are managed with pnpm, and Python
 dependencies are managed with uv. Install the latest pnpm
 and uv using their official installation scripts before installing the
 locked tools and dependencies locally:
@@ -66,6 +98,9 @@ under `/opt/uv/python`. The Mise configuration and lockfile sit alongside
 `package.json` and `pyproject.toml` in `/opt/cli`; Mise-managed tools and state
 are kept in `/opt/cli/.mise`. pnpm and uv project environments also live under
 `/opt/cli`, outside the persistent home volume.
+Rust toolchains use `RUSTUP_HOME=/opt/cli/rustup` and Cargo uses
+`CARGO_HOME=/opt/cli/cargo`, so both remain available with an existing initialized
+home volume. Cargo-installed binaries in `/opt/cli/cargo/bin` are on `PATH`.
 
 The build installs agent configuration and skills directly into `/opt/agent`
 without duplicating a populated build home. Skills are stored once in
