@@ -117,6 +117,9 @@ RUN \
       && mise install --locked \
       && aws --version 2>&1 | grep -q '^aws-cli/2[.]' \
       && gcloud --version > /dev/null \
+      && go version \
+      && rustc --version \
+      && cargo --version \
       && terraform version > /dev/null \
       && trivy --version > /dev/null
 

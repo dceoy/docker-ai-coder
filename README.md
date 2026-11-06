@@ -42,8 +42,8 @@ docker compose up -d hermes
 
 ## Dependencies
 
-Standalone CLI tools, including AWS CLI v2 and Google Cloud CLI, are managed
-with Mise. JavaScript dependencies are managed with pnpm, and Python
+Go, Rust, and standalone CLI tools, including AWS CLI v2 and Google Cloud CLI,
+are managed with Mise. JavaScript dependencies are managed with pnpm, and Python
 dependencies are managed with uv. Install the latest pnpm
 and uv using their official installation scripts before installing the
 locked tools and dependencies locally:
