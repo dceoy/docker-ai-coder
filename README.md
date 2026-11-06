@@ -42,12 +42,25 @@ docker compose up -d hermes
 
 ## Codex app server
 
-Create a dedicated token for incoming WebSocket connections, then start the
-Codex app server with an API key or credentials already stored in the shared
-home volume:
+Create a dedicated token for incoming WebSocket connections:
 
 ```sh
 export CODEX_WS_TOKEN="$(openssl rand -hex 32)"
+```
+
+For API key authentication, set `OPENAI_API_KEY` in your environment and store
+it in the shared home volume before starting the server:
+
+```sh
+docker compose run --rm codex-app-server sh -c \
+  'printenv OPENAI_API_KEY | codex login --with-api-key'
+```
+
+Skip that login step if the shared home already contains Codex credentials.
+The API key authenticates outbound model requests and is separate from the
+inbound WebSocket token. Then start the server:
+
+```sh
 docker compose up -d codex-app-server
 ```
 
@@ -58,9 +71,6 @@ capability-token authentication. Clients must send
 the placeholder with the token value. Keep the token securely for clients and
 subsequent container recreations. To rotate it, export a new value and run
 `docker compose up -d --force-recreate codex-app-server`.
-
-Set `OPENAI_API_KEY` in the environment when using API key authentication for
-outbound model requests. It is separate from the inbound WebSocket token.
 
 ## Dependencies
 
