@@ -42,17 +42,25 @@ docker compose up -d hermes
 
 ## Codex app server
 
-Start the Codex app server with an API key or credentials already stored in
-the shared home volume:
+Create a dedicated token for incoming WebSocket connections, then start the
+Codex app server with an API key or credentials already stored in the shared
+home volume:
 
 ```sh
+export CODEX_WS_TOKEN="$(openssl rand -hex 32)"
 docker compose up -d codex-app-server
 ```
 
 The WebSocket endpoint is available at `ws://127.0.0.1:4500` on the host.
-Set `OPENAI_API_KEY` in the environment when using API key authentication.
-The endpoint has no authentication and is also reachable by other containers
-on the Compose network; connect only trusted clients.
+Compose mounts `CODEX_WS_TOKEN` as a secret file and the server requires
+capability-token authentication. Clients must send
+`Authorization: Bearer <CODEX_WS_TOKEN>` during the WebSocket handshake, replacing
+the placeholder with the token value. Keep the token securely for clients and
+subsequent container recreations. To rotate it, export a new value and run
+`docker compose up -d --force-recreate codex-app-server`.
+
+Set `OPENAI_API_KEY` in the environment when using API key authentication for
+outbound model requests. It is separate from the inbound WebSocket token.
 
 ## Dependencies
 
@@ -80,6 +88,9 @@ under `/opt/uv/python`. The Mise configuration and lockfile sit alongside
 `package.json` and `pyproject.toml` in `/opt/cli`; Mise-managed tools and state
 are kept in `/opt/cli/.mise`. pnpm and uv project environments also live under
 `/opt/cli`, outside the persistent home volume.
+Rust toolchains use `RUSTUP_HOME=/opt/cli/rustup` and Cargo uses
+`CARGO_HOME=/opt/cli/cargo`, so both remain available with an existing initialized
+home volume. Cargo-installed binaries in `/opt/cli/cargo/bin` are on `PATH`.
 
 The build installs agent configuration and skills directly into `/opt/agent`
 without duplicating a populated build home. Skills are stored once in

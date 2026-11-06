@@ -19,9 +19,11 @@ ENV CHECKPOINT_DISABLE=1
 ENV TRIVY_DISABLE_TELEMETRY=true
 ENV TRIVY_SKIP_VERSION_CHECK=true
 ENV PNPM_HOME=/opt/pnpm
+ENV RUSTUP_HOME=/opt/cli/rustup
+ENV CARGO_HOME=/opt/cli/cargo
 ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python
 ENV UV_PYTHON_PREFERENCE=only-managed
-ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
+ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/cargo/bin:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
@@ -72,8 +74,8 @@ RUN \
       && chmod +x /usr/local/bin/cursor.install.sh
 
 RUN \
-      mkdir -p /opt/agent /opt/cli/.mise /var/lib/hermes /opt/pnpm /opt/uv \
-      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /opt/cli/.mise /var/lib/hermes /opt/uv \
+      mkdir -p /opt/agent /opt/cli/.mise /opt/cli/rustup /opt/cli/cargo /var/lib/hermes /opt/pnpm /opt/uv \
+      && chown "${USER_UID}:${USER_GID}" /opt/agent /opt/cli /opt/cli/.mise /opt/cli/rustup /opt/cli/cargo /var/lib/hermes /opt/uv \
       && chown -R "${USER_UID}:${USER_GID}" /opt/pnpm
 
 RUN \
