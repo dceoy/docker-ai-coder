@@ -40,6 +40,20 @@ Then start the gateway:
 docker compose up -d hermes
 ```
 
+## Codex app server
+
+Start the Codex app server with an API key or credentials already stored in
+the shared home volume:
+
+```sh
+docker compose up -d codex-app-server
+```
+
+The WebSocket endpoint is available at `ws://127.0.0.1:4500` on the host.
+Set `OPENAI_API_KEY` in the environment when using API key authentication.
+The endpoint has no authentication and is also reachable by other containers
+on the Compose network; connect only trusted clients.
+
 ## Dependencies
 
 Go, Rust, and standalone CLI tools, including AWS CLI v2 and Google Cloud CLI,
