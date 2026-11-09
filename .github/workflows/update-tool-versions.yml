@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           persist-credentials: false
-      - uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c  # v5.2.6
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b  # v5.2.7
         with:
           install: false
           cache: false
@@ -62,7 +62,7 @@ jobs:
           pnpm update --latest --ignore-scripts
           pnpm install --lockfile-only --frozen-lockfile --ignore-scripts
       - name: Create update PR
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8  # v8.1.2
         with:
           token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}  # zizmor: ignore[secrets-outside-env] optional caller-provided token
           branch: chore/update-tool-versions
