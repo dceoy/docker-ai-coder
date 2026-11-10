@@ -23,6 +23,48 @@ on:
         default: lint-and-scan
 permissions: {}
 jobs:
+  compose-runtime-smoke:
+    runs-on: ubuntu-26.04-arm
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: Validate Compose profiles and inherited security settings
+        env:
+          GH_TOKEN: ci-placeholder
+          CODEX_WS_TOKEN: ci-placeholder
+        run: |
+          set -euo pipefail
+          docker compose --profile hermes --profile codex config --quiet
+          docker compose --profile hermes --profile codex config --format json | jq -e '
+            .services as $services
+            | all(["herdr", "hermes", "codex-app-server"][];
+                . as $service
+                | ($services[$service].user == "agent")
+                  and (($services[$service].cap_drop | index("ALL")) != null)
+                  and (($services[$service].security_opt | index("no-new-privileges:true")) != null)
+                  and ($services[$service].pids_limit == -1)
+              )
+          '
+          AI_CODER_PIDS_LIMIT=2048 docker compose --profile hermes --profile codex config --format json |
+            jq -e '[.services[].pids_limit] | all(.[]; . == 2048)'
+      - name: Smoke-test the agent containers with restricted privileges
+        env:
+          GH_TOKEN: ci-placeholder
+          CODEX_WS_TOKEN: ci-placeholder
+        run: |
+          set -euo pipefail
+          docker compose pull herdr
+          for service in herdr hermes codex-app-server; do
+            docker compose --profile hermes --profile codex run -T --rm --no-deps "$service" sh -eu -c '
+              test "$(id -un)" = agent
+              grep -Eq "^NoNewPrivs:[[:space:]]+1$" /proc/self/status
+              grep -Eq "^CapEff:[[:space:]]+0+$" /proc/self/status
+              command -v herdr
+              command -v hermes
+              command -v codex
+            '
+          done
   docker-lint-and-scan:
     permissions:
       contents: read

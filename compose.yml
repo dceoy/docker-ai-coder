@@ -31,7 +31,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    pids_limit: 512
+    pids_limit: ${AI_CODER_PIDS_LIMIT:--1}
     working_dir: /workspace
     environment:
       GH_TOKEN: ${GH_TOKEN:-}

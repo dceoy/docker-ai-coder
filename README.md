@@ -75,12 +75,18 @@ subsequent container recreations. To rotate it, export a new value and run
 ## Runtime isolation
 
 All Compose services inherit security settings from `herdr`: they run as the
-unprivileged `agent` user, drop all Linux capabilities, disallow gaining
-privileges with `no-new-privileges`, and limit the container to 512 processes.
-These controls also apply to `hermes` and `codex-app-server` through Compose
-`extends`. Persistent volumes and the writable workspace are unchanged.
+unprivileged `agent` user, drop all Linux capabilities, and disallow
+gaining privileges with `no-new-privileges`. These controls also apply to
+`hermes` and `codex-app-server` through Compose `extends`. Persistent volumes
+and the writable workspace are unchanged.
 
-These settings limit privilege escalation and fork exhaustion, but do **not**
+The optional `AI_CODER_PIDS_LIMIT` environment variable sets each service's
+PIDs cgroup limit. It defaults to `-1` (unlimited) to avoid breaking parallel
+coding agents and Chromium workers without workload measurements. For example,
+`AI_CODER_PIDS_LIMIT=2048 docker compose up -d` enables a limit after verifying
+the task/thread count under representative workloads.
+
+These settings reduce privilege escalation risk, but do **not**
 isolate credentials between agents. The shared `home-data` volume may contain
 CLI login state, and `GH_TOKEN` / `ANTHROPIC_API_KEY` remain available to
 the services that receive them. Do not run untrusted multi-tenant workloads
