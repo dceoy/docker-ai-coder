@@ -72,6 +72,27 @@ the placeholder with the token value. Keep the token securely for clients and
 subsequent container recreations. To rotate it, export a new value and run
 `docker compose up -d --force-recreate codex-app-server`.
 
+## Runtime isolation
+
+All Compose services inherit security settings from `herdr`: they run as the
+unprivileged `agent` user, drop all Linux capabilities, and disallow
+gaining privileges with `no-new-privileges`. These controls also apply to
+`hermes` and `codex-app-server` through Compose `extends`. Persistent volumes
+and the writable workspace are unchanged.
+
+The optional `AI_CODER_PIDS_LIMIT` environment variable sets each service's
+PIDs cgroup limit. It defaults to `-1` (unlimited) to avoid breaking parallel
+coding agents and Chromium workers without workload measurements. For example,
+`AI_CODER_PIDS_LIMIT=2048 docker compose up -d` enables a limit after verifying
+the task/thread count under representative workloads.
+
+These settings reduce privilege escalation risk, but do **not**
+isolate credentials between agents. The shared `home-data` volume may contain
+CLI login state, and `GH_TOKEN` / `ANTHROPIC_API_KEY` remain available to
+the services that receive them. Do not run untrusted multi-tenant workloads
+under this configuration. Separate service homes and a credential broker would
+require a migration plan and are not implemented here.
+
 ## Dependencies
 
 Go, Rust, and standalone CLI tools, including AWS CLI v2 and Google Cloud CLI,
