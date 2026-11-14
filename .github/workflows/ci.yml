@@ -26,7 +26,7 @@ jobs:
   docker-lint-and-scan:
     permissions:
       contents: read
-    uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@main  # zizmor: ignore[unpinned-uses]
+    uses: dceoy/gha-for-devops/.github/workflows/docker-lint-and-scan.yml@9e394d7c18b3a00fb853cd3c693cc4eeb5f0c825  # v2.3.0
     with:
       use-trivy: false
       use-semgrep: false
@@ -34,7 +34,7 @@ jobs:
   source-security-scan:
     permissions:
       contents: read
-    uses: dceoy/gha-for-devops/.github/workflows/source-security-scan.yml@main  # zizmor: ignore[unpinned-uses]
+    uses: dceoy/gha-for-devops/.github/workflows/source-security-scan.yml@9e394d7c18b3a00fb853cd3c693cc4eeb5f0c825  # v2.3.0
     with:
       use-osv-scanner: false
       use-trivy: false
@@ -46,7 +46,7 @@ jobs:
   source-trivy-scan:
     permissions:
       contents: write
-    uses: dceoy/gha-for-devops/.github/workflows/trivy-scan.yml@main  # zizmor: ignore[unpinned-uses]
+    uses: dceoy/gha-for-devops/.github/workflows/trivy-scan.yml@9e394d7c18b3a00fb853cd3c693cc4eeb5f0c825  # v2.3.0
     with:
       scan-ref: .
       submit-dependencies: true
@@ -73,7 +73,7 @@ jobs:
       contents: write
       packages: write
       id-token: write
-    uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@main  # zizmor: ignore[unpinned-uses]
+    uses: dceoy/gha-for-devops/.github/workflows/docker-build-and-push.yml@9e394d7c18b3a00fb853cd3c693cc4eeb5f0c825  # v2.3.0
     with:
       registry: ghcr.io
       login-dhi: true
@@ -100,7 +100,7 @@ jobs:
       actions: read
       checks: read
       statuses: read
-    uses: dceoy/gha-for-devops/.github/workflows/dependabot-auto-merge.yml@main  # zizmor: ignore[unpinned-uses]
+    uses: dceoy/gha-for-devops/.github/workflows/dependabot-auto-merge.yml@9e394d7c18b3a00fb853cd3c693cc4eeb5f0c825  # v2.3.0
     with:
       unconditional: true
     secrets:
