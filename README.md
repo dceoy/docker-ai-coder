@@ -34,11 +34,57 @@ Run the setup wizard once:
 docker compose run --rm hermes hermes setup
 ```
 
-Then start the gateway:
+Then start the gateway for messaging use:
 
 ```sh
 docker compose up -d hermes
 ```
+
+### Browser UI (Webapp)
+
+The Hermes gateway can serve the Desktop-style Webapp without another service.
+The Compose port is bound to the host's loopback interface at
+`http://127.0.0.1:9120`, not exposed to the LAN or internet. The Webapp
+requires a sign-in provider because it listens on `0.0.0.0` *inside* Docker.
+
+Add the following values to your local `.env` (already gitignored), using
+`openssl rand -hex 24` to generate a password and `openssl rand -hex 32`
+for a stable session-signing secret:
+
+```dotenv
+HERMES_UI_USER=admin
+HERMES_UI_PASSWORD=<generated-password>
+HERMES_UI_SECRET=<generated-session-secret>
+```
+
+Protect the file with `chmod 600 .env`. Do not commit the credentials.
+The credentials are optional for other Compose services; if the Webapp is
+enabled without a valid sign-in provider, Hermes refuses to serve it.
+
+After running the one-time `hermes setup` command above, enable the Webapp in
+the persistent `hermes-data` volume:
+
+```sh
+docker compose run --rm hermes hermes config set webapp.enabled true
+docker compose run --rm hermes hermes config set webapp.host 0.0.0.0
+docker compose run --rm hermes hermes config set webapp.port 9120
+docker compose run --rm hermes hermes config set webapp.public_url http://localhost:9120
+docker compose up -d --force-recreate hermes
+docker compose exec hermes hermes webapp --status
+```
+
+Open `http://localhost:9120` on the Docker host and sign in with the
+configured credentials. For a remote Docker host, keep the port private and
+forward it over SSH rather than publishing it publicly:
+
+```sh
+ssh -L 9120:127.0.0.1:9120 user@remote-host
+```
+
+The Webapp and messaging clients use the same gateway and persistent data.
+For a terminal UI, use `docker compose exec -it hermes hermes --tui`.
+The separate management Dashboard on port 9119 is not enabled here: the
+custom image uses `tini`, not the upstream image's s6 supervisor.
 
 ## Codex app server
 

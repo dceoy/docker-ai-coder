@@ -52,6 +52,13 @@ services:
     restart: unless-stopped
     environment:
       HERMES_HOME: /var/lib/hermes
+      # Optional unless the Webapp is enabled; Hermes denies unauthenticated
+      # non-loopback Webapp listeners when these are unset.
+      HERMES_DASHBOARD_BASIC_AUTH_USERNAME: ${HERMES_UI_USER:-}
+      HERMES_DASHBOARD_BASIC_AUTH_PASSWORD: ${HERMES_UI_PASSWORD:-}
+      HERMES_DASHBOARD_BASIC_AUTH_SECRET: ${HERMES_UI_SECRET:-}
+    ports:
+      - '127.0.0.1:9120:9120'
     volumes:
       - hermes-data:/var/lib/hermes
     command:
