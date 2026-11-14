@@ -34,6 +34,12 @@ Run the setup wizard once:
 docker compose run --rm hermes hermes setup
 ```
 
+Then start the gateway for messaging use:
+
+```sh
+docker compose up -d hermes
+```
+
 ### Browser UI (Webapp)
 
 The Hermes gateway can serve the Desktop-style Webapp without another service.
