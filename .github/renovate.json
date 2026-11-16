@@ -1,14 +1,69 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended",
+    "group:all"
+  ],
   "minimumReleaseAge": "1 day",
-  "lockFileMaintenance": {"enabled": true},
+  "lockFileMaintenance": {
+    "enabled": true,
+    "groupName": "All dependency lockfiles",
+    "schedule": [
+      "at any time"
+    ]
+  },
   "packageRules": [
     {
-      "description": "Automatically merge minor and patch-level updates",
-      "matchUpdateTypes": ["minor", "patch", "digest"],
-      "automerge": true,
-      "automergeType": "branch"
+      "description": "Dependabot manages GitHub Actions and container updates",
+      "matchManagers": [
+        "github-actions",
+        "dockerfile",
+        "docker-compose",
+        "devcontainer"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Dependabot manages regular npm and uv dependency updates",
+      "matchManagers": [
+        "npm",
+        "pep621"
+      ],
+      "matchDatasources": [
+        "npm",
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch",
+        "pin",
+        "pinDigest",
+        "digest",
+        "lockfileUpdate",
+        "rollback",
+        "bump",
+        "replacement"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Keep Node.js runtime upgrades within the existing major version",
+      "matchDatasources": [
+        "node-version"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "Review lockfile maintenance updates",
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
+      "minimumReleaseAge": null,
+      "automerge": false
     }
   ]
 }

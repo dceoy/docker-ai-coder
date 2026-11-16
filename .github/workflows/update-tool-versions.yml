@@ -9,74 +9,15 @@ concurrency:
   group: update-tool-versions
   cancel-in-progress: false
 jobs:
-  update-tool-versions:
-    runs-on: ubuntu-26.04-arm
+  renovate:
     permissions:
       contents: write
+      issues: write
       pull-requests: write
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: jdx/mise-action@d5574b52816a478f9d4e6529a3f6ff17a8a36785  # v5.2.8
-        with:
-          install: false
-          cache: false
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
-        with:
-          enable-cache: false
-      - uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1  # v3.2.0
-        with:
-          version: latest
-          install: false
-      - name: Upgrade version specifications and lockfiles
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Resolve the pinned lazy Hermes version via the authenticated GitHub API.
-          hermes_version="$(gh api repos/NousResearch/hermes-agent/releases/latest --jq '.tag_name | ltrimstr("v")')"
-          HERMES_VERSION="${hermes_version}" python3 - <<'PY'
-          import os
-          import re
-          from pathlib import Path
-
-          path = Path("mise.toml")
-          before = path.read_text()
-          after, count = re.subn(
-              r'(\[tools\."github:NousResearch/hermes-agent"\]\nversion = ")[^"]+(")',
-              lambda match: f'{match.group(1)}{os.environ["HERMES_VERSION"]}{match.group(2)}',
-              before,
-              count=1,
-          )
-          if count != 1:
-              raise ValueError("Hermes Agent version not found in mise.toml")
-          if before != after:
-              path.write_text(after)
-          PY
-          mise trust mise.toml
-          # Refresh all lockfile entries without installing any tool binaries.
-          mise lock --bump
-          uv lock --upgrade
-          uv lock --check
-          pnpm runtime set node "$(jq -r '.devEngines.runtime.version | split(".")[0]' package.json)"
-          pnpm update --latest --ignore-scripts
-          pnpm install --lockfile-only --frozen-lockfile --ignore-scripts
-      - name: Create update PR
-        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1  # v8.1.3
-        with:
-          token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}  # zizmor: ignore[secrets-outside-env] optional caller-provided token
-          branch: chore/update-tool-versions
-          delete-branch: true
-          add-paths: |
-            mise.toml
-            mise.lock
-            pyproject.toml
-            uv.lock
-            package.json
-            pnpm-lock.yaml
-          commit-message: "chore: update mise, uv, and pnpm tool versions"
-          title: "chore: update mise, uv, and pnpm tool versions"
-          body: |
-            Update tool version specifications and lockfiles using mise, uv, and pnpm,
-            including the pinned Hermes Agent release and its source-archive URLs.
-            Review compatibility and CI before merging. No automatic merging.
+      statuses: write
+    uses: dceoy/gha-for-devops/.github/workflows/renovate.yml@b7d9e0c64d9cd6d7198da715b11a4648373e9a23
+    with:
+      dry-run: false
+      allow-unsafe-mise-execution: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
