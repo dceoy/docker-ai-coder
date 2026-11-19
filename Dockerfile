@@ -181,6 +181,7 @@ WORKDIR /opt/agent
 ENV HOME=/opt/agent
 ENV SHELL=/usr/bin/zsh
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/cli/ms-playwright
+ENV MUSE_CONTRIBUTOR_MODE=0
 ENV PATH="/opt/cli/muse/bin:/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 # hadolint ignore=DL3059
