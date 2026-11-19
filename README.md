@@ -22,6 +22,33 @@ Pull the image from [GitHub Container Registry](https://github.com/dceoy/docker-
 docker image pull ghcr.io/dceoy/ai-coder:latest
 ```
 
+## Muse Code
+
+Muse Code is installed using Meta's official Linux installer. Its binaries live
+in `/opt/cli/muse/bin` (on `PATH`), outside the persistent `home-data`
+volume, so it is available with both new and existing volumes. Muse Code's
+login and session state are stored under the persistent runtime home.
+
+Verify the installation and start an interactive session in `/workspace`:
+
+```sh
+docker compose run --rm herdr muse --version
+docker compose run --rm herdr muse
+```
+
+On first use, trust the workspace and sign in through the offered browser flow
+or API-key option. To run a one-off prompt without interactive authentication,
+set `META_API_KEY` in the host environment and forward it only to that run:
+
+```sh
+docker compose run --rm -e META_API_KEY herdr muse exec "Summarize this repository"
+```
+
+The API key is not baked into the image or injected into every Compose service.
+The existing container security settings are unchanged; Muse Code's additional
+Linux sandbox features may depend on the host's Docker and namespace restrictions.
+See the [Muse Code documentation](https://dev.meta.ai/docs/muse-code).
+
 ## Hermes Agent
 
 Hermes Agent is installed with its upstream installer. The release is managed
