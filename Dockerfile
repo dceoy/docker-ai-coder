@@ -200,6 +200,7 @@ RUN \
       done
 
 # Keep the Muse Code launcher outside the persistent HOME volume.
+# hadolint ignore=DL4006
 RUN \
       mkdir -p /opt/cli/muse/bin \
       && curl -fsSL https://dev.meta.ai/install.sh \
