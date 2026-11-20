@@ -181,7 +181,8 @@ WORKDIR /opt/agent
 ENV HOME=/opt/agent
 ENV SHELL=/usr/bin/zsh
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/cli/ms-playwright
-ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
+ENV MUSE_CONTRIBUTOR_MODE=0
+ENV PATH="/opt/cli/muse/bin:/opt/cli/.mise/data/shims:/opt/cli/node_modules/.bin:/opt/cli/.venv/bin:/opt/pnpm/bin:${PATH}"
 
 # hadolint ignore=DL3059
 RUN \
@@ -197,6 +198,13 @@ RUN \
         && target="$(readlink -f "${link}")" \
         && ln -sfn "$(realpath --relative-to="$(dirname "${link}")" "${target}")" "${link}" || exit 1; \
       done
+
+# hadolint ignore=DL4006
+RUN \
+      mkdir -p /opt/cli/muse/bin \
+      && curl -fsSL https://dev.meta.ai/install.sh \
+        | env MUSE_INSTALL_DIR=/opt/cli/muse/bin MUSE_NO_MODIFY_PATH=1 sh \
+      && muse --version
 
 RUN \
       mkdir -p "${HOME}/.vim/autoload" \
