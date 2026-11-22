@@ -221,9 +221,11 @@ RUN \
       && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent universal --force \
       && gh skill install getsentry/skills skills/security-review --scope user --agent universal --force \
       && gh skill install cloudflare/skills --all --scope user --agent universal --force \
+      && gh skill install GoogleChrome/modern-web-guidance --all --scope user --agent universal --force \
       && mkdir -p "${HOME}/.claude" "${HOME}/.codex" "${HOME}/.playwright" \
       && ln -s ../.agents/skills "${HOME}/.claude/skills" \
       && ln -s ../.agents/skills "${HOME}/.codex/skills" \
+      && test -f "${HOME}/.agents/skills/modern-web-guidance/SKILL.md" \
       && test -d "${HOME}/.claude/skills" \
       && test -d "${HOME}/.codex/skills" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \
