@@ -35,7 +35,7 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq upgrade \
+      && DEBIAN_FRONTEND=noninteractive apt-get -yqq -o Dpkg::Options::=--force-confold upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq passwd \
         libffi-dev ripgrep rsync tini tree unzip util-linux vim wget zsh
