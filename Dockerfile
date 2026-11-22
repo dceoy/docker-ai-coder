@@ -35,7 +35,7 @@ RUN \
       --mount=type=cache,target=/var/cache/apt,sharing=locked \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       apt-get -yqq update \
-      && apt-get -yqq upgrade \
+      && DEBIAN_FRONTEND=noninteractive apt-get -yqq -o Dpkg::Options::=--force-confold upgrade \
       && apt-get -yqq install --no-install-recommends --no-install-suggests \
         apt-file apt-utils bats build-essential ca-certificates curl extrepo ffmpeg file git gnupg jq passwd \
         libffi-dev ripgrep rsync tini tree unzip util-linux vim wget zsh
@@ -221,9 +221,11 @@ RUN \
       && gh skill install cloudflare/security-audit-skill skills/security-audit --scope user --agent universal --force \
       && gh skill install getsentry/skills skills/security-review --scope user --agent universal --force \
       && gh skill install cloudflare/skills --all --scope user --agent universal --force \
+      && gh skill install GoogleChrome/modern-web-guidance --all --scope user --agent universal --force \
       && mkdir -p "${HOME}/.claude" "${HOME}/.codex" "${HOME}/.playwright" \
       && ln -s ../.agents/skills "${HOME}/.claude/skills" \
       && ln -s ../.agents/skills "${HOME}/.codex/skills" \
+      && test -f "${HOME}/.agents/skills/modern-web-guidance/SKILL.md" \
       && test -d "${HOME}/.claude/skills" \
       && test -d "${HOME}/.codex/skills" \
       && jq -n '{browser: {browserName: "chromium", launchOptions: {chromiumSandbox: false}}}' \

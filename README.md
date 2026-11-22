@@ -175,6 +175,20 @@ without duplicating a populated build home. Skills are stored once in
 Playwright Chromium is installed in `/opt/cli/ms-playwright` rather than in
 an agent home cache.
 
+The image installs [Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance)
+(including the `modern-web-guidance` and `chrome-extensions` skill packs) via
+`gh skill install` with the universal agent scope. The skills live under
+`~/.agents/skills` and are shared with Claude Code and Codex through the
+existing skill directory symlinks. For example, retrieve up-to-date web
+platform guidance on demand with:
+
+```sh
+npx modern-web-guidance@latest search "responsive data table"
+```
+
+The CLI is fetched on first use if not already in the npm cache; the skill
+installation itself is performed during the Docker image build.
+
 At runtime, `HOME` is `/home/agent`, backed by the `home-data` volume.
 On the first start of a home volume, `entrypoint.sh` seeds missing files
 from `/opt/agent` before starting Herdr or Hermes and records an initialization
