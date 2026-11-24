@@ -106,7 +106,7 @@ RUN \
       --mount=type=bind,source=uv.lock,target=/tmp/uv.lock \
       --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       cp /tmp/pyproject.toml /tmp/uv.lock /opt/cli/ \
-      && uv sync --project /opt/cli --locked --no-dev \
+      && uv sync --project /opt/cli --locked \
       && python --version \
       && find /opt/cli/.venv -type d -name __pycache__ -prune -exec rm -rf {} +
 
@@ -150,6 +150,7 @@ RUN \
 RUN \
       --mount=type=cache,target=/opt/agent/.cache/uv,uid="${USER_UID}",gid="${USER_GID}",sharing=locked \
       HERMES_VERSION="$(mise tool github:NousResearch/hermes-agent --requested)" \
+      && HERMES_VERSION="${HERMES_VERSION#v}" \
       && env -u UV_PYTHON_PREFERENCE mise exec -- install.sh --branch "v${HERMES_VERSION}" --dir /opt/cli/hermes \
         --hermes-home /var/lib/hermes --skip-setup --skip-browser \
       && find /opt/cli/hermes -type d -name __pycache__ -prune -exec rm -rf {} +
