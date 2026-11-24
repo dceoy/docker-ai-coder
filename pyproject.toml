@@ -13,5 +13,6 @@ dev = [
 [tool.uv]
 package = false
 exclude-newer = "1 day"
-# Checkov pins asteval at a vulnerable version.
-override-dependencies = ["asteval==1.0.10"]
+exclude-newer-package = { mcp = false, opentelemetry-api = false, opentelemetry-sdk = false, opentelemetry-exporter-otlp-proto-http = false, opentelemetry-instrumentation = false, opentelemetry-instrumentation-requests = false, opentelemetry-instrumentation-threading = false, opentelemetry-semantic-conventions = false, wcmatch = false }
+# Checkov and Semgrep pin vulnerable dependency versions.
+override-dependencies = ["asteval==1.0.10", "mcp==1.30.0", "opentelemetry-api==1.45.2", "opentelemetry-sdk==1.45.2", "opentelemetry-exporter-otlp-proto-http==1.45.2", "opentelemetry-instrumentation==0.66b2", "opentelemetry-instrumentation-requests==0.66b2", "opentelemetry-instrumentation-threading==0.66b2", "opentelemetry-semantic-conventions==0.66b2", "wcmatch==11.2"]
