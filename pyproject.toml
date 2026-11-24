@@ -7,6 +7,11 @@ dependencies = [
     "yamllint",
 ]
 
+[dependency-groups]
+dev = [
+    "semgrep>=1.186.0",
+]
+
 [tool.uv]
 package = false
 exclude-newer = "1 day"
