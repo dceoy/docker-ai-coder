@@ -2,14 +2,12 @@
 name = "docker-ai-coder"
 version = "0.0.0"
 requires-python = ">=3.12"
-dependencies = [
-    "checkov",
-    "yamllint",
-]
 
 [dependency-groups]
 dev = [
-    "semgrep>=1.186.0",
+    "checkov",
+    "semgrep",
+    "yamllint",
 ]
 
 [tool.uv]
