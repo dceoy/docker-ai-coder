@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # checkov:skip=CKV_GHA_7:manual runs do not accept inputs
 permissions: {}
 concurrency:
-  group: update-tool-versions
+  group: renovate
   cancel-in-progress: false
 jobs:
   renovate:
