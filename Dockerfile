@@ -28,7 +28,9 @@ ENV PATH="/opt/cli/.mise/data/shims:/opt/cli/cargo/bin:/opt/cli/node_modules/.bi
 RUN \
       rm -f /etc/apt/apt.conf.d/docker-clean \
       && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
-        > /etc/apt/apt.conf.d/keep-cache
+        > /etc/apt/apt.conf.d/keep-cache \
+      && echo 'Acquire::Retries "3"; Acquire::http::Timeout "120"; Acquire::https::Timeout "120";' \
+        > /etc/apt/apt.conf.d/retries
 
 # hadolint ignore=DL3008
 RUN \
