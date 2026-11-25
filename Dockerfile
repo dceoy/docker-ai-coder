@@ -18,6 +18,10 @@ ENV GH_TELEMETRY=false
 ENV CHECKPOINT_DISABLE=1
 ENV TRIVY_DISABLE_TELEMETRY=true
 ENV TRIVY_SKIP_VERSION_CHECK=true
+ENV PI_TELEMETRY=0
+ENV PI_SKIP_VERSION_CHECK=1
+ENV HERMES_SKIP_UPDATE_CHECK=1
+ENV OTEL_SDK_DISABLED=true
 ENV PNPM_HOME=/opt/pnpm
 ENV RUSTUP_HOME=/opt/cli/rustup
 ENV CARGO_HOME=/opt/cli/cargo
@@ -163,6 +167,12 @@ RUN \
       --mount=type=cache,target=/var/lib/apt,sharing=locked \
       ln -s /opt/cli/hermes/venv/bin/hermes /usr/local/bin/hermes \
       && playwright install-deps chromium
+
+RUN \
+      install -d -m 0755 /etc/hermes \
+      && printf 'telemetry:\n  shared_metrics:\n    enabled: false\n    send: false\n' \
+        > /etc/hermes/config.yaml \
+      && chmod 0644 /etc/hermes/config.yaml
 
 
 FROM dependencies AS cli
